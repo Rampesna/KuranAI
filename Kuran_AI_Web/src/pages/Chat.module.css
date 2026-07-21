@@ -37,6 +37,9 @@
 .secondaryButton { background: rgba(255,255,255,.07); color: var(--text-primary); }
 .legal { text-align: center; color: var(--text-muted); font-size: 11px; line-height: 1.6; }
 .error { padding: 11px 14px; border: 1px solid rgba(255,80,70,.35); border-radius: 9px; color: #ff8b82; background: rgba(255,59,48,.08); font-size: 13px; }
+.limitBanner { margin-top: 12px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border: 1px solid rgba(201,162,39,.35); border-radius: 13px; background: rgba(201,162,39,.09); text-align: left; }
+.limitBanner strong { font-size: 13px; }.limitBanner p { margin-top: 3px; color: var(--text-muted); font-size: 11px; }
+.limitBanner a { flex-shrink: 0; font-size: 12px; font-weight: 800; }
 
 .chatShell { min-height: calc(100vh - 70px); display: grid; grid-template-columns: 245px minmax(0, 1fr); background: radial-gradient(circle at 65% 10%, rgba(201,162,39,.06), transparent 30%); }
 .sidebar { padding: 26px 18px; border-right: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; min-height: calc(100vh - 70px); background: rgba(0,0,0,.12); }
@@ -44,6 +47,12 @@
 .sourceList button { display: flex; gap: 11px; align-items: center; padding: 10px; border: 1px solid transparent; border-radius: 10px; background: transparent; color: var(--text-muted); cursor: pointer; text-align: left; font: inherit; }
 .sourceList button span { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--gold-primary); font-family: Georgia, serif; }
 .sourceList button:hover, .sourceList .sourceActive { color: var(--text-primary); background: var(--bg-card); border-color: var(--border); }
+.planBlock { margin-top: auto; margin-bottom: 14px; padding: 11px; display: grid; grid-template-columns: 30px minmax(0,1fr) 12px; align-items: center; gap: 9px; border: 1px solid rgba(201,162,39,.25); border-radius: 11px; background: rgba(201,162,39,.07); color: var(--text-primary); text-align: left; }
+.planBlock > span { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--gold-primary); color: var(--bg-dark); font-weight: 900; }
+.planBlock div { min-width: 0; }
+.planBlock strong, .planBlock small { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.planBlock strong { font-size: 11px; }.planBlock small { color: var(--text-muted); font-size: 9px; }
+.planBlock b { color: var(--gold-primary); font-size: 18px; }
 .accountBlock { display: grid; grid-template-columns: 38px minmax(0,1fr) 26px; align-items: center; gap: 10px; padding-top: 18px; border-top: 1px solid var(--border); }
 .avatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--gold-primary); color: var(--bg-dark); font-weight: 800; }
 .accountBlock div { overflow: hidden; text-align: left; }
@@ -86,6 +95,7 @@
   .chatShell { display: block; }
   .sidebar { min-height: auto; padding: 12px; border-right: 0; border-bottom: 1px solid var(--border); flex-direction: row; align-items: center; gap: 10px; }
   .sidebar .kicker, .accountBlock div, .accountBlock button { display: none; }
+  .planBlock { display: none; }
   .sourceList { margin: 0; display: flex; }.sourceList button { padding: 5px; font-size: 0; }.sourceList button span { font-size: 15px; }
   .accountBlock { padding: 0; border: 0; display: block; }.avatar { width: 34px; height: 34px; }
   .conversation { min-height: calc(100vh - 132px); }
@@ -93,4 +103,5 @@
   .messages { width: calc(100% - 28px); padding-top: 24px; }
   .suggestions { grid-template-columns: 1fr; }
   .composer { width: calc(100% - 24px); padding-bottom: 12px; }
+  .limitBanner { align-items: flex-start; flex-direction: column; }
 }

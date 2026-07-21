@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { API_BASE, TOKEN_KEY } from '../config/app'
 import { useLanguage } from '../i18n/LanguageContext'
 import styles from './Chat.module.css'
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://kuranai-api.talhacan.com'
-const TOKEN_KEY = 'kuranai_web_tokens'
 const CONSENT_KEY = 'kuranai_ai_consent'
 
 function readTokens() {
@@ -34,6 +33,8 @@ export default function Chat() {
   const [sessionId, setSessionId] = useState(null)
   const [streaming, setStreaming] = useState(false)
   const [chatError, setChatError] = useState('')
+  const [subscriptionOverview, setSubscriptionOverview] = useState(null)
+  const [limitInfo, setLimitInfo] = useState(null)
   const [showConsent, setShowConsent] = useState(false)
   const [pendingQuestion, setPendingQuestion] = useState('')
   const messagesEndRef = useRef(null)
@@ -85,6 +86,10 @@ export default function Chat() {
       .then(parseResponse)
       .then(data => { if (active) setUser(data) })
       .catch(() => { if (active) storeTokens(null) })
+    authorizedFetch('/api/v1/subscription/me')
+      .then(parseResponse)
+      .then(data => { if (active) setSubscriptionOverview(data) })
+      .catch(() => { /* Chat remains usable if usage details are temporarily unavailable. */ })
     return () => { active = false }
     // Existing tokens are validated once when their access token changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,6 +144,8 @@ export default function Chat() {
     setUser(null)
     setMessages([])
     setSessionId(null)
+    setSubscriptionOverview(null)
+    setLimitInfo(null)
   }
 
   const performSend = async (content) => {
@@ -146,6 +153,7 @@ export default function Chat() {
     if (!trimmed || streaming) return
     setQuestion('')
     setChatError('')
+    setLimitInfo(null)
     setStreaming(true)
     setMessages(previous => [...previous, { role: 'user', content: trimmed }, { role: 'assistant', content: '' }])
 
@@ -158,6 +166,9 @@ export default function Chat() {
 
       if (!response.ok) {
         const errorBody = await response.json().catch(() => null)
+        if (response.status === 402 && errorBody?.data?.code === 'MESSAGE_LIMIT_EXCEEDED') {
+          setLimitInfo(errorBody.data)
+        }
         throw new Error(errorBody?.message || text('Mesaj gönderilemedi.', 'Could not send the message.'))
       }
 
@@ -177,6 +188,12 @@ export default function Chat() {
           if (!dataLine) continue
           const payload = JSON.parse(dataLine.replace(/^data:\s*/, ''))
           if (payload.type === 'started' || payload.type === 'done') setSessionId(payload.sessionId)
+          if (payload.type === 'done') {
+            setSubscriptionOverview(previous => previous ? {
+              ...previous,
+              usage: { ...previous.usage, messageUsed: (previous.usage?.messageUsed || 0) + 1 },
+            } : previous)
+          }
           if (payload.type === 'error') throw new Error(payload.message)
           if (payload.type === 'chunk') {
             setMessages(previous => previous.map((message, index) => (
@@ -218,6 +235,10 @@ export default function Chat() {
     : sourceType === 'tefsir'
       ? [text('Fâtiha suresinin ana mesajı nedir?', 'What is the main message of Surah Al-Fatiha?'), text('Bakara 286. ayetin tefsirini özetler misin?', 'Can you summarize the Tafsir of Al-Baqarah 2:286?')]
       : [text('Sabır hakkında Kur’an ne söyler?', 'What does the Quran say about patience?'), text('Rahman suresinden bir ayeti açıklar mısın?', 'Can you explain a verse from Surah Ar-Rahman?')]
+
+  const usage = subscriptionOverview?.usage
+  const currentPackage = subscriptionOverview?.subscription?.package
+  const formatLimit = value => value == null || value >= 999999 ? '∞' : value
 
   if (!tokens) {
     return (
@@ -268,6 +289,14 @@ export default function Chat() {
             ))}
           </div>
         </div>
+        <Link to="/packages" className={styles.planBlock}>
+          <span>{currentPackage ? '✦' : '＋'}</span>
+          <div>
+            <strong>{currentPackage ? text(currentPackage.name, currentPackage.nameEn) : text('Ücretsiz paket', 'Free plan')}</strong>
+            <small>{usage ? `${usage.messageUsed} / ${formatLimit(usage.messageLimit)} ${text('soru bugün', 'questions today')}` : text('Paketleri görüntüle', 'View plans')}</small>
+          </div>
+          <b>›</b>
+        </Link>
         <div className={styles.accountBlock}>
           <span className={styles.avatar}>{(user?.name || user?.username || 'K').charAt(0).toUpperCase()}</span>
           <div><strong>{user?.name || user?.username || text('Kullanıcı', 'User')}</strong><small>{user?.email || ''}</small></div>
@@ -296,6 +325,12 @@ export default function Chat() {
             </article>
           ))}
           {chatError && <p className={styles.error}>{chatError}</p>}
+          {limitInfo && (
+            <div className={styles.limitBanner}>
+              <div><strong>{text('Günlük soru limitiniz doldu.', 'You have reached today’s question limit.')}</strong><p>{text('Sohbete devam etmek için paketinizi Kuran AI iOS uygulamasından seçebilirsiniz.', 'To continue chatting, choose a plan in the Kuran AI iOS app.')}</p></div>
+              <Link to="/packages">{text('iOS paketlerini aç', 'Open iOS plans')} →</Link>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
 

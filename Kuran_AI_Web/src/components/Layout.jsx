@@ -8,6 +8,7 @@ export default function Layout() {
 
   const navItems = [
     { to: '/app', label: text('Sohbet', 'Chat') },
+    { to: '/packages', label: text('Paketler', 'Plans') },
     { to: '/support', label: text('Destek', 'Support') },
     { to: '/contact', label: text('İletişim', 'Contact') },
   ]
@@ -48,7 +49,7 @@ export default function Layout() {
         </div>
       </header>
 
-      <main className={pathname === '/' ? styles.mainLanding : pathname === '/app' ? styles.mainApp : styles.mainPage}>
+      <main className={pathname === '/' ? styles.mainLanding : pathname === '/app' ? styles.mainApp : pathname === '/packages' ? styles.mainPackages : styles.mainPage}>
         <Outlet />
       </main>
 
@@ -58,6 +59,8 @@ export default function Layout() {
             <Link to="/privacy-policy">{text('Gizlilik Politikası', 'Privacy Policy')}</Link>
             <span className={styles.dot}>·</span>
             <Link to="/terms">{text('Kullanım Koşulları', 'Terms of Use')}</Link>
+            <span className={styles.dot}>·</span>
+            <Link to="/packages">{text('Paketler', 'Plans')}</Link>
             <span className={styles.dot}>·</span>
             <Link to="/support">{text('Destek', 'Support')}</Link>
             <span className={styles.dot}>·</span>

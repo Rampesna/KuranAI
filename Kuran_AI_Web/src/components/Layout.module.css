@@ -107,6 +107,11 @@
   flex: 1;
   width: 100%;
 }
+.mainPackages {
+  flex: 1;
+  width: 100%;
+  padding: 64px 24px 88px;
+}
 
 /* Footer */
 .footer {
@@ -150,4 +155,5 @@
   .logoText { display: none; }
   .languageSwitch { padding: 5px 7px; }
   .mainPage { padding: 32px 16px 60px; }
+  .mainPackages { padding: 42px 16px 64px; }
 }

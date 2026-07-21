@@ -177,6 +177,23 @@
 .webPanel h2 { font-family: Georgia, serif; font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
 .webPanel p:not(.sectionKicker) { max-width: 610px; color: var(--text-muted); }
 .webPanel .primaryBtn { flex-shrink: 0; }
+.iosPurchaseNote {
+  max-width: 1000px;
+  margin: 14px auto 0;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  color: var(--text-muted);
+  background: rgba(255,255,255,.02);
+  text-align: left;
+  font-size: 12px;
+}
+.iosPurchaseNote > span { color: var(--gold-primary); font-size: 19px; }
+.iosPurchaseNote p { flex: 1; }
+.iosPurchaseNote a { flex-shrink: 0; font-weight: 700; }
 .linksInner {
   max-width: 1000px;
   margin: 0 auto;
@@ -221,4 +238,6 @@
   .subtitle { font-size: 16px; }
   .features, .linksSection, .webSection { padding: 48px 16px; }
   .webPanel { padding: 28px 22px; align-items: flex-start; flex-direction: column; }
+  .iosPurchaseNote { align-items: flex-start; flex-wrap: wrap; }
+  .iosPurchaseNote p { min-width: calc(100% - 34px); }
 }

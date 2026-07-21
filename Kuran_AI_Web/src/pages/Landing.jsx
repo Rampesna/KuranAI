@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { APP_STORE_URL } from '../config/app'
 import { useLanguage } from '../i18n/LanguageContext'
 import styles from './Landing.module.css'
 
@@ -31,7 +32,7 @@ export default function Landing() {
             <Link to="/app" className={styles.primaryBtn}>
               {text('Webde kullan', 'Use on the web')} <span>→</span>
             </Link>
-            <a href="https://apps.apple.com/app/id6758725997" className={styles.downloadBtn} target="_blank" rel="noopener noreferrer">
+            <a href={APP_STORE_URL} className={styles.downloadBtn} target="_blank" rel="noopener noreferrer">
               <svg width="18" height="21" viewBox="0 0 20 24" fill="currentColor" aria-hidden="true"><path d="M15.77 12.86c-.03-2.88 2.35-4.26 2.46-4.33-1.34-1.96-3.43-2.23-4.17-2.26-1.77-.18-3.47 1.05-4.37 1.05-.9 0-2.29-1.03-3.77-1-1.94.03-3.73 1.13-4.73 2.87-2.02 3.5-.52 8.7 1.45 11.55.96 1.39 2.11 2.96 3.62 2.9 1.45-.06 2-.94 3.75-.94s2.25.94 3.78.91c1.56-.03 2.55-1.42 3.5-2.81 1.1-1.61 1.56-3.17 1.58-3.25-.03-.01-3.04-1.17-3.07-4.63zM12.93 4.47c.8-.97 1.34-2.31 1.19-3.65-1.15.05-2.55.77-3.37 1.73-.74.85-1.38 2.22-1.21 3.53 1.28.1 2.59-.65 3.39-1.61z"/></svg>
               App Store
             </a>
@@ -64,6 +65,11 @@ export default function Landing() {
             <p>{text('Hesabınız iOS uygulamasıyla ortaktır. Sohbetlerinize webden başlayın, telefonunuzdan devam edin.', 'Your account is shared with the iOS app. Start on the web and continue on your phone.')}</p>
           </div>
           <Link to="/app" className={styles.primaryBtn}>{text('Sohbeti aç', 'Open chat')} <span>→</span></Link>
+        </div>
+        <div className={styles.iosPurchaseNote}>
+          <span aria-hidden="true"></span>
+          <p>{text('Paket satın alma işlemleri iOS uygulamasında App Store üzerinden yapılır; paketiniz web hesabınıza otomatik yansır.', 'Plan purchases are completed through the App Store in the iOS app; your plan automatically applies to your web account.')}</p>
+          <Link to="/packages">{text('Paketleri incele', 'View plans')} →</Link>
         </div>
       </section>
 
