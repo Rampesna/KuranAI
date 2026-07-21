@@ -4,14 +4,12 @@ set -Eeuo pipefail
 readonly EXPECTED_ROOT="/www/wwwroot/kuranai"
 readonly NAMESPACE="kuranai"
 readonly LOCK_FILE="/var/lock/kuranai-deploy.lock"
-readonly AAPANEL_NGINX="/www/server/nginx/sbin/nginx"
-readonly AAPANEL_EXTENSION_DIR="/www/server/panel/vhost/nginx/extension/kuranai.talhacan.com"
+readonly AAPANEL_WELL_KNOWN_DIR="/www/wwwroot/kuranai.talhacan.com/.well-known"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 PROJECT_ROOT="$(cd "$INFRA_DIR/.." && pwd)"
 K8S_DIR="$INFRA_DIR/k8s"
-AAPANEL_DIR="$INFRA_DIR/aapanel"
 
 if [[ "$PROJECT_ROOT" != "$EXPECTED_ROOT" ]]; then
   echo "Refusing deployment outside $EXPECTED_ROOT (found $PROJECT_ROOT)" >&2
@@ -77,12 +75,12 @@ web_ready="$(kubectl get deployment/web -n "$NAMESPACE" -o jsonpath='{.status.re
 curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:7008/health >/dev/null
 curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:7007/ >/dev/null
 
-# aaPanel handles /.well-known before the proxy project. Install an exact-match
-# exception so Apple can fetch the AASA file served by the web pod.
-install -d -m 755 "$AAPANEL_EXTENSION_DIR"
-install -m 644 "$AAPANEL_DIR/kuranai-well-known.conf" "$AAPANEL_EXTENSION_DIR/kuranai-well-known.conf"
-"$AAPANEL_NGINX" -t
-"$AAPANEL_NGINX" -s reload
+# aaPanel serves /.well-known from its own document root before the proxy project.
+# Keep Apple's association file there in addition to the copy in the web image.
+install -d -m 755 "$AAPANEL_WELL_KNOWN_DIR"
+install -m 644 \
+  "$PROJECT_ROOT/Kuran_AI_Web/public/.well-known/apple-app-site-association" \
+  "$AAPANEL_WELL_KNOWN_DIR/apple-app-site-association"
 curl --fail --silent --show-error --retry 10 --retry-delay 2 \
   --resolve kuranai.talhacan.com:443:127.0.0.1 \
   https://kuranai.talhacan.com/.well-known/apple-app-site-association >/dev/null
