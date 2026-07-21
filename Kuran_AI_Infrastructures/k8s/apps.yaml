@@ -1,0 +1,213 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gateway-uploads
+  namespace: kuranai
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: kuranai
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: kuranai-gateway
+  template:
+    metadata:
+      labels:
+        app: kuranai-gateway
+    spec:
+      containers:
+        - name: gateway
+          image: kuranai-gateway:latest
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: kuranai-config
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: POSTGRES_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: POSTGRES_DB
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: REDIS_PASSWORD
+            - name: JWT_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: JWT_ACCESS_SECRET
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: JWT_REFRESH_SECRET
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: GOOGLE_CLIENT_ID
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: APPLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: APPLE_CLIENT_ID
+            - name: APPLE_TEAM_ID
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: APPLE_TEAM_ID
+            - name: APPLE_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: APPLE_KEY_ID
+            - name: APPLE_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: APPLE_PRIVATE_KEY
+            - name: APPLE_IAP_SHARED_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-secrets
+                  key: APPLE_IAP_SHARED_SECRET
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kuranai-openai
+                  key: OPENAI_API_KEY
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: uploads
+              mountPath: /app/uploads
+      volumes:
+        - name: uploads
+          persistentVolumeClaim:
+            claimName: gateway-uploads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: kuranai
+spec:
+  type: NodePort
+  selector:
+    app: kuranai-gateway
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+      nodePort: 7008
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: kuranai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kuranai-web
+  template:
+    metadata:
+      labels:
+        app: kuranai-web
+    spec:
+      containers:
+        - name: web
+          image: kuranai-web:latest
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: kuranai
+spec:
+  type: NodePort
+  selector:
+    app: kuranai-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 7007
+

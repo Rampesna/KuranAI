@@ -1,0 +1,86 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: kuranai_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-kuranai_pgsql}
+      POSTGRES_USER: ${POSTGRES_USER:-kuranai_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-.C91a44n4dab23.}
+    ports:
+      - "${POSTGRES_PORT:-9301}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-kuranai_user} -d ${POSTGRES_DB:-kuranai_pgsql}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: kuranai_redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-.4br3x4cp6X.}
+    ports:
+      - "${REDIS_PORT:-9302}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-.4br3x4cp6X.}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  gateway:
+    build:
+      context: ../Kuran_AI_Gateway
+      dockerfile: Dockerfile
+    container_name: kuranai_gateway
+    ports:
+      - "${GATEWAY_PORT:-9300}:8080"
+    volumes:
+      - gateway_uploads:/app/uploads
+    environment:
+      SERVER_PORT: 8080
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-kuranai_user}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-.C91a44n4dab23.}
+      DB_NAME: ${POSTGRES_DB:-kuranai_pgsql}
+      DB_SSLMODE: disable
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-.4br3x4cp6X.}
+      REDIS_DB: 0
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-kuranai-access-secret-change-in-prod}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-kuranai-refresh-secret-change-in-prod}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      APPLE_CLIENT_ID: ${APPLE_CLIENT_ID:-}
+      APPLE_TEAM_ID: ${APPLE_TEAM_ID:-}
+      APPLE_KEY_ID: ${APPLE_KEY_ID:-}
+      APPLE_PRIVATE_KEY: ${APPLE_PRIVATE_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      APPLE_IAP_SHARED_SECRET: ${APPLE_IAP_SHARED_SECRET:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://kuranai.talhacan.com}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ../Kuran_AI_Web
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE:-https://kuranai-api.talhacan.com}
+    container_name: kuranai_web
+    ports:
+      - "${WEB_PORT:-9303}:80"
+    depends_on:
+      - gateway
+
+volumes:
+  postgres_data:
+  redis_data:
+  gateway_uploads:

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Kuran AI sesli sorunuzu kaydeder ve yalnızca açık izninizden sonra yazıya dönüştürülmesi için OpenAI'a gönderir.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>GIDClientID</key>
+	<string>157832066999-j2rtge34n3u5r8gtejini3kel827d7j2.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.157832066999-j2rtge34n3u5r8gtejini3kel827d7j2</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>

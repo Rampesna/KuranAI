@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --gold-primary: #c9a227;
+  --gold-secondary: #a67c00;
+  --gold-light: #f5e6b8;
+  --gold-glow: rgba(201, 162, 39, 0.15);
+  --bg-dark: #0d0a04;
+  --bg-card: rgba(255, 255, 255, 0.04);
+  --bg-card-hover: rgba(255, 255, 255, 0.07);
+  --text-primary: #f5f0e8;
+  --text-muted: rgba(245, 240, 232, 0.65);
+  --border: rgba(201, 162, 39, 0.15);
+  --radius: 16px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--gold-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--gold-light);
+}
+
+::selection {
+  background: var(--gold-primary);
+  color: var(--bg-dark);
+}

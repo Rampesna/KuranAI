@@ -1,0 +1,346 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Kuran AI Gateway API",
+    "version": "1.0.0",
+    "description": "Kuran AI Gateway - User & Manager auth, Daily Verse management, Chat, Subscription, Prayer Times."
+  },
+  "servers": [{"url": "/api", "description": "API base"}],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT access token (User veya Manager)"
+      }
+    },
+    "schemas": {
+      "ServiceResponse": {
+        "type": "object",
+        "properties": {
+          "isSuccess": {"type": "boolean"},
+          "message": {"type": "string"},
+          "statusCode": {"type": "integer"},
+          "data": {"description": "Response body"}
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": ["email", "password", "name", "username"],
+        "properties": {
+          "email": {"type": "string", "format": "email"},
+          "password": {"type": "string", "format": "password", "minLength": 6},
+          "name": {"type": "string"},
+          "username": {"type": "string"}
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["credential", "password"],
+        "properties": {
+          "credential": {"type": "string", "description": "Email or username"},
+          "password": {"type": "string", "format": "password"}
+        }
+      },
+      "ManagerLoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {"type": "string", "format": "email"},
+          "password": {"type": "string", "format": "password"}
+        }
+      },
+      "GoogleLoginRequest": {
+        "type": "object",
+        "required": ["idToken"],
+        "properties": {
+          "idToken": {"type": "string", "description": "Google ID token from frontend"}
+        }
+      },
+      "AppleLoginRequest": {
+        "type": "object",
+        "required": ["identityToken"],
+        "properties": {
+          "identityToken": {"type": "string", "description": "Apple identity token (Sign in with Apple)"}
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": ["refreshToken"],
+        "properties": {"refreshToken": {"type": "string"}}
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {"type": "string"},
+          "refreshToken": {"type": "string"},
+          "expiresAt": {"type": "string", "format": "date-time"},
+          "tokenType": {"type": "string", "example": "Bearer"}
+        }
+      },
+      "TranslationInput": {
+        "type": "object",
+        "required": ["languageCode", "translationText", "sourceName"],
+        "properties": {
+          "languageCode": {"type": "string", "example": "tr", "description": "Dil kodu: tr, en, ar vb."},
+          "translationText": {"type": "string", "description": "Çeviri metni"},
+          "sourceName": {"type": "string", "example": "Fatiha", "description": "Sure adı (o dilde)"}
+        }
+      },
+      "CreateDailyVerseRequest": {
+        "type": "object",
+        "required": ["surahNumber", "ayahNumber", "arabicText", "translations"],
+        "properties": {
+          "surahNumber": {"type": "integer", "minimum": 1, "example": 1},
+          "ayahNumber": {"type": "integer", "minimum": 1, "example": 1},
+          "arabicText": {"type": "string", "example": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"},
+          "displayDate": {"type": "string", "format": "date", "nullable": true, "description": "YYYY-MM-DD formatında. null = havuzda, belirli tarih = o güne sabitlenir."},
+          "isActive": {"type": "boolean", "default": true},
+          "sortOrder": {"type": "integer", "default": 0},
+          "translations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"$ref": "#/components/schemas/TranslationInput"}
+          }
+        }
+      },
+      "UpdateDailyVerseRequest": {
+        "type": "object",
+        "properties": {
+          "surahNumber": {"type": "integer", "minimum": 1},
+          "ayahNumber": {"type": "integer", "minimum": 1},
+          "arabicText": {"type": "string"},
+          "displayDate": {"type": "string", "format": "date", "nullable": true, "description": "Boş string = havuza geri al"},
+          "isActive": {"type": "boolean"},
+          "sortOrder": {"type": "integer"},
+          "translations": {
+            "type": "array",
+            "items": {"$ref": "#/components/schemas/TranslationInput"},
+            "description": "Verilirse mevcut çeviriler silinip yenisi eklenir"
+          }
+        }
+      },
+      "DailyVerse": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "integer"},
+          "surahNumber": {"type": "integer"},
+          "ayahNumber": {"type": "integer"},
+          "arabicText": {"type": "string"},
+          "displayDate": {"type": "string", "format": "date", "nullable": true},
+          "isActive": {"type": "boolean"},
+          "sortOrder": {"type": "integer"},
+          "translations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {"type": "integer"},
+                "dailyVerseId": {"type": "integer"},
+                "languageCode": {"type": "string"},
+                "translationText": {"type": "string"},
+                "sourceName": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/user/auth/register": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Register",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RegisterRequest"}}}
+        },
+        "responses": {"201": {"description": "Registration successful"}, "422": {"description": "Validation error"}}
+      }
+    },
+    "/user/auth/login": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Login",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LoginRequest"}}}
+        },
+        "responses": {"201": {"description": "Login successful", "content": {"application/json": {"schema": {"properties": {"data": {"$ref": "#/components/schemas/AuthResponse"}}}}}}, "401": {"description": "Invalid credentials"}, "422": {"description": "Validation error"}}
+      }
+    },
+    "/user/auth/login/google": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Login (Google)",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/GoogleLoginRequest"}}}
+        },
+        "responses": {"201": {"description": "Login successful"}, "401": {"description": "Invalid token"}, "422": {"description": "Validation error"}}
+      }
+    },
+    "/user/auth/login/apple": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Login (Apple)",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/AppleLoginRequest"}}}
+        },
+        "responses": {"201": {"description": "Login successful"}, "401": {"description": "Invalid token"}, "422": {"description": "Validation error"}}
+      }
+    },
+    "/user/auth/refresh": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Refresh Token",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefreshTokenRequest"}}}
+        },
+        "responses": {"201": {"description": "New tokens issued"}, "401": {"description": "Invalid refresh token"}}
+      }
+    },
+    "/user/auth/me": {
+      "get": {
+        "tags": ["User Auth"],
+        "summary": "Me",
+        "security": [{"BearerAuth": []}],
+        "responses": {"200": {"description": "Current user info"}, "401": {"description": "Unauthorized"}}
+      }
+    },
+    "/user/auth/logout": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Logout",
+        "security": [{"BearerAuth": []}],
+        "responses": {"200": {"description": "Logout successful"}, "401": {"description": "Unauthorized"}}
+      }
+    },
+
+    "/manager/auth/login": {
+      "post": {
+        "tags": ["Manager Auth"],
+        "summary": "Manager Login",
+        "description": "Manager hesabıyla giriş yapar. Dönen accessToken ile manager endpointlerini kullanabilirsiniz.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ManagerLoginRequest"}}}
+        },
+        "responses": {
+          "201": {"description": "Login successful", "content": {"application/json": {"schema": {"properties": {"data": {"$ref": "#/components/schemas/AuthResponse"}}}}}},
+          "401": {"description": "Invalid credentials"},
+          "422": {"description": "Validation error"}
+        }
+      }
+    },
+    "/manager/auth/me": {
+      "get": {
+        "tags": ["Manager Auth"],
+        "summary": "Manager Me",
+        "description": "Mevcut manager bilgisini döner.",
+        "security": [{"BearerAuth": []}],
+        "responses": {"200": {"description": "Manager info"}, "401": {"description": "Unauthorized"}, "403": {"description": "Manager access required"}}
+      }
+    },
+
+    "/verse-of-day": {
+      "get": {
+        "tags": ["Verse of Day (Public)"],
+        "summary": "Bugünün Ayeti",
+        "description": "Bugünün ayetini döndürür. lang parametresiyle sadece belirli dildeki çeviri filtrelenir.",
+        "parameters": [
+          {
+            "name": "lang",
+            "in": "query",
+            "required": false,
+            "schema": {"type": "string", "example": "tr"},
+            "description": "Dil kodu (tr, en). Boş bırakılırsa tüm çeviriler döner."
+          }
+        ],
+        "responses": {
+          "200": {"description": "Bugünün ayeti", "content": {"application/json": {"schema": {"properties": {"data": {"$ref": "#/components/schemas/DailyVerse"}}}}}},
+          "404": {"description": "No verses available"}
+        }
+      }
+    },
+
+    "/manager/verse-of-day": {
+      "get": {
+        "tags": ["Verse of Day (Manager)"],
+        "summary": "Tüm Ayetleri Listele",
+        "description": "Veritabanındaki tüm günün ayetlerini çevirileriyle birlikte listeler.",
+        "security": [{"BearerAuth": []}],
+        "responses": {
+          "200": {"description": "Ayetler listesi", "content": {"application/json": {"schema": {"properties": {"data": {"type": "array", "items": {"$ref": "#/components/schemas/DailyVerse"}}}}}}},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Manager access required"}
+        }
+      },
+      "post": {
+        "tags": ["Verse of Day (Manager)"],
+        "summary": "Yeni Ayet Ekle",
+        "description": "Yeni bir günün ayeti oluşturur. Çeviriler zorunludur (en az 1 dil).",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CreateDailyVerseRequest"}}}
+        },
+        "responses": {
+          "201": {"description": "Ayet oluşturuldu", "content": {"application/json": {"schema": {"properties": {"data": {"$ref": "#/components/schemas/DailyVerse"}}}}}},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Manager access required"},
+          "422": {"description": "Validation error"}
+        }
+      }
+    },
+    "/manager/verse-of-day/{id}": {
+      "get": {
+        "tags": ["Verse of Day (Manager)"],
+        "summary": "Ayet Detayı",
+        "description": "Belirli bir ayetin detayını çevirileriyle birlikte döndürür.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "Ayet detayı", "content": {"application/json": {"schema": {"properties": {"data": {"$ref": "#/components/schemas/DailyVerse"}}}}}},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Manager access required"},
+          "404": {"description": "Verse not found"}
+        }
+      },
+      "put": {
+        "tags": ["Verse of Day (Manager)"],
+        "summary": "Ayet Güncelle",
+        "description": "Mevcut bir ayeti günceller. Translations verilirse eski çeviriler silinip yenisi eklenir.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/UpdateDailyVerseRequest"}}}
+        },
+        "responses": {
+          "200": {"description": "Ayet güncellendi", "content": {"application/json": {"schema": {"properties": {"data": {"$ref": "#/components/schemas/DailyVerse"}}}}}},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Manager access required"},
+          "404": {"description": "Verse not found"}
+        }
+      },
+      "delete": {
+        "tags": ["Verse of Day (Manager)"],
+        "summary": "Ayet Sil",
+        "description": "Belirli bir ayeti ve çevirilerini kalıcı olarak siler.",
+        "security": [{"BearerAuth": []}],
+        "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}],
+        "responses": {
+          "200": {"description": "Ayet silindi"},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Manager access required"},
+          "404": {"description": "Verse not found"}
+        }
+      }
+    }
+  }
+}

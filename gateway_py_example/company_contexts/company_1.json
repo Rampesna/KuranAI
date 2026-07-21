@@ -1,0 +1,3015 @@
+{
+  "table_name": "REP_MANAGER",
+  "table_description": "Hotel management reporting table containing daily operational metrics, revenue data, occupancy statistics, and reservation information aggregated by business date, room class, and resort.",
+  "column_name_rules": {
+    "critical": "Use ONLY the exact column names in 'canonical_column_names'. If a name is not in that list, it does not exist – never use it.",
+    "do_not_use": "INHOUSE_PRS, OCC_PRS do not exist. For in-house guest count / otelde kaç kişi use GUEST_IN_HOUSE only.",
+    "in_house_guests": "GUEST_IN_HOUSE"
+  },
+  "canonical_column_names": [
+    "BUSINESS_DATE",
+    "ROOM_CLASS",
+    "RESORT",
+    "OCC_ROOM",
+    "COMP_ROOM",
+    "HOUSE_USE_ROOM",
+    "DAYUSE_ROOM",
+    "AVAIL_ROOM",
+    "OOO_ROOMS",
+    "OS_ROOMS",
+    "ADR_ROOM_WO_COMP_HOUSE",
+    "AVERAGE_DAILY_REVENUE",
+    "GUEST_IN_HOUSE",
+    "PER_OCCUPANCY",
+    "PER_OCC_WO_COMP_HOUSE",
+    "PER_OCC_WO_COMP_HOUSE_OO",
+    "ARRIVAL_ROOM",
+    "ARRIVAL_PRS",
+    "DEPARTURE_ROOM",
+    "DEPARTURE_PRS",
+    "EXT_STAY_ROOM",
+    "EXT_STAY_PRS",
+    "EARLY_DEP_ROOM",
+    "EARLY_DEP_PRS",
+    "WALKIN_ROOM",
+    "WALKIN_PRS",
+    "NOSHOW_ROOM",
+    "NOSHOW_PRS",
+    "CANCEL_RESERVATION",
+    "CANCEL_ROOMS",
+    "LATE_CANCEL_RESERVATION",
+    "LATE_CANCEL_ROOMS",
+    "RESERVATION",
+    "TURNAWAY",
+    "TOMORROW_ARRIVAL_ROOM",
+    "TOMORROW_ARRIVAL_PRS",
+    "TOMORROW_DEPARTURE_ROOM",
+    "TOMORROW_DEPARTURE_PRS",
+    "FOOD_BEV_REVENUE",
+    "OCC_WEEK",
+    "OCC_MONTH",
+    "OCC_YEAR",
+    "ROOM_REVENUE",
+    "CLEAN_ROOM",
+    "INSPECTED_ROOM",
+    "PAYMENT",
+    "GROUP_REVENUE",
+    "GROUP_ROOM",
+    "VIP_GUEST",
+    "NO_OF_GROUP",
+    "GROUP_PRS",
+    "GROUP_ROOM_REV",
+    "ADULTS_IN_HOUSE",
+    "CHILDREN_IN_HOUSE",
+    "OTHER_REVENUE",
+    "TOTAL_REVENUE",
+    "PHYSICAL_ROOM",
+    "OCC_TOMMORROW",
+    "SINGLE_OCC_ROOM",
+    "MULTI_OCC_ROOM",
+    "ROOM_TAX",
+    "FOOD_BEV_TAX",
+    "OTHER_TAX",
+    "TOTAL_TAX",
+    "GROUP_TAX",
+    "GROUP_ROOM_TAX",
+    "FIT_GUESTS_TODAY",
+    "AGENT_ROOMS_TODAY",
+    "COMPANY_ROOMS_TODAY",
+    "SOURCE_ROOMS_TODAY",
+    "DEF_ARRIVALS_TODAY",
+    "TNT_ARRIVALS_TODAY",
+    "DIRTY_ROOMS_TODAY",
+    "BIRTHDAYS",
+    "DBLS_AS_SGLS_TODAY",
+    "CANCELLATIONS_MADE_TODAY",
+    "ROOM_NIGHTS_RESERVED_TODAY",
+    "FIT_REVENUE_TODAY",
+    "MEMBER_TOTAL_TAX",
+    "MEM_REVENUE_TODAY",
+    "FIT_DEP_TODAY",
+    "FIT_DEP_PRS_TODAY",
+    "MEM_DEP_PRS_TODAY",
+    "FIT_MEM_DEP_PRS",
+    "MEM_INHOUSE_PRS_TODAY",
+    "BEDS_AVL_TODAY",
+    "CRIBS_TODAY",
+    "AVERAGE_AGE_TODAY",
+    "ROLLAWAYS_TODAY",
+    "ADULTS_FREE_TODAY",
+    "CHILDREN_FREE_TODAY",
+    "RACK_RATE_OCC",
+    "YIELD_ALL_ROOMS",
+    "YIELD_OCC_ROOMS",
+    "RACK_RATE_ALL",
+    "FIT_ROOMS_TODAY",
+    "GROUP_ROOMS_TODAY",
+    "FIT_MEM_DEP_ROOMS",
+    "MEM_DEP_ROOMS_TODAY",
+    "FIT_ROOM_REVENUE",
+    "INHOUSE_MAX_OCCUPANCY",
+    "EXT_NOSHOW_PRS",
+    "EXT_NOSHOW_ROOM",
+    "EXT_NOSHOW_RES",
+    "CHILDREN1",
+    "CHILDREN2",
+    "CHILDREN3",
+    "CHILDREN4",
+    "CHILDREN5",
+    "OCC_NEXT_31_DAYS",
+    "OCC_NEXT_365_DAYS",
+    "OCC_REST_OF_MONTH",
+    "OCC_REST_OF_YEAR",
+    "COMPANY_ROOM_REVENUE",
+    "COMPANY_ROOM_TAX",
+    "COMPANY_TOTAL_REVENUE",
+    "COMPANY_TOTAL_TAX",
+    "AGENT_ROOM_REVENUE",
+    "AGENT_ROOM_TAX",
+    "AGENT_TOTAL_REVENUE",
+    "AGENT_TOTAL_TAX",
+    "REPEAT_ROOMS",
+    "REPEAT_PERSONS",
+    "REPEAT_ROOM_REVENUE",
+    "REPEAT_ROOM_TAX",
+    "REPEAT_TOTAL_REVENUE",
+    "REPEAT_TOTAL_TAX",
+    "NOSHOW_RESERVATIONS",
+    "DAY_USE_RESERVATIONS",
+    "ARRIVAL_RESERVATIONS",
+    "ROOMS_CANCELLED_TODAY",
+    "OWNER_ROOMS",
+    "OWNER_ROOM_REVENUE",
+    "OWNER_OTHER_REVENUE",
+    "OWNER_FOOD_BEV_REVENUE",
+    "FF_ROOMS",
+    "FF_ROOM_REVENUE",
+    "FF_OTHER_REVENUE",
+    "FF_FOOD_BEV_REVENUE",
+    "CENTRAL_CURRENCY_CODE",
+    "CENTRAL_EXCHANGE_RATE",
+    "PHYSICAL_BEDS",
+    "OCC_BEDS",
+    "COMP_BEDS",
+    "HOUSE_USE_BEDS",
+    "OOO_BEDS",
+    "OS_BEDS",
+    "COMP_ADULTS",
+    "COMP_CHILDREN",
+    "HOUSE_USE_ADULTS",
+    "HOUSE_USE_CHILDREN",
+    "FIT_MEM_ROOMS",
+    "FIT_MEM_ROOM_REVENUE",
+    "FIT_MEM_ROOM_REVENUE_TAX",
+    "FIT_MEM_TOTAL_REVENUE",
+    "FIT_MEM_TOTAL_REVENUE_TAX",
+    "FIT_MEM_LOS_NIGHTS",
+    "FIT_MEM_LOS_RESV",
+    "BLK_MEM_ROOMS",
+    "BLK_MEM_ROOM_REVENUE",
+    "BLK_MEM_ROOM_REVENUE_TAX",
+    "BLK_MEM_TOTAL_REVENUE",
+    "BLK_MEM_TOTAL_REVENUE_TAX",
+    "BLK_MEM_LOS_NIGHTS",
+    "BLK_MEM_LOS_RESV",
+    "ADV_FOOD_REVENUE",
+    "ADV_NON_REVENUE",
+    "ADV_OTHER_REVENUE",
+    "ADV_ROOM_REVENUE",
+    "ADV_TOTAL_FOOD_TAX",
+    "ADV_TOTAL_NON_REVENUE_TAX",
+    "ADV_TOTAL_OTHER_TAX",
+    "ADV_TOTAL_REVENUE",
+    "ADV_TOTAL_ROOM_TAX",
+    "ADV_TOTAL_TAX",
+    "FF_RENT_FOOD_BEV_REV",
+    "FF_RENT_OTHER_REV",
+    "FF_RENT_ROOMS",
+    "FF_RENT_ROOM_REV",
+    "OWNER_RENT_FOOD_BEV_REV",
+    "OWNER_RENT_OTHER_REV",
+    "OWNER_RENT_ROOMS",
+    "OWNER_RENT_ROOMS_OOO",
+    "OWNER_RENT_ROOM_REV",
+    "OWNER_ROOMS_OOO",
+    "FLGD_ROOM_REVENUE",
+    "FLGD_FOOD_REVENUE",
+    "FLGD_NON_REVENUE",
+    "FLGD_OTHER_REVENUE",
+    "FLGD_TOTAL_ROOM_TAX",
+    "FLGD_TOTAL_FOOD_TAX",
+    "FLGD_TOTAL_NON_REVENUE_TAX",
+    "FLGD_TOTAL_OTHER_TAX",
+    "FLGD_TOTAL_REVENUE",
+    "FLGD_TOTAL_TAX",
+    "FLGD_PAYMENT",
+    "DAYUSE_REST_OF_YEAR",
+    "DAYUSE_REST_OF_MONTH",
+    "DAYUSE_NEXT_365_DAYS",
+    "DAYUSE_NEXT_31_DAYS",
+    "DAYUSE_YEAR",
+    "DAYUSE_MONTH",
+    "DAYUSE_WEEK",
+    "OWNER_ROOMS_IN_HOTEL",
+    "EXT_NOSHOW_CRS_RES",
+    "DAYUSE_TOMORROW",
+    "COMP_REST_OF_YEAR",
+    "COMP_REST_OF_MONTH",
+    "COMP_NEXT_365_DAYS",
+    "COMP_NEXT_31_DAYS",
+    "COMP_WEEK",
+    "COMP_TOMORROW",
+    "HOUSE_USE_REST_OF_YEAR",
+    "HOUSE_USE_REST_OF_MONTH",
+    "HOUSE_USE_NEXT_365_DAYS",
+    "HOUSE_USE_NEXT_31_DAYS",
+    "HOUSE_USE_WEEK",
+    "HOUSE_USE_TOMORROW",
+    "OOO_ROOMS_REST_OF_YEAR",
+    "OOO_ROOMS_REST_OF_MONTH",
+    "OOO_ROOMS_NEXT_365_DAYS",
+    "OOO_ROOMS_NEXT_31_DAYS",
+    "OOO_ROOMS_WEEK",
+    "OOO_ROOMS_TOMORROW",
+    "OS_ROOMS_REST_OF_YEAR",
+    "OS_ROOMS_REST_OF_MONTH",
+    "OS_ROOMS_NEXT_365_DAYS",
+    "OS_ROOMS_NEXT_31_DAYS",
+    "OS_ROOMS_WEEK",
+    "OS_ROOMS_TOMORROW",
+    "DAYUSE_ADULTS",
+    "DAYUSE_CHILDREN",
+    "ES_OCC_ROOMS",
+    "ES_COMP_ROOMS",
+    "ES_HOUSE_USE_ROOMS",
+    "ES_TOTAL_REVENUE",
+    "ES_ROOM_REVENUE",
+    "ES_FOOD_REVENUE",
+    "ES_OTHER_REVENUE",
+    "ES_NON_REVENUE",
+    "ES_TOTAL_TAX",
+    "ES_ROOM_TAX",
+    "ES_FOOD_TAX",
+    "ES_OTHER_TAX",
+    "ES_NON_REVENUE_TAX",
+    "ES_ADV_TOTAL_REVENUE",
+    "ES_ADV_ROOM_REVENUE",
+    "ES_ADV_FOOD_REVENUE",
+    "ES_ADV_OTHER_REVENUE",
+    "ES_ADV_NON_REVENUE",
+    "ES_ADV_TOTAL_TAX",
+    "ES_ADV_ROOM_TAX",
+    "ES_ADV_FOOD_TAX",
+    "ES_ADV_OTHER_TAX",
+    "ES_ADV_NON_REVENUE_TAX"
+  ],
+  "primary_key": {
+    "columns": [
+      "ROOM_CLASS",
+      "RESORT",
+      "BUSINESS_DATE"
+    ],
+    "description": "Composite primary key ensuring unique records per room class, resort, and business date"
+  },
+  "unique_constraint": {
+    "columns": [
+      "RESORT",
+      "ROOM_CLASS",
+      "BUSINESS_DATE"
+    ],
+    "description": "Alternative unique constraint on the same columns"
+  },
+  "columns": {
+    "BUSINESS_DATE": {
+      "type": "DATE",
+      "not_null": true,
+      "description": "System date",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (45 occurrences)",
+      "sample_data": {
+        "sample_value": "2025-02-17",
+        "data_type": "string"
+      }
+    },
+    "ROOM_CLASS": {
+      "type": "VARCHAR2(20)",
+      "not_null": true,
+      "description": "Room Class",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": "ALL",
+        "data_type": "string"
+      }
+    },
+    "RESORT": {
+      "type": "VARCHAR2(240)",
+      "not_null": true,
+      "description": "The property that the record belongs to",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (67 occurrences)",
+      "sample_data": {
+        "sample_value": "ISTAL",
+        "data_type": "string"
+      }
+    },
+    "OCC_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms In-House with a Front Office status of OCC",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (9 occurrences)",
+      "sample_data": {
+        "sample_value": 71,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms that have a rate code marked as comp",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms In-House that have a rate code marked as House Use",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 58,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of reservations where the arrival date and departure date equal today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "AVAIL_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total rooms in hotel, minus rooms occupied",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 5,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms marked as Out of Order for today",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 3,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms marked as Out of Service for today",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (3 occurrences)",
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ADR_ROOM_WO_COMP_HOUSE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Average Daily Rate without Comp & House",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "AVERAGE_DAILY_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "GUEST_IN_HOUSE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children for Rooms In-House",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 82,
+        "data_type": "numeric"
+      }
+    },
+    "PER_OCCUPANCY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Rooms Occupied, divided by Total Rooms in Hotel, multiplied by 100",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "PER_OCC_WO_COMP_HOUSE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Rooms Occupied minus Comp & House, divided by Total Rooms in Hotel, multiplied by 100",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "PER_OCC_WO_COMP_HOUSE_OO": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Rooms Occupied minus Comp, House and Out of Order, divided by Total Rooms in Hotel, multiplied by 100",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "ARRIVAL_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with an arrival date today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 54,
+        "data_type": "numeric"
+      }
+    },
+    "ARRIVAL_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of adults and children arriving today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 59,
+        "data_type": "numeric"
+      }
+    },
+    "DEPARTURE_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms with a departure date equal to today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 27,
+        "data_type": "numeric"
+      }
+    },
+    "DEPARTURE_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons with a departure date equal to today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 46,
+        "data_type": "numeric"
+      }
+    },
+    "EXT_STAY_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms  where an original departure date equal to today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "EXT_STAY_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons where an original departure date equal to today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "EARLY_DEP_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of  checked out rooms with an original departure date greater than today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1,
+        "data_type": "numeric"
+      }
+    },
+    "EARLY_DEP_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons for checked out rooms with an original departure date greater than today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1,
+        "data_type": "numeric"
+      }
+    },
+    "WALKIN_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms where the Walk-In button was used to make the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "WALKIN_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children where the Walk-In button was used to make the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "NOSHOW_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with a Reservation Status of No Show",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)"
+    },
+    "NOSHOW_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children with a Reservation Status of No Show",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "CANCEL_RESERVATION": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of cancelled reservations with an arrival date today.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 8,
+        "data_type": "numeric"
+      }
+    },
+    "CANCEL_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of cancelled rooms with an arrival date today.",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 16,
+        "data_type": "numeric"
+      }
+    },
+    "LATE_CANCEL_RESERVATION": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Reservations that were cancelled today, with an arrival date equal to today.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 6,
+        "data_type": "numeric"
+      }
+    },
+    "LATE_CANCEL_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms that were cancelled today, with an arrival date equal to today.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 14,
+        "data_type": "numeric"
+      }
+    },
+    "RESERVATION": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Reservations that were created today for any date.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 38,
+        "data_type": "numeric"
+      }
+    },
+    "TURNAWAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Turnaways recorded today for any date.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "TOMORROW_ARRIVAL_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with an Arrival Date equal to tomorrow",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 25,
+        "data_type": "numeric"
+      }
+    },
+    "TOMORROW_ARRIVAL_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children with an Arrival Date equal to tomorrow",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 43,
+        "data_type": "numeric"
+      }
+    },
+    "TOMORROW_DEPARTURE_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with a Departure Date equal to tomorrow",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 29,
+        "data_type": "numeric"
+      }
+    },
+    "TOMORROW_DEPARTURE_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children with a Departure Date equal to tomorrow",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 33,
+        "data_type": "numeric"
+      }
+    },
+    "FOOD_BEV_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the Transaction Code is marked as Revenue and the Transaction Type is  Food and Beverage .",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 9402.499999999996,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_WEEK": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for 7 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 298,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for 1 calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 545,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for 1 calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 984,
+        "data_type": "numeric"
+      }
+    },
+    "ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the Transaction Code is marked as Revenue and the Transaction Type is Lodging .",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (7 occurrences)",
+      "sample_data": {
+        "sample_value": 177792.24107142858,
+        "data_type": "numeric"
+      }
+    },
+    "CLEAN_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of clean rooms",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "INSPECTED_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms that have a Housekeeping Status of IP",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 2,
+        "data_type": "numeric"
+      }
+    },
+    "PAYMENT": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today that have a Transaction Code linked to a Group of Payment",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 361831.81,
+        "data_type": "numeric"
+      }
+    },
+    "GROUP_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the Transaction Code is marked as Revenue for reservations that have a Block Code attached",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "GROUP_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms that have a block code attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "VIP_GUEST": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children for Rooms In-House with a VIP code attached to the profile.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 15,
+        "data_type": "numeric"
+      }
+    },
+    "NO_OF_GROUP": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Blocks where todays date falls between the start date and end date",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "GROUP_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children for Rooms In-House with a Block code attached to the reservation",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "GROUP_ROOM_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the Transaction Code is marked as Revenue  and a Transaction Code Type is Lodging for reservations that have a Block Code attached",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "ADULTS_IN_HOUSE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults in House",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 82,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN_IN_HOUSE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of children in-house",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the Transaction Code is marked as Revenue and the Transaction Code Type is  not Lodging, Food and Beverage, Tax, or Non Hotel Supplies",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 3091.666666666667,
+        "data_type": "numeric"
+      }
+    },
+    "TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of Room Revenue, Food and Beverage Revenue and Other Revenue",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (5 occurrences)",
+      "sample_data": {
+        "sample_value": 190286.40773809524,
+        "data_type": "numeric"
+      }
+    },
+    "PHYSICAL_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Rooms in the Hotel",
+      "used_in_view": true,
+      "view_usage_note": "Used in view calculations (8 occurrences)",
+      "sample_data": {
+        "sample_value": 76,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_TOMMORROW": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms Occupied tomorrow, divided by Total Rooms in Hotel, multiplied by 100",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 67,
+        "data_type": "numeric"
+      }
+    },
+    "SINGLE_OCC_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "All rooms with total of 1 guest",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 61,
+        "data_type": "numeric"
+      }
+    },
+    "MULTI_OCC_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "All rooms with guests greater than 1",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 10,
+        "data_type": "numeric"
+      }
+    },
+    "ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the Transaction Code is marked as Revenue and the Transaction Type is Lodging",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 21335.068928571432,
+        "data_type": "numeric"
+      }
+    },
+    "FOOD_BEV_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the Transaction Code is marked as Revenue and the Transaction Type is  Food and Beverage .",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1128.300000000004,
+        "data_type": "numeric"
+      }
+    },
+    "OTHER_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the Transaction Code is marked as Revenue and the Transaction Code Type is  not Lodging, Food and Beverage, Tax, or Non Hotel Supplies",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 618.333333333333,
+        "data_type": "numeric"
+      }
+    },
+    "TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of Room Revenue, Food and Beverage Revenue and Other Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 23081.702261904768,
+        "data_type": "numeric"
+      }
+    },
+    "GROUP_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax  amount of postings today where the Transaction Code is marked as Revenue for reservations that have a Block Code attached",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "GROUP_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the Transaction Code is marked as Revenue  and a Transaction Code Type is Lodging for reservations that have a Block Code attached",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FIT_GUESTS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children for Rooms In-House with no Block code attached to the reservation",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 82,
+        "data_type": "numeric"
+      }
+    },
+    "AGENT_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms in house that have a Travel Agent attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 31,
+        "data_type": "numeric"
+      }
+    },
+    "COMPANY_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms that have a company profile attached to the reservation",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 27,
+        "data_type": "numeric"
+      }
+    },
+    "SOURCE_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms that have a Source profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "DEF_ARRIVALS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms with an arrival date euqal to today, with a reservation type of deduct",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 54,
+        "data_type": "numeric"
+      }
+    },
+    "TNT_ARRIVALS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of arrivals with a previous status of non-deduct prior to check-in.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "DIRTY_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms with a houskeeping status of DI",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 71,
+        "data_type": "numeric"
+      }
+    },
+    "BIRTHDAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms with birthday field equal to today",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "DBLS_AS_SGLS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms where each room has occupancy max greater than 1 and numbe of persons in-house is 1",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 61,
+        "data_type": "numeric"
+      }
+    },
+    "CANCELLATIONS_MADE_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Cancellations that were taken today for any date",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 6,
+        "data_type": "numeric"
+      }
+    },
+    "ROOM_NIGHTS_RESERVED_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of nights from all Reservations Made Today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 60,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_REVENUE_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the Transaction Code is marked as Revenue for reservations that do not have a Block Code attached",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 190286.40773809524,
+        "data_type": "numeric"
+      }
+    },
+    "MEMBER_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the Transaction Code is marked as Revenue  for reservations that have a membership number of the default membership type attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 5067.567500000002,
+        "data_type": "numeric"
+      }
+    },
+    "MEM_REVENUE_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the Transaction Code is marked as Revenue  for reservations that have a membership number of the default membership type attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 42163.0625,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_DEP_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with a Departure Date equal to today and no block code attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 27,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_DEP_PRS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons with a departure date equal to today and no block code attached",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 46,
+        "data_type": "numeric"
+      }
+    },
+    "MEM_DEP_PRS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children with a Departure Date equal to today and a membership number of the default membership type attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 9,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_DEP_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children with a Departure Date equal to today, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 9,
+        "data_type": "numeric"
+      }
+    },
+    "MEM_INHOUSE_PRS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Adults and Children for Rooms In-House with a membership number of the default membership type attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 18,
+        "data_type": "numeric"
+      }
+    },
+    "BEDS_AVL_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not Used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CRIBS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not Used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "AVERAGE_AGE_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not Used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ROLLAWAYS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not Used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ADULTS_FREE_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not Used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN_FREE_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Not Used",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "RACK_RATE_OCC": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Amount of Brochure Rate on each room, with a Front Office status of OCC",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "YIELD_ALL_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Amount of Room Revenue, divided by Brochure Rate on each room, multiplied by 100",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "YIELD_OCC_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Amount of Room Revenue, divided by Brochure Rate on each room listed as a Front Office status of OCC, multiplied by 100",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "RACK_RATE_ALL": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Amount of Brochure Rate on each room",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms that do not have a block code attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 71,
+        "data_type": "numeric"
+      }
+    },
+    "GROUP_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms that have a Group profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FIT_MEM_DEP_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with a Departure Date equal to today, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 5,
+        "data_type": "numeric"
+      }
+    },
+    "MEM_DEP_ROOMS_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms with a Departure Date equal to today and a membership number of the default membership type attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 5,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the Transaction Code is marked as Revenue  and a Transaction Code Type is Lodging for reservations that do not have a Block Code attached",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 177792.24107142858,
+        "data_type": "numeric"
+      }
+    },
+    "INHOUSE_MAX_OCCUPANCY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Amount of all MAX_OCCUPANCY columns from all rooms.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 183,
+        "data_type": "numeric"
+      }
+    },
+    "EXT_NOSHOW_PRS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Persons Arrival extended to next day due to No Show.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "EXT_NOSHOW_ROOM": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms Arrival extended to next day due to No Show.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "EXT_NOSHOW_RES": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Reservations Arrival extended to next day due to No Show.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN1": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons in rate bucket 1.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN2": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons in rate bucket 2.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN3": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons in rate bucket 3.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN4": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons in rate bucket 4.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "CHILDREN5": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons in rate bucket 5.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_NEXT_31_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for 31 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 583,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_NEXT_365_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for 365 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 984,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_REST_OF_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for the remainder of the current calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 370,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_REST_OF_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved starting tomorrow for the remainder of the current calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 983,
+        "data_type": "numeric"
+      }
+    },
+    "COMPANY_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the transaction code is marked as room revenue for reservations that have a company profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 66228.54464285714,
+        "data_type": "numeric"
+      }
+    },
+    "COMPANY_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the transaction code is marked as room revenue for reservations that have a company profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 7947.425357142859,
+        "data_type": "numeric"
+      }
+    },
+    "COMPANY_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the transaction code is marked as revenue for reservations that have a company profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 71341.75892857142,
+        "data_type": "numeric"
+      }
+    },
+    "COMPANY_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the transaction code is marked as revenue for reservations that have a company profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 8601.011071428577,
+        "data_type": "numeric"
+      }
+    },
+    "AGENT_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the transaction code is marked as room revenue for reservations that have a travel agent profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 81783.63392857142,
+        "data_type": "numeric"
+      }
+    },
+    "AGENT_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the transaction code is marked as room revenue for reservations that have a travel agent profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 9814.036071428574,
+        "data_type": "numeric"
+      }
+    },
+    "AGENT_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the transaction code is marked as revenue for reservations that have a travel agent profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 86034.34821428571,
+        "data_type": "numeric"
+      }
+    },
+    "AGENT_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the transaction code is marked as revenue for reservations that have a travel agent profile attached to the reservation.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 10324.121785714287,
+        "data_type": "numeric"
+      }
+    },
+    "REPEAT_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms occupied by a repeating guest",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 28,
+        "data_type": "numeric"
+      }
+    },
+    "REPEAT_PERSONS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of persons in-house that are repeating guests",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 34,
+        "data_type": "numeric"
+      }
+    },
+    "REPEAT_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the transaction code is marked as room revenue for reservations made by a repeating guest.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 63153.74107142857,
+        "data_type": "numeric"
+      }
+    },
+    "REPEAT_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the transaction code is marked as room revenue for reservations made by a repeating guest.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 7578.44892857143,
+        "data_type": "numeric"
+      }
+    },
+    "REPEAT_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of postings today where the transaction code is marked as revenue for reservations made by a repeating guest.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 67554.93154761904,
+        "data_type": "numeric"
+      }
+    },
+    "REPEAT_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of postings today where the transaction code is marked as revenue for reservations made by a repeating guest.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 8187.258452380955,
+        "data_type": "numeric"
+      }
+    },
+    "NOSHOW_RESERVATIONS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of noshow reservations with an arrival date of today.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "DAY_USE_RESERVATIONS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of day-use reservations with an arrival date of today.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "ARRIVAL_RESERVATIONS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of reservations with an arrival date of today.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 54,
+        "data_type": "numeric"
+      }
+    },
+    "ROOMS_CANCELLED_TODAY": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms that were cancelled today for any date.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 14,
+        "data_type": "numeric"
+      }
+    },
+    "OWNER_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Owners who are in rooms that are not part of the Rental Program.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Lodging Revenue generated by owners who are not in the Rental Program. (Revenue defined as lodging)",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Other Revenue generated by an owner who is not in the Rental Program where the transaction codes are defined as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_FOOD_BEV_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Food and Beverage Revenue generated by an owner who is not in the Rental Program where the transaction code is marked as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Authorized Users who are in rooms that are not part of the Rental Program.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Lodging Revenue generated by Authorized Users who are in rooms that are not part of the Rental Program. (Revenue defined as lodging)",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Revenue generated by Authorized Users who are in rooms that are not part of the Rental Program where the transaction Codes are defined as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_FOOD_BEV_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Food and Beverage Revenue generated by Authorized Users who are in rooms that are not part of the Rental Program where the Transaction Code is marked as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "CENTRAL_CURRENCY_CODE": {
+      "type": "VARCHAR2(20)",
+      "not_null": false,
+      "description": "Central Currency Code used for currency conversion.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "CENTRAL_EXCHANGE_RATE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Exchange Rate between Central Currency and Property Currency Code.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "PHYSICAL_BEDS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total beds of all rooms in the property",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OCC_BEDS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total beds in occupied rooms",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_BEDS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total beds in rooms that have a rate code marked as comp",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "HOUSE_USE_BEDS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total beds in rooms that have a rate code marked as house use",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_BEDS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total beds in rooms marked as out of order for today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OS_BEDS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total beds in rooms marked as out of service for today",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_ADULTS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total adults of reservations with a rate code marked as complimentary",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "COMP_CHILDREN": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total children of reservations with a rate code marked as complimentary",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "HOUSE_USE_ADULTS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total adults of reservations with a rate code marked as house use",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 66,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_CHILDREN": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total children of reservations with a rate code marked as house use",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms with a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 16,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the transaction code is marked as Revenue and the transaction type is Lodging, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 39738.419642857145,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_ROOM_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the transaction code is marked as Revenue and the transaction type is Lodging, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 4768.610357142858,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the transaction code is marked as Revenue, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 42163.0625,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_TOTAL_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the transaction code is marked as Revenue, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 5067.567500000002,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_LOS_NIGHTS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of nights for all reservations that are considered for Rooms Occupied, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered. Used for Calculation of Average Length of Stay.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 91,
+        "data_type": "numeric"
+      }
+    },
+    "FIT_MEM_LOS_RESV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Counts all reservations that are considered for Rooms Occupied, a membership number of the default membership type attached to the reserveration, with no block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered. Used for Calculation of Average Length of Stay.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 16,
+        "data_type": "numeric"
+      }
+    },
+    "BLK_MEM_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of rooms with a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "BLK_MEM_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the transaction code is marked as Revenue and the transaction type is Lodging, a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "BLK_MEM_ROOM_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the transaction code is marked as Revenue and the transaction type is Lodging, a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "BLK_MEM_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total amount of all postings today where the transaction code is marked as Revenue, a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "BLK_MEM_TOTAL_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total tax amount of all postings today where the transaction code is marked as Revenue, a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "BLK_MEM_LOS_NIGHTS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Nights for all reservations that are considered for Rooms Occupied, a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered. Used for Calculation of Average Length of Stay.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "BLK_MEM_LOS_RESV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Counts all reservations that are considered for Rooms Occupied, a membership number of the default membership type attached to the reserveration, with a block code attached to the reservation. If no default membership type is defined then any membership attached to the reservation will be considered. Used for Calculation of Average Length of Stay.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "ADV_FOOD_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Food Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 9402.499999999996,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_NON_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Non Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Other Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 3091.666666666667,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Room Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 177792.24107142858,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_TOTAL_FOOD_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Total food tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1128.300000000004,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_TOTAL_NON_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Total non-revenue tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_TOTAL_OTHER_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Total other tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 618.333333333333,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Total Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 190286.40773809524,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_TOTAL_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Total Tax amount earned through Room Charges for the current record",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 21335.068928571432,
+        "data_type": "numeric"
+      }
+    },
+    "ADV_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Distributed Total Tax amount for the current record",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 23081.702261904768,
+        "data_type": "numeric"
+      }
+    },
+    "FF_RENT_FOOD_BEV_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Food and Beverage Revenue generated by Authorized Users who are in rooms that are part of the Rental Program where the Transaction Code is marked as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_RENT_OTHER_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Revenue generated by Authorized Users who are in rooms that are part of the Rental Program where the transaction Codes are defined as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_RENT_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Authorized Users who are in rooms that are part of the Rental Program.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FF_RENT_ROOM_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Lodging Revenue generated by Authorized Users who are in rooms that are part of the Rental Program. (Revenue defined as lodging)",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_RENT_FOOD_BEV_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Food and Beverage Revenue generated by an owner who is in the Rental Program where the transaction code is marked as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_RENT_OTHER_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Other Revenue generated by an owner who is in the Rental Program where the transaction codes are defined as ",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_RENT_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Owners who are in rooms that are part of the Rental Program.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_RENT_ROOMS_OOO": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Rooms that are part of the Rental Program that are out of order.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_RENT_ROOM_REV": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Lodging Revenue generated by owners who are in the Rental Program. (Revenue defined as lodging)",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "OWNER_ROOMS_OOO": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Rooms that are not part of the Rental Program that are out of order.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "FLGD_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Room Revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_FOOD_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Food Revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_NON_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Non Revenue",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Other Revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_TOTAL_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Room Tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_TOTAL_FOOD_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Food Tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_TOTAL_NON_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Non Revenue Tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_TOTAL_OTHER_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Other Tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Tax.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "FLGD_PAYMENT": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Flagged Total Payments.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "DAYUSE_REST_OF_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for the remainder of the current calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_REST_OF_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for the remainder of the current calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_NEXT_365_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for 365 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_NEXT_31_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for 31 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for 1 calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for 1 calendar month",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_WEEK": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved starting tomorrow for 7 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OWNER_ROOMS_IN_HOTEL": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of Rooms in Hotel that are linked to an active OVOS contract.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "EXT_NOSHOW_CRS_RES": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Number of CRS Reservations Arrival extended to next day due to No Show, counting share reservations as one.",
+      "used_in_view": false,
+      "view_usage_note": null
+    },
+    "DAYUSE_TOMORROW": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of day-use rooms reserved for tomorrow.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_REST_OF_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as comp starting tomorrow for the remainder of the current calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_REST_OF_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as comp starting tomorrow for the remainder of the current calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_NEXT_365_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as comp starting tomorrow for 365 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_NEXT_31_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as comp starting tomorrow for 31 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_WEEK": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as comp starting tomorrow for 7 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "COMP_TOMORROW": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as comp for tomorrow.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_REST_OF_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as house-use starting tomorrow for the remainder of the current calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 421,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_REST_OF_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as house-use starting tomorrow for the remainder of the current calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 278,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_NEXT_365_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as house-use starting tomorrow for 365 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 421,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_NEXT_31_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as house-use starting tomorrow for 31 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 369,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_WEEK": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as house-use starting tomorrow for 7 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 238,
+        "data_type": "numeric"
+      }
+    },
+    "HOUSE_USE_TOMORROW": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms reserved having a rate code marked as house-use for tomorrow.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 56,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS_REST_OF_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Order starting tomorrow for the remainder of the current calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 152,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS_REST_OF_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Order starting tomorrow for the remainder of the current calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 139,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS_NEXT_365_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Order starting tomorrow for 365 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 152,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS_NEXT_31_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Order starting tomorrow for 31 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 152,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS_WEEK": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Order starting tomorrow for 7 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 79,
+        "data_type": "numeric"
+      }
+    },
+    "OOO_ROOMS_TOMORROW": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Order for tomorrow.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 2,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS_REST_OF_YEAR": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Service starting tomorrow for the remainder of the current calendar year.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS_REST_OF_MONTH": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Service starting tomorrow for the remainder of the current calendar month.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS_NEXT_365_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Service starting tomorrow for 365 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS_NEXT_31_DAYS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Service starting tomorrow for 31 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS_WEEK": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Service starting tomorrow for 7 days.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "OS_ROOMS_TOMORROW": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of rooms marked as Out of Service for tomorrow.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_ADULTS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of adults of day-use reservations.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "DAYUSE_CHILDREN": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Total number of children of day-use reservations.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ES_OCC_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay occupied rooms.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 4,
+        "data_type": "numeric"
+      }
+    },
+    "ES_COMP_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay complimentary rooms.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ES_HOUSE_USE_ROOMS": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay house-use rooms.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 4,
+        "data_type": "numeric"
+      }
+    },
+    "ES_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay total revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 11840.726190476193,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay room revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 10584.178571428572,
+        "data_type": "numeric"
+      }
+    },
+    "ES_FOOD_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay food and beverage revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 848.214285714285,
+        "data_type": "numeric"
+      }
+    },
+    "ES_OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay other revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 408.333333333334,
+        "data_type": "numeric"
+      }
+    },
+    "ES_NON_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay non-revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ES_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay total taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1453.553809523808,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay room taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1270.101428571427,
+        "data_type": "numeric"
+      }
+    },
+    "ES_FOOD_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay food and beverage taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 101.785714285715,
+        "data_type": "numeric"
+      }
+    },
+    "ES_OTHER_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay other taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 81.666666666666,
+        "data_type": "numeric"
+      }
+    },
+    "ES_NON_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay non-revenue taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_TOTAL_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed total revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 11840.726190476193,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_ROOM_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed room revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 10584.178571428572,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_FOOD_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed food and beverage revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 848.214285714285,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_OTHER_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed other revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 408.333333333334,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_NON_REVENUE": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed non-revenue.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_TOTAL_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed total taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1453.553809523808,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_ROOM_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed room taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 1270.101428571427,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_FOOD_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed food and beverage taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 101.785714285715,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_OTHER_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed other taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 81.666666666666,
+        "data_type": "numeric"
+      }
+    },
+    "ES_ADV_NON_REVENUE_TAX": {
+      "type": "NUMBER",
+      "not_null": false,
+      "description": "Extended stay distributed non-revenue taxes.",
+      "used_in_view": false,
+      "view_usage_note": null,
+      "sample_data": {
+        "sample_value": 0,
+        "data_type": "numeric"
+      }
+    }
+  },
+  "view_definitions": [
+    "Total Rooms",
+    "Avail Rooms",
+    "OOO Rooms",
+    "OOS Rooms",
+    "Rooms Occupied",
+    "Guest In House",
+    "Occupancy %",
+    "ADR",
+    "RevPar",
+    "No Shows",
+    "Cancel Rooms",
+    "Comp Rooms",
+    "Huse Rooms",
+    "Room Revenue",
+    "FB Revenue",
+    "Other Revenue",
+    "Total Revenue"
+  ],
+  "view_usage_notes": {
+    "description": "The View_Query_Example.sql demonstrates how REP_MANAGER data is aggregated for reporting. Key metrics calculated include:",
+    "metrics": [
+      "Total Rooms",
+      "Avail Rooms",
+      "OOO Rooms",
+      "OOS Rooms",
+      "Rooms Occupied",
+      "Guest In House",
+      "Occupancy %",
+      "ADR",
+      "RevPar",
+      "No Shows",
+      "Cancel Rooms",
+      "Comp Rooms",
+      "Huse Rooms",
+      "Room Revenue",
+      "FB Revenue",
+      "Other Revenue",
+      "Total Revenue"
+    ],
+    "calculation_approach": "Data is aggregated by resort, with calculations for Today (TD), Month-to-Date (MTD), and Year-to-Date (YTD) periods. Currency conversion is applied using exchange rates.",
+    "common_calculations": [
+      "Occupancy % = (OCC_ROOM / PHYSICAL_ROOM) * 100",
+      "ADR = ROOM_REVENUE / OCC_ROOM",
+      "RevPar = ROOM_REVENUE / PHYSICAL_ROOM"
+    ]
+  },
+  "data_categories": {
+    "room_metrics": [
+      "OCC_ROOM",
+      "COMP_ROOM",
+      "HOUSE_USE_ROOM",
+      "DAYUSE_ROOM",
+      "AVAIL_ROOM",
+      "OOO_ROOMS",
+      "OS_ROOMS",
+      "PHYSICAL_ROOM"
+    ],
+    "revenue_metrics": [
+      "ROOM_REVENUE",
+      "FOOD_BEV_REVENUE",
+      "OTHER_REVENUE",
+      "TOTAL_REVENUE",
+      "GROUP_REVENUE"
+    ],
+    "tax_metrics": [
+      "ROOM_TAX",
+      "FOOD_BEV_TAX",
+      "OTHER_TAX",
+      "TOTAL_TAX"
+    ],
+    "occupancy_metrics": [
+      "PER_OCCUPANCY",
+      "PER_OCC_WO_COMP_HOUSE",
+      "PER_OCC_WO_COMP_HOUSE_OO",
+      "OCC_TOMMORROW"
+    ],
+    "arrival_departure_metrics": [
+      "ARRIVAL_ROOM",
+      "ARRIVAL_PRS",
+      "DEPARTURE_ROOM",
+      "DEPARTURE_PRS",
+      "TOMORROW_ARRIVAL_ROOM",
+      "TOMORROW_ARRIVAL_PRS"
+    ],
+    "guest_metrics": [
+      "GUEST_IN_HOUSE",
+      "ADULTS_IN_HOUSE",
+      "CHILDREN_IN_HOUSE",
+      "FIT_GUESTS_TODAY",
+      "VIP_GUEST"
+    ],
+    "reservation_metrics": [
+      "RESERVATION",
+      "CANCEL_RESERVATION",
+      "CANCEL_ROOMS",
+      "LATE_CANCEL_RESERVATION",
+      "NOSHOW_ROOM",
+      "NOSHOW_PRS"
+    ],
+    "forecast_metrics": [
+      "OCC_WEEK",
+      "OCC_MONTH",
+      "OCC_YEAR",
+      "OCC_NEXT_31_DAYS",
+      "OCC_NEXT_365_DAYS",
+      "OCC_REST_OF_MONTH",
+      "OCC_REST_OF_YEAR"
+    ],
+    "group_metrics": [
+      "GROUP_ROOM",
+      "GROUP_PRS",
+      "GROUP_REVENUE",
+      "GROUP_ROOM_REV",
+      "NO_OF_GROUP"
+    ],
+    "company_agent_metrics": [
+      "COMPANY_ROOMS_TODAY",
+      "AGENT_ROOMS_TODAY",
+      "COMPANY_ROOM_REVENUE",
+      "AGENT_ROOM_REVENUE"
+    ],
+    "membership_metrics": [
+      "FIT_MEM_ROOMS",
+      "MEM_REVENUE_TODAY",
+      "MEM_INHOUSE_PRS_TODAY",
+      "FIT_MEM_ROOM_REVENUE"
+    ],
+    "extended_stay_metrics": [
+      "ES_OCC_ROOMS",
+      "ES_TOTAL_REVENUE",
+      "ES_ROOM_REVENUE",
+      "ES_FOOD_REVENUE"
+    ],
+    "owner_ff_metrics": [
+      "OWNER_ROOMS",
+      "FF_ROOMS",
+      "OWNER_ROOM_REVENUE",
+      "FF_ROOM_REVENUE"
+    ],
+    "housekeeping_metrics": [
+      "CLEAN_ROOM",
+      "INSPECTED_ROOM",
+      "DIRTY_ROOMS_TODAY"
+    ]
+  }
+}

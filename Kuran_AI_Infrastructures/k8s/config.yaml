@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kuranai-config
+  namespace: kuranai
+data:
+  SERVER_PORT: "8080"
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_SSLMODE: disable
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  RUN_MIGRATE: "0"
+  JWT_ACCESS_EXPIRE_MIN: "1440"
+  JWT_REFRESH_EXPIRE_DAY: "7"
+  JWT_ISSUER: kuran-ai-gateway
+  APPLE_BUNDLE_ID: talhacan.KuranAIChat
+  CORS_ORIGINS: https://kuranai.talhacan.com
+  PUBLIC_API_URL: https://kuranai-api.talhacan.com
+

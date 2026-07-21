@@ -1,0 +1,210 @@
+{
+  "identifier" : "KuranAI",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6758725997",
+    "_developerTeamID" : "SGQ86WW4J3",
+    "_lastSynchronizedDate" : 757382400
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "kuranai_subscriptions",
+      "localizations" : [
+
+      ],
+      "name" : "Kuran AI",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "25",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "bronze_monthly",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Bronze Paket Aylık",
+              "displayName" : "Bronze Aylık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "Bronze Monthly",
+              "displayName" : "Bronze Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "kuranai.bronze.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Bronze Monthly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "250",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "bronze_yearly",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Bronze Paket Yıllık",
+              "displayName" : "Bronze Yıllık",
+              "locale" : "tr"
+            }
+          ],
+          "productID" : "kuranai.bronze.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Bronze Yearly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "35",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "silver_monthly",
+          "introductoryOffer" : null,
+          "localizations" : [
+
+          ],
+          "productID" : "kuranai.silver.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Silver Monthly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "350",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "silver_yearly",
+          "introductoryOffer" : null,
+          "localizations" : [
+
+          ],
+          "productID" : "kuranai.silver.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Silver Yearly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "75",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "gold_monthly",
+          "introductoryOffer" : null,
+          "localizations" : [
+
+          ],
+          "productID" : "kuranai.gold.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Gold Monthly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "750",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "gold_yearly",
+          "introductoryOffer" : null,
+          "localizations" : [
+
+          ],
+          "productID" : "kuranai.gold.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Gold Yearly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "120",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "diamond_monthly",
+          "introductoryOffer" : null,
+          "localizations" : [
+
+          ],
+          "productID" : "kuranai.diamond.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Diamond Monthly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1200",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "diamond_yearly",
+          "introductoryOffer" : null,
+          "localizations" : [
+
+          ],
+          "productID" : "kuranai.diamond.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Diamond Yearly",
+          "subscriptionGroupID" : "kuranai_subscriptions",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

@@ -1,0 +1,122 @@
+.page h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.updated {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 36px;
+}
+.page h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 36px;
+  margin-bottom: 12px;
+  color: var(--gold-primary);
+}
+.page p {
+  margin-bottom: 12px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.page ul {
+  margin: 8px 0 16px 20px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.page li {
+  margin-bottom: 6px;
+}
+.page strong {
+  color: var(--text-primary);
+}
+.page a {
+  color: var(--gold-primary);
+}
+
+/* Contact form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.formGroup label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  border-color: var(--gold-primary);
+}
+.formGroup textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+.formGroup select option {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+}
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+  color: var(--bg-dark);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  align-self: flex-start;
+}
+.submitBtn:hover {
+  transform: translateY(-1px);
+}
+.submitBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.success {
+  padding: 14px 20px;
+  background: rgba(52, 199, 89, 0.1);
+  border: 1px solid rgba(52, 199, 89, 0.3);
+  border-radius: 10px;
+  color: #34c759;
+  font-size: 14px;
+}
+.error {
+  padding: 14px 20px;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 10px;
+  color: #ff3b30;
+  font-size: 14px;
+}

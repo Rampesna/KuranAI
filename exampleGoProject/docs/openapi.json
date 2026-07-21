@@ -1,0 +1,188 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Gateway API",
+    "version": "1.0.0",
+    "description": "User, Manager and Todo CRUD with JWT auth. Separate login/refresh/me for User and Manager; protected endpoints require Bearer token."
+  },
+  "servers": [{"url": "/api", "description": "API base"}],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT access token (obtained via Login or RefreshToken)"
+      }
+    },
+    "schemas": {
+      "ServiceResponse": {
+        "type": "object",
+        "properties": {
+          "success": {"type": "boolean"},
+          "message": {"type": "string"},
+          "statusCode": {"type": "integer"},
+          "data": {"description": "Response body"}
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["credential", "password"],
+        "properties": {
+          "credential": {"type": "string", "description": "Email or username"},
+          "password": {"type": "string", "format": "password"}
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "required": ["refreshToken"],
+        "properties": {"refreshToken": {"type": "string"}}
+      },
+      "SendMessageRequest": {
+        "type": "object",
+        "required": ["prompt", "provider", "model", "apiKey"],
+        "properties": {
+          "prompt": {"type": "string", "description": "User message"},
+          "provider": {"type": "string", "enum": ["openai", "anthropic", "google", "moonshot"], "description": "AI provider"},
+          "model": {"type": "string", "description": "Model ID (e.g. gpt-4o-mini, gemini-2.0-flash)"},
+          "apiKey": {"type": "string", "description": "Provider API key"}
+        }
+      },
+      "ChatResponse": {
+        "type": "object",
+        "properties": {"content": {"type": "string", "description": "AI response text"}}
+      }
+    }
+  },
+  "paths": {
+    "/user/auth/register": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "User registration",
+        "description": "Create a new user.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"type": "object", "required": ["username", "email", "password"], "properties": {"username": {"type": "string"}, "email": {"type": "string", "format": "email"}, "password": {"type": "string", "format": "password"}}}}}
+        },
+        "responses": {"201": {"description": "Registration successful"}, "422": {"description": "Validation error"}}
+      }
+    },
+    "/user/auth/login": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "User login",
+        "description": "Login with email/username and password; returns access and refresh token.",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LoginRequest"}}}
+        },
+        "responses": {"201": {"description": "Login successful"}, "401": {"description": "Invalid credentials"}, "422": {"description": "Validation error"}}
+      }
+    },
+    "/user/auth/refresh": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "Refresh tokens",
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefreshTokenRequest"}}}
+        },
+        "responses": {"201": {"description": "New tokens"}, "401": {"description": "Invalid refresh token"}}
+      }
+    },
+    "/user/auth/me": {
+      "get": {
+        "tags": ["User Auth"],
+        "summary": "Current user",
+        "description": "Returns user from JWT.",
+        "security": [{"BearerAuth": []}],
+        "responses": {"200": {"description": "User info"}, "401": {"description": "Unauthorized"}}
+      }
+    },
+    "/user/auth/logout": {
+      "post": {
+        "tags": ["User Auth"],
+        "summary": "User logout",
+        "description": "Invalidates access token.",
+        "security": [{"BearerAuth": []}],
+        "responses": {"200": {"description": "Logout successful"}, "401": {"description": "Unauthorized"}}
+      }
+    },
+    "/user/chat/sendMessage": {
+      "post": {
+        "tags": ["User Chat"],
+        "summary": "Send chat message",
+        "description": "Sends message via AI gateway to selected provider (openai, anthropic, google, moonshot); response in data.content.",
+        "security": [{"BearerAuth": []}],
+        "requestBody": {
+          "required": true,
+          "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SendMessageRequest"}}}
+        },
+        "responses": {
+          "200": {
+            "description": "Success; data ChatResponse (content)",
+            "content": {"application/json": {"schema": {"type": "object", "properties": {"success": {"type": "boolean"}, "message": {"type": "string"}, "statusCode": {"type": "integer"}, "data": {"$ref": "#/components/schemas/ChatResponse"}}}}}
+          },
+          "401": {"description": "Unauthorized"},
+          "422": {"description": "Validation error"},
+          "500": {"description": "Gateway or provider error"}
+        }
+      }
+    },
+    "/user/users/all": {"get": {"tags": ["User CRUD"], "summary": "All users", "security": [{"BearerAuth": []}], "responses": {"200": {"description": "List"}}}},
+    "/user/users": {
+      "get": {"tags": ["User CRUD"], "summary": "List users (paginated)", "security": [{"BearerAuth": []}], "parameters": [{"name": "page_index", "in": "query", "schema": {"type": "integer"}}, {"name": "page_size", "in": "query", "schema": {"type": "integer"}}, {"name": "keyword", "in": "query", "schema": {"type": "string"}}], "responses": {"200": {"description": "list, total"}}},
+      "post": {"tags": ["User CRUD"], "summary": "Create user", "security": [{"BearerAuth": []}], "responses": {"201": {"description": "Created"}}}
+    },
+    "/user/users/{id}": {
+      "get": {"tags": ["User CRUD"], "summary": "Get user", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}, "404": {}}},
+      "put": {"tags": ["User CRUD"], "summary": "Update user", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}, "404": {}}},
+      "delete": {"tags": ["User CRUD"], "summary": "Delete user", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}, "404": {}}}
+    },
+    "/user/todos": {
+      "get": {"tags": ["User Todos"], "summary": "List todos", "security": [{"BearerAuth": []}], "responses": {"200": {}}},
+      "post": {"tags": ["User Todos"], "summary": "Create todo", "security": [{"BearerAuth": []}], "responses": {"201": {}}}
+    },
+    "/user/todos/{id}": {
+      "get": {"tags": ["User Todos"], "summary": "Get todo", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}},
+      "put": {"tags": ["User Todos"], "summary": "Update todo", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}},
+      "delete": {"tags": ["User Todos"], "summary": "Delete todo", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}}
+    },
+    "/manager/auth/login": {
+      "post": {
+        "tags": ["Manager Auth"],
+        "summary": "Manager login",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LoginRequest"}}}},
+        "responses": {"201": {"description": "Login successful"}, "401": {"description": "Invalid credentials"}}
+      }
+    },
+    "/manager/auth/refresh": {
+      "post": {
+        "tags": ["Manager Auth"],
+        "summary": "Refresh tokens",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RefreshTokenRequest"}}}},
+        "responses": {"201": {}, "401": {}}
+      }
+    },
+    "/manager/auth/me": {"get": {"tags": ["Manager Auth"], "summary": "Current manager", "security": [{"BearerAuth": []}], "responses": {"200": {}, "401": {}}}},
+    "/manager/managers/all": {"get": {"tags": ["Manager CRUD"], "summary": "All managers", "security": [{"BearerAuth": []}], "responses": {"200": {}}}},
+    "/manager/managers": {
+      "get": {"tags": ["Manager CRUD"], "summary": "List managers", "security": [{"BearerAuth": []}], "responses": {"200": {}}},
+      "post": {"tags": ["Manager CRUD"], "summary": "Create manager", "security": [{"BearerAuth": []}], "responses": {"201": {}}}
+    },
+    "/manager/managers/{id}": {
+      "get": {"tags": ["Manager CRUD"], "summary": "Get manager", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}},
+      "put": {"tags": ["Manager CRUD"], "summary": "Update manager", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}},
+      "delete": {"tags": ["Manager CRUD"], "summary": "Delete manager", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}}
+    },
+    "/manager/todos": {
+      "get": {"tags": ["Manager Todos"], "summary": "List todos", "security": [{"BearerAuth": []}], "responses": {"200": {}}},
+      "post": {"tags": ["Manager Todos"], "summary": "Create todo", "security": [{"BearerAuth": []}], "responses": {"201": {}}}
+    },
+    "/manager/todos/{id}": {
+      "get": {"tags": ["Manager Todos"], "summary": "Get todo", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}},
+      "put": {"tags": ["Manager Todos"], "summary": "Update todo", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}},
+      "delete": {"tags": ["Manager Todos"], "summary": "Delete todo", "security": [{"BearerAuth": []}], "parameters": [{"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}], "responses": {"200": {}}}
+    }
+  }
+}
