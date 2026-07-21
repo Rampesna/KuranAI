@@ -77,8 +77,12 @@ web_ready="$(kubectl get deployment/web -n "$NAMESPACE" -o jsonpath='{.status.re
 [[ "$gateway_ready" == "2" ]] || { echo "Expected 2 ready gateway pods, found $gateway_ready" >&2; exit 1; }
 [[ "$web_ready" == "1" ]] || { echo "Expected 1 ready web pod, found $web_ready" >&2; exit 1; }
 
-curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:7008/health >/dev/null
-curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:7007/ >/dev/null
+gateway_service_ip="$(kubectl get service gateway -n "$NAMESPACE" -o jsonpath='{.spec.clusterIP}')"
+web_service_ip="$(kubectl get service web -n "$NAMESPACE" -o jsonpath='{.spec.clusterIP}')"
+curl --fail --silent --show-error --retry 10 --retry-delay 2 \
+  "http://$gateway_service_ip:8080/health" >/dev/null
+curl --fail --silent --show-error --retry 10 --retry-delay 2 \
+  "http://$web_service_ip/" >/dev/null
 
 # aaPanel serves /.well-known from its own document root before the proxy project.
 # Keep Apple's association file there in addition to the copy in the web image.
