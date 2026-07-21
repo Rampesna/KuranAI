@@ -196,6 +196,76 @@ actor APIClient {
         _ = try await performRegisterRequest(path: APIEndpoint.register.path, body: body)
     }
 
+    // MARK: - Passkeys (WebAuthn)
+
+    func beginPasskeyLogin() async throws -> PasskeyChallengeData {
+        let wrapper: ServiceResponse<PasskeyChallengeData> = try await request(.passkeyLoginOptions)
+        guard wrapper.isSuccess, let data = wrapper.data else { throw APIError.serverError(wrapper.message) }
+        return data
+    }
+
+    func finishPasskeyLogin(transactionId: String, credential: PasskeyAssertionCredential) async throws -> AuthData {
+        let data = try await performPasskeyRequest(.passkeyLoginFinish, transactionId: transactionId, body: credential)
+        let wrapper = try decoder.decode(ServiceResponse<AuthData>.self, from: data)
+        guard wrapper.isSuccess, let auth = wrapper.data else { throw APIError.serverError(wrapper.message) }
+        return auth
+    }
+
+    func beginPasskeyRegistration() async throws -> PasskeyChallengeData {
+        let wrapper: ServiceResponse<PasskeyChallengeData> = try await request(.passkeyRegistrationOptions)
+        guard wrapper.isSuccess, let data = wrapper.data else { throw APIError.serverError(wrapper.message) }
+        return data
+    }
+
+    func finishPasskeyRegistration(transactionId: String, credential: PasskeyRegistrationCredential) async throws {
+        _ = try await performPasskeyRequest(.passkeyRegistrationFinish, transactionId: transactionId, body: credential)
+    }
+
+    func passkeyStatus() async throws -> PasskeyStatusData {
+        let wrapper: ServiceResponse<PasskeyStatusData> = try await request(.passkeyStatus)
+        guard wrapper.isSuccess, let data = wrapper.data else { throw APIError.serverError(wrapper.message) }
+        return data
+    }
+
+    func deletePasskeys() async throws {
+        try await request(.passkeyDelete)
+    }
+
+    private func performPasskeyRequest<T: Encodable>(
+        _ endpoint: APIEndpoint,
+        transactionId: String,
+        body: T,
+        retryAfterRefresh: Bool = true
+    ) async throws -> Data {
+        guard let url = URL(string: baseURL + endpoint.path) else { throw APIError.invalidURL }
+        var request = URLRequest(url: url)
+        request.httpMethod = endpoint.method.rawValue
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue(transactionId, forHTTPHeaderField: "X-Passkey-Transaction")
+        request.setValue("ios", forHTTPHeaderField: "X-Device-Type")
+        request.timeoutInterval = timeout
+        if endpoint.needsAuth, let token = authToken {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        let passkeyEncoder = JSONEncoder()
+        passkeyEncoder.keyEncodingStrategy = .useDefaultKeys
+        request.httpBody = try passkeyEncoder.encode(body)
+
+        let (data, response) = try await session.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw APIError.invalidResponse }
+        if httpResponse.statusCode == 401, endpoint.needsAuth, retryAfterRefresh, await coordinatedRefresh() {
+            return try await performPasskeyRequest(endpoint, transactionId: transactionId, body: body, retryAfterRefresh: false)
+        }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            if let wrapper = try? decoder.decode(ServiceResponseMessage.self, from: data) {
+                throw APIError.serverError(wrapper.message)
+            }
+            throw APIError.httpError(statusCode: httpResponse.statusCode, data: data)
+        }
+        return data
+    }
+
     private func performRegisterRequest(path: String, body: some Encodable) async throws -> Data {
         guard let url = URL(string: baseURL + path) else { throw APIError.invalidURL }
         var request = URLRequest(url: url)

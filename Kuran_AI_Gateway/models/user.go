@@ -18,6 +18,8 @@ type User struct {
 	// OAuth providers (NULL when not used; boş string unique ihlaline yol açar)
 	GoogleID *string `gorm:"uniqueIndex;size:255" json:"-"`
 	AppleID  *string `gorm:"uniqueIndex;size:255" json:"-"`
+	// Random, stable and opaque WebAuthn user handle (not an e-mail or DB id).
+	PasskeyUserHandle []byte `gorm:"type:bytea;uniqueIndex" json:"-"`
 
 	AvatarURL string `gorm:"size:512" json:"avatarUrl,omitempty"`
 

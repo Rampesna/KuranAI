@@ -28,7 +28,7 @@ type AppleIDTokenPayload struct {
 // Apple JWT'yi kendimiz parse edip doğruluyoruz (public key ile).
 func ValidateAppleIDToken(ctx context.Context, identityToken string) (*AppleIDTokenPayload, error) {
 	cfg := config.Load()
-	if cfg.OAuth.AppleClientID == "" {
+	if len(cfg.OAuth.AppleClientIDs) == 0 {
 		return nil, fmt.Errorf("Apple OAuth not configured")
 	}
 
@@ -79,31 +79,46 @@ func ValidateAppleIDToken(ctx context.Context, identityToken string) (*AppleIDTo
 
 	// Verify token
 	parsed, err := jwt.ParseWithClaims(identityToken, jwt.MapClaims{}, func(t *jwt.Token) (interface{}, error) {
+		if t.Method.Alg() != jwt.SigningMethodRS256.Alg() {
+			return nil, fmt.Errorf("unexpected signing algorithm")
+		}
 		return pubKey, nil
-	})
+	}, jwt.WithValidMethods([]string{jwt.SigningMethodRS256.Alg()}))
 	if err != nil || !parsed.Valid {
 		return nil, fmt.Errorf("invalid token signature")
 	}
 	c := parsed.Claims.(jwt.MapClaims)
 
 	// Audience kontrolü (Apple client_id veya bundle id)
-	aud, _ := c["aud"].(string)
-	iss := c["iss"].(string)
+	audiences, err := c.GetAudience()
+	if err != nil {
+		return nil, fmt.Errorf("invalid audience")
+	}
+	iss, err := c.GetIssuer()
+	if err != nil {
+		return nil, fmt.Errorf("invalid issuer")
+	}
 	if iss != "https://appleid.apple.com" {
 		return nil, fmt.Errorf("invalid issuer")
 	}
-	// Aud genelde bundle id veya service id
-	if cfg.OAuth.AppleClientID != "" && aud != cfg.OAuth.AppleClientID {
-		// Bazı durumlarda client_id farklı olabilir, strict kontrol yapmayalım
+	audienceAllowed := false
+	for _, audience := range audiences {
+		if containsString(cfg.OAuth.AppleClientIDs, audience) {
+			audienceAllowed = true
+			break
+		}
+	}
+	if !audienceAllowed {
+		return nil, fmt.Errorf("invalid audience")
 	}
 
-	exp, _ := c["exp"].(float64)
-	if time.Now().Unix() > int64(exp) {
+	exp, err := c.GetExpirationTime()
+	if err != nil || exp == nil || time.Now().After(exp.Time) {
 		return nil, fmt.Errorf("token expired")
 	}
 
-	sub, _ := c["sub"].(string)
-	if sub == "" {
+	sub, err := c.GetSubject()
+	if err != nil || sub == "" {
 		return nil, fmt.Errorf("missing sub")
 	}
 

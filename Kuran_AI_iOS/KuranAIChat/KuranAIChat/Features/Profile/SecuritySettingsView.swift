@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 private enum PasswordField { case current, new, confirm }
 
@@ -17,6 +18,10 @@ struct SecuritySettingsView: View {
     @State private var successMessage: String?
     @State private var showDeleteConfirm = false
     @State private var isDeleting = false
+    @State private var passkeyEnabled = false
+    @State private var passkeyCount = 0
+    @State private var isUpdatingPasskey = false
+    @State private var showPasskeyDeleteConfirm = false
     @FocusState private var focusedField: PasswordField?
 
     private var roundedBg: some View {
@@ -43,6 +48,58 @@ struct SecuritySettingsView: View {
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            HStack {
+                                Image(systemName: "person.badge.key.fill")
+                                    .foregroundColor(Theme.neonPrimary)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(language.localized("Geçiş Anahtarı", "Passkey"))
+                                        .font(.system(size: 16, weight: .semibold))
+                                        .foregroundColor(Theme.textPrimary)
+                                    Text(passkeyEnabled
+                                         ? language.localized("Parolasız giriş etkin (\(passkeyCount))", "Passwordless sign-in is active (\(passkeyCount))")
+                                         : language.localized("Face ID veya Touch ID ile güvenli giriş", "Secure sign-in with Face ID or Touch ID"))
+                                        .font(.system(size: 12))
+                                        .foregroundColor(Theme.textMuted)
+                                }
+                                Spacer()
+                            }
+
+                            Button {
+                                Task { await createPasskey() }
+                            } label: {
+                                HStack {
+                                    if isUpdatingPasskey {
+                                        ProgressView().tint(.black).scaleEffect(0.85)
+                                    } else {
+                                        Text(passkeyEnabled
+                                             ? language.localized("Yeni geçiş anahtarı ekle", "Add another passkey")
+                                             : language.localized("Geçiş anahtarı oluştur", "Create a passkey"))
+                                    }
+                                }
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 11)
+                                .background(Theme.neon)
+                                .cornerRadius(10)
+                            }
+                            .disabled(isUpdatingPasskey)
+
+                            if passkeyEnabled {
+                                Button(role: .destructive) {
+                                    showPasskeyDeleteConfirm = true
+                                } label: {
+                                    Text(language.localized("Geçiş anahtarlarını kaldır", "Remove passkeys"))
+                                        .font(.system(size: 13, weight: .medium))
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .disabled(isUpdatingPasskey)
+                            }
+                        }
+                        .padding(14)
+                        .background(roundedBg)
+
                         // Açıklama metni: şifre durumuna göre
                         if hasPassword {
                             Text(language.localized(
@@ -173,7 +230,25 @@ struct SecuritySettingsView: View {
                 "This action cannot be undone. Your account and all data will be permanently deleted."
             ))
         }
-        .task { await checkHasPassword() }
+        .confirmationDialog(
+            language.localized("Geçiş anahtarlarını kaldır", "Remove passkeys"),
+            isPresented: $showPasskeyDeleteConfirm,
+            titleVisibility: .visible
+        ) {
+            Button(language.localized("Tümünü kaldır", "Remove all"), role: .destructive) {
+                Task { await deletePasskeys() }
+            }
+            Button(language.localized("İptal", "Cancel"), role: .cancel) {}
+        } message: {
+            Text(language.localized(
+                "Bu hesaba ait tüm geçiş anahtarları kaldırılacak. Apple Kimliği, Google veya e-posta ile giriş yapmaya devam edebilirsiniz.",
+                "All passkeys for this account will be removed. You can continue signing in with Apple, Google, or email."
+            ))
+        }
+        .task {
+            await checkHasPassword()
+            await checkPasskeyStatus()
+        }
     }
 
     // MARK: - API
@@ -187,6 +262,48 @@ struct SecuritySettingsView: View {
             hasPassword = user.hasPassword ?? true
         } catch {
             hasPassword = true // hata durumunda güvenli varsayılan
+        }
+    }
+
+    private func checkPasskeyStatus() async {
+        do {
+            let status = try await APIClient.shared.passkeyStatus()
+            passkeyEnabled = status.enabled
+            passkeyCount = status.count
+        } catch {
+            passkeyEnabled = false
+            passkeyCount = 0
+        }
+    }
+
+    private func createPasskey() async {
+        isUpdatingPasskey = true
+        errorMessage = nil
+        successMessage = nil
+        defer { isUpdatingPasskey = false }
+        do {
+            try await AuthService.shared.registerPasskey()
+            await checkPasskeyStatus()
+            successMessage = language.localized("Geçiş anahtarınız hazır.", "Your passkey is ready.")
+        } catch let error as ASAuthorizationError where error.code == .canceled {
+            // Sistem sayfası kullanıcı tarafından kapatıldı.
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func deletePasskeys() async {
+        isUpdatingPasskey = true
+        errorMessage = nil
+        successMessage = nil
+        defer { isUpdatingPasskey = false }
+        do {
+            try await APIClient.shared.deletePasskeys()
+            passkeyEnabled = false
+            passkeyCount = 0
+            successMessage = language.localized("Geçiş anahtarları kaldırıldı.", "Passkeys removed.")
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

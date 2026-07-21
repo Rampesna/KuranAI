@@ -49,6 +49,9 @@ func main() {
 	}
 
 	appConfig := config.Load()
+	if len(appConfig.JWT.AccessSecret) < 32 || len(appConfig.JWT.RefreshSecret) < 32 {
+		log.Fatal("JWT_ACCESS_SECRET and JWT_REFRESH_SECRET must each contain at least 32 characters")
+	}
 
 	if err := database.Connect(appConfig); err != nil {
 		log.Fatalf("database: %v", err)
@@ -66,6 +69,10 @@ func main() {
 
 	tokenService := services.NewTokenService(appConfig)
 	userService := services.NewUserService(tokenService)
+	passkeyService, err := services.NewPasskeyService(appConfig, tokenService)
+	if err != nil {
+		log.Fatalf("passkey: %v", err)
+	}
 
 	ginEngine := gin.Default()
 	corsOrigins := []string{
@@ -81,7 +88,7 @@ func main() {
 	ginEngine.Use(cors.New(cors.Config{
 		AllowOrigins:     corsOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Passkey-Transaction", "X-Device-Info", "X-Device-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
@@ -162,7 +169,7 @@ func main() {
 	prayerService := services.NewPrayerTimesService()
 	verseSvc := services.NewDailyVerseService()
 	managerService := services.NewManagerService(tokenService)
-	routes.RegisterUserRoutes(apiGroup, userService, tokenService)
+	routes.RegisterUserRoutes(apiGroup, userService, tokenService, passkeyService)
 	routes.RegisterManagerRoutes(apiGroup, managerService, tokenService)
 	routes.RegisterPrayerRoutes(apiGroup, prayerService)
 	routes.RegisterChatRoutes(apiGroup, tokenService, appConfig.OpenAI.APIKey, usageSvc)

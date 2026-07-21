@@ -31,10 +31,10 @@ func Connect(appConfig *config.Config) error {
 	customLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
-			SlowThreshold:         200 * time.Millisecond,
-			LogLevel:              logger.Info,
-			ParameterizedQueries:  true, // parametreleri (embedding vektörü vb.) loglama
-			Colorful:              false,
+			SlowThreshold:             200 * time.Millisecond,
+			LogLevel:                  logger.Info,
+			ParameterizedQueries:      true, // parametreleri (embedding vektörü vb.) loglama
+			Colorful:                  false,
 			IgnoreRecordNotFoundError: false,
 		},
 	)
@@ -106,5 +106,6 @@ func runMigrations() error {
 		&models.DailyVerse{},
 		&models.DailyVerseTranslation{},
 		&models.SupportRequest{},
+		&models.PasskeyCredential{},
 	)
 }

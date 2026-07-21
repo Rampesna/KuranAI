@@ -16,6 +16,10 @@ data:
   JWT_REFRESH_EXPIRE_DAY: "7"
   JWT_ISSUER: kuran-ai-gateway
   APPLE_BUNDLE_ID: talhacan.KuranAIChat
+  GOOGLE_CLIENT_IDS: 157832066999-j2rtge34n3u5r8gtejini3kel827d7j2.apps.googleusercontent.com,157832066999-3tgb2daavmrd1d1vd10ptrato1iu382t.apps.googleusercontent.com
+  APPLE_CLIENT_IDS: talhacan.KuranAIChat,com.talhacan.kuranai.web
+  WEBAUTHN_RP_ID: kuranai.talhacan.com
+  WEBAUTHN_RP_NAME: Kuran AI
+  WEBAUTHN_RP_ORIGINS: https://kuranai.talhacan.com
   CORS_ORIGINS: https://kuranai.talhacan.com
   PUBLIC_API_URL: https://kuranai-api.talhacan.com
-

@@ -42,6 +42,9 @@ unset OPENAI_API_KEY
 docker build -t kuranai-gateway:latest "$PROJECT_ROOT/Kuran_AI_Gateway"
 docker build \
   --build-arg VITE_API_BASE=https://kuranai-api.talhacan.com \
+  --build-arg VITE_GOOGLE_CLIENT_ID=157832066999-3tgb2daavmrd1d1vd10ptrato1iu382t.apps.googleusercontent.com \
+  --build-arg VITE_APPLE_CLIENT_ID=com.talhacan.kuranai.web \
+  --build-arg VITE_APPLE_REDIRECT_URI=https://kuranai.talhacan.com/auth/apple/callback \
   -t kuranai-web:latest "$PROJECT_ROOT/Kuran_AI_Web"
 
 kubectl apply -f "$K8S_DIR/config.yaml"
@@ -59,4 +62,3 @@ kubectl rollout status deployment/gateway -n "$NAMESPACE" --timeout=300s
 kubectl rollout status deployment/web -n "$NAMESPACE" --timeout=180s
 
 kubectl get pods,svc,pvc -n "$NAMESPACE"
-

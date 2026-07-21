@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 // MARK: - Root
 
@@ -950,6 +951,9 @@ struct LoginGateView: View {
                     LoginButton(language: language, labelKey: ("Google ile Giriş", "Sign in with Google"), icon: "globe", disabled: isLoading) {
                         await signInWithGoogle()
                     }
+                    LoginButton(language: language, labelKey: ("Geçiş Anahtarı ile Giriş", "Sign in with a Passkey"), icon: "person.badge.key.fill", disabled: isLoading) {
+                        await signInWithPasskey()
+                    }
                     LoginButton(language: language, labelKey: ("E-posta ile Devam Et", "Continue with email"), icon: "envelope.fill", filled: true, disabled: isLoading) {
                         showEmailLogin = true
                     }
@@ -1017,6 +1021,20 @@ struct LoginGateView: View {
             try? await Task.sleep(for: .milliseconds(120))
             _ = try await AuthService.shared.signInWithGoogle()
             isAuthenticated = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func signInWithPasskey() async {
+        errorMessage = nil
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            _ = try await AuthService.shared.signInWithPasskey()
+            isAuthenticated = true
+        } catch let error as ASAuthorizationError where error.code == .canceled {
+            // Kullanıcı sistem geçiş anahtarı sayfasını kapattı; hata göstermeyelim.
         } catch {
             errorMessage = error.localizedDescription
         }

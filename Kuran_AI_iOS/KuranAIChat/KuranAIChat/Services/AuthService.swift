@@ -16,8 +16,11 @@ final class AuthService: NSObject, ObservableObject {
 
     private let accessTokenKey = "kuran_ai_access_token"
     private let refreshTokenKey = "kuran_ai_refresh_token"
+    private let passkeyRelyingParty = "kuranai.talhacan.com"
 
     private var appleContinuation: CheckedContinuation<String, Error>?
+    private var passkeyRegistrationContinuation: CheckedContinuation<PasskeyRegistrationCredential, Error>?
+    private var passkeyAssertionContinuation: CheckedContinuation<PasskeyAssertionCredential, Error>?
 
     override private init() {
         super.init()
@@ -120,6 +123,59 @@ final class AuthService: NSObject, ObservableObject {
         }
     }
 
+    // MARK: - Passkeys
+
+    func signInWithPasskey() async throws -> AuthData {
+        let challenge = try await APIClient.shared.beginPasskeyLogin()
+        guard let challengeData = Data(base64URLEncoded: challenge.options.challenge) else {
+            throw APIError.serverError("Invalid passkey challenge")
+        }
+        let credential = try await performPasskeyAssertion(challenge: challengeData)
+        let auth = try await APIClient.shared.finishPasskeyLogin(transactionId: challenge.transactionId, credential: credential)
+        saveAuth(auth)
+        await APIClient.shared.setAuthToken(auth.accessToken)
+        return auth
+    }
+
+    func registerPasskey() async throws {
+        let challenge = try await APIClient.shared.beginPasskeyRegistration()
+        guard let challengeData = Data(base64URLEncoded: challenge.options.challenge),
+              let user = challenge.options.user,
+              let userID = Data(base64URLEncoded: user.id) else {
+            throw APIError.serverError("Invalid passkey registration challenge")
+        }
+        let credential = try await performPasskeyRegistration(
+            challenge: challengeData,
+            name: user.name,
+            userID: userID
+        )
+        try await APIClient.shared.finishPasskeyRegistration(transactionId: challenge.transactionId, credential: credential)
+    }
+
+    private func performPasskeyRegistration(challenge: Data, name: String, userID: Data) async throws -> PasskeyRegistrationCredential {
+        try await withCheckedThrowingContinuation { continuation in
+            passkeyRegistrationContinuation = continuation
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: passkeyRelyingParty)
+            let request = provider.createCredentialRegistrationRequest(challenge: challenge, name: name, userID: userID)
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self
+            controller.presentationContextProvider = self
+            controller.performRequests()
+        }
+    }
+
+    private func performPasskeyAssertion(challenge: Data) async throws -> PasskeyAssertionCredential {
+        try await withCheckedThrowingContinuation { continuation in
+            passkeyAssertionContinuation = continuation
+            let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: passkeyRelyingParty)
+            let request = provider.createCredentialAssertionRequest(challenge: challenge)
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self
+            controller.presentationContextProvider = self
+            controller.performRequests()
+        }
+    }
+
     // MARK: - Sign in with Google
 
     func signInWithGoogle() async throws -> AuthData {
@@ -179,6 +235,49 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
     ) {
+        if let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialRegistration {
+            guard let attestationObject = credential.rawAttestationObject else {
+                Task { @MainActor in
+                    passkeyRegistrationContinuation?.resume(throwing: APIError.serverError("Passkey attestation missing"))
+                    passkeyRegistrationContinuation = nil
+                }
+                return
+            }
+            let credentialID = credential.credentialID.base64URLEncodedString
+            let result = PasskeyRegistrationCredential(
+                id: credentialID,
+                rawId: credentialID,
+                response: .init(
+                    attestationObject: attestationObject.base64URLEncodedString,
+                    clientDataJSON: credential.rawClientDataJSON.base64URLEncodedString
+                )
+            )
+            Task { @MainActor in
+                passkeyRegistrationContinuation?.resume(returning: result)
+                passkeyRegistrationContinuation = nil
+            }
+            return
+        }
+
+        if let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion {
+            let credentialID = credential.credentialID.base64URLEncodedString
+            let result = PasskeyAssertionCredential(
+                id: credentialID,
+                rawId: credentialID,
+                response: .init(
+                    authenticatorData: credential.rawAuthenticatorData.base64URLEncodedString,
+                    clientDataJSON: credential.rawClientDataJSON.base64URLEncodedString,
+                    signature: credential.signature.base64URLEncodedString,
+                    userHandle: credential.userID.base64URLEncodedString
+                )
+            )
+            Task { @MainActor in
+                passkeyAssertionContinuation?.resume(returning: result)
+                passkeyAssertionContinuation = nil
+            }
+            return
+        }
+
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let tokenData = credential.identityToken,
               let token = String(data: tokenData, encoding: .utf8) else {
@@ -199,8 +298,16 @@ extension AuthService: ASAuthorizationControllerDelegate, ASAuthorizationControl
         didCompleteWithError error: Error
     ) {
         Task { @MainActor in
-            appleContinuation?.resume(throwing: error)
-            appleContinuation = nil
+            if let continuation = passkeyRegistrationContinuation {
+                continuation.resume(throwing: error)
+                passkeyRegistrationContinuation = nil
+            } else if let continuation = passkeyAssertionContinuation {
+                continuation.resume(throwing: error)
+                passkeyAssertionContinuation = nil
+            } else {
+                appleContinuation?.resume(throwing: error)
+                appleContinuation = nil
+            }
         }
     }
 

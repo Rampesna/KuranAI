@@ -8,6 +8,12 @@ enum APIEndpoint: Sendable {
     case loginApple
     case logout
     case refreshToken
+    case passkeyLoginOptions
+    case passkeyLoginFinish
+    case passkeyRegistrationOptions
+    case passkeyRegistrationFinish
+    case passkeyStatus
+    case passkeyDelete
 
     // MARK: - Chat
     case sendMessage
@@ -45,6 +51,11 @@ enum APIEndpoint: Sendable {
         case .loginApple: return "/api/user/auth/login/apple"
         case .logout: return "/api/user/auth/logout"
         case .refreshToken: return "/api/user/auth/refresh"
+        case .passkeyLoginOptions: return "/api/user/auth/passkey/login/options"
+        case .passkeyLoginFinish: return "/api/user/auth/passkey/login/finish"
+        case .passkeyRegistrationOptions: return "/api/user/auth/passkey/register/options"
+        case .passkeyRegistrationFinish: return "/api/user/auth/passkey/register/finish"
+        case .passkeyStatus, .passkeyDelete: return "/api/user/auth/passkey"
         case .sendMessage: return "/api/v1/chat/message"
         case .transcribe: return "/api/v1/chat/transcribe"
         case .tts: return "/api/v1/chat/tts"
@@ -68,16 +79,16 @@ enum APIEndpoint: Sendable {
 
     var method: HTTPMethod {
         switch self {
-        case .login, .register, .loginGoogle, .loginApple, .sendMessage, .logout, .uploadAvatar, .transcribe, .tts, .subscriptionPurchase: return .post
+        case .login, .register, .loginGoogle, .loginApple, .passkeyLoginOptions, .passkeyLoginFinish, .passkeyRegistrationOptions, .passkeyRegistrationFinish, .sendMessage, .logout, .uploadAvatar, .transcribe, .tts, .subscriptionPurchase: return .post
         case .updateUsername, .updatePassword: return .patch
-        case .chatSessions, .chatMessages, .subscriptionMe, .subscriptionPackages, .refreshToken, .prayerTimes, .verseOfDay, .chatHistory, .userProfile, .me: return .get
-        case .deleteAvatar, .deleteAccount: return .delete
+        case .chatSessions, .chatMessages, .subscriptionMe, .subscriptionPackages, .refreshToken, .passkeyStatus, .prayerTimes, .verseOfDay, .chatHistory, .userProfile, .me: return .get
+        case .deleteAvatar, .deleteAccount, .passkeyDelete: return .delete
         }
     }
 
     var needsAuth: Bool {
         switch self {
-        case .login, .register, .loginGoogle, .loginApple, .prayerTimes, .verseOfDay: return false
+        case .login, .register, .loginGoogle, .loginApple, .passkeyLoginOptions, .passkeyLoginFinish, .prayerTimes, .verseOfDay: return false
         default: return true
         }
     }

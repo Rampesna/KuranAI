@@ -46,6 +46,9 @@ jobs:
       - run: npm run build
         env:
           VITE_API_BASE: https://kuranai-api.talhacan.com
+          VITE_GOOGLE_CLIENT_ID: 157832066999-3tgb2daavmrd1d1vd10ptrato1iu382t.apps.googleusercontent.com
+          VITE_APPLE_CLIENT_ID: com.talhacan.kuranai.web
+          VITE_APPLE_REDIRECT_URI: https://kuranai.talhacan.com/auth/apple/callback
 
   deploy:
     name: Deploy Kubernetes production
@@ -79,4 +82,3 @@ jobs:
         run: |
           curl --fail --silent --show-error --retry 12 --retry-delay 5 https://kuranai-api.talhacan.com/health >/dev/null
           curl --fail --silent --show-error --retry 12 --retry-delay 5 https://kuranai.talhacan.com/app >/dev/null
-

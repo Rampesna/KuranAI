@@ -7,6 +7,7 @@ import Support from './pages/Support'
 import Contact from './pages/Contact'
 import Chat from './pages/Chat'
 import Packages from './pages/Packages'
+import AppleCallback from './pages/AppleCallback'
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/support" element={<Support />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/auth/apple/callback" element={<AppleCallback />} />
         </Route>
       </Routes>
     </BrowserRouter>

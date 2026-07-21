@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { API_BASE, TOKEN_KEY } from '../config/app'
+import { API_BASE, APPLE_CLIENT_ID, APPLE_REDIRECT_URI, GOOGLE_CLIENT_ID, TOKEN_KEY } from '../config/app'
+import { createPasskey, getPasskey, passkeysSupported } from '../auth/passkeys'
+import { loadScript } from '../auth/providerScripts'
 import { useLanguage } from '../i18n/LanguageContext'
 import styles from './Chat.module.css'
 
@@ -20,7 +22,7 @@ async function parseResponse(response) {
 }
 
 export default function Chat() {
-  const { text } = useLanguage()
+  const { language, text } = useLanguage()
   const [tokens, setTokens] = useState(readTokens)
   const [user, setUser] = useState(null)
   const [authMode, setAuthMode] = useState('login')
@@ -37,7 +39,11 @@ export default function Chat() {
   const [limitInfo, setLimitInfo] = useState(null)
   const [showConsent, setShowConsent] = useState(false)
   const [pendingQuestion, setPendingQuestion] = useState('')
+  const [passkeyEnabled, setPasskeyEnabled] = useState(false)
+  const [passkeyLoading, setPasskeyLoading] = useState(false)
+  const [passkeyMessage, setPasskeyMessage] = useState('')
   const messagesEndRef = useRef(null)
+  const googleButtonRef = useRef(null)
 
   const storeTokens = (nextTokens) => {
     setTokens(nextTokens)
@@ -90,6 +96,10 @@ export default function Chat() {
       .then(parseResponse)
       .then(data => { if (active) setSubscriptionOverview(data) })
       .catch(() => { /* Chat remains usable if usage details are temporarily unavailable. */ })
+    authorizedFetch('/api/user/auth/passkey')
+      .then(parseResponse)
+      .then(data => { if (active) setPasskeyEnabled(Boolean(data?.enabled)) })
+      .catch(() => { /* Passkey status is optional while the main session remains valid. */ })
     return () => { active = false }
     // Existing tokens are validated once when their access token changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,6 +147,151 @@ export default function Chat() {
     }
   }
 
+  const completeSocialLogin = async (path, body) => {
+    setAuthLoading(true)
+    setAuthError('')
+    try {
+      const response = await fetch(`${API_BASE}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      storeTokens(await parseResponse(response))
+    } catch (error) {
+      setAuthError(error.message)
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (tokens || !GOOGLE_CLIENT_ID || !googleButtonRef.current) return undefined
+    let active = true
+    loadScript('google-identity-services', 'https://accounts.google.com/gsi/client')
+      .then(() => {
+        if (!active || !window.google?.accounts?.id || !googleButtonRef.current) return
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: result => {
+            if (result?.credential) completeSocialLogin('/api/user/auth/login/google', { idToken: result.credential })
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        })
+        googleButtonRef.current.replaceChildren()
+        window.google.accounts.id.renderButton(googleButtonRef.current, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          shape: 'rectangular',
+          text: 'continue_with',
+          locale: language === 'tr' ? 'tr' : 'en',
+          width: Math.min(400, googleButtonRef.current.clientWidth || 320),
+        })
+      })
+      .catch(() => { if (active) setAuthError(text('Google giriş bileşeni yüklenemedi.', 'Google Sign-In could not be loaded.')) })
+    return () => { active = false }
+    // Provider callback intentionally uses the current rendered session.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokens, language])
+
+  const handleAppleLogin = async () => {
+    if (!APPLE_CLIENT_ID) {
+      setAuthError(text('Apple ile giriş henüz yapılandırılmadı.', 'Sign in with Apple is not configured yet.'))
+      return
+    }
+    setAuthLoading(true)
+    setAuthError('')
+    try {
+      await loadScript('apple-signin-sdk', 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js')
+      const randomValue = crypto.randomUUID().replaceAll('-', '')
+      window.AppleID.auth.init({
+        clientId: APPLE_CLIENT_ID,
+        scope: 'name email',
+        redirectURI: APPLE_REDIRECT_URI,
+        state: randomValue,
+        nonce: crypto.randomUUID().replaceAll('-', ''),
+        usePopup: true,
+      })
+      const result = await window.AppleID.auth.signIn()
+      const identityToken = result?.authorization?.id_token
+      if (!identityToken) throw new Error(text('Apple kimlik belirteci alınamadı.', 'Apple identity token was not returned.'))
+      const response = await fetch(`${API_BASE}/api/user/auth/login/apple`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identityToken }),
+      })
+      storeTokens(await parseResponse(response))
+    } catch (error) {
+      if (error?.error !== 'popup_closed_by_user') setAuthError(error.message || text('Apple ile giriş tamamlanamadı.', 'Sign in with Apple could not be completed.'))
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handlePasskeyLogin = async () => {
+    if (!passkeysSupported()) {
+      setAuthError(text('Bu tarayıcı veya cihaz geçiş anahtarını desteklemiyor.', 'This browser or device does not support passkeys.'))
+      return
+    }
+    setAuthLoading(true)
+    setAuthError('')
+    try {
+      const begin = await parseResponse(await fetch(`${API_BASE}/api/user/auth/passkey/login/options`, { method: 'POST' }))
+      const credential = await getPasskey(begin.options)
+      const finish = await fetch(`${API_BASE}/api/user/auth/passkey/login/finish`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Passkey-Transaction': begin.transactionId,
+        },
+        body: JSON.stringify(credential),
+      })
+      storeTokens(await parseResponse(finish))
+    } catch (error) {
+      if (error?.name !== 'NotAllowedError') setAuthError(error.message)
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const registerPasskey = async () => {
+    setPasskeyLoading(true)
+    setPasskeyMessage('')
+    try {
+      const begin = await parseResponse(await authorizedFetch('/api/user/auth/passkey/register/options', { method: 'POST' }))
+      const credential = await createPasskey(begin.options)
+      await parseResponse(await authorizedFetch('/api/user/auth/passkey/register/finish', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Passkey-Transaction': begin.transactionId,
+        },
+        body: JSON.stringify(credential),
+      }))
+      setPasskeyEnabled(true)
+      setPasskeyMessage(text('Geçiş anahtarı hazır.', 'Your passkey is ready.'))
+    } catch (error) {
+      if (error?.name !== 'NotAllowedError') setPasskeyMessage(error.message)
+    } finally {
+      setPasskeyLoading(false)
+    }
+  }
+
+  const removePasskeys = async () => {
+    if (!window.confirm(text('Bu hesaba ait tüm geçiş anahtarları kaldırılsın mı?', 'Remove all passkeys from this account?'))) return
+    setPasskeyLoading(true)
+    try {
+      await parseResponse(await authorizedFetch('/api/user/auth/passkey', { method: 'DELETE' }))
+      setPasskeyEnabled(false)
+      setPasskeyMessage(text('Geçiş anahtarları kaldırıldı.', 'Passkeys removed.'))
+    } catch (error) {
+      setPasskeyMessage(error.message)
+    } finally {
+      setPasskeyLoading(false)
+    }
+  }
+
   const logout = async () => {
     try { await authorizedFetch('/api/user/auth/logout', { method: 'POST' }) }
     catch { /* Local session is cleared even if the network request fails. */ }
@@ -146,6 +301,8 @@ export default function Chat() {
     setSessionId(null)
     setSubscriptionOverview(null)
     setLimitInfo(null)
+    setPasskeyEnabled(false)
+    setPasskeyMessage('')
   }
 
   const performSend = async (content) => {
@@ -256,6 +413,18 @@ export default function Chat() {
         </div>
 
         <form className={styles.authCard} onSubmit={handleAuth}>
+          <div className={styles.socialLoginGroup}>
+            <div ref={googleButtonRef} className={styles.googleButton} aria-label={text('Google ile devam et', 'Continue with Google')} />
+            <button type="button" className={styles.appleButton} onClick={handleAppleLogin} disabled={authLoading}>
+              <span aria-hidden="true"></span>{text('Apple ile Devam Et', 'Continue with Apple')}
+            </button>
+            {authMode === 'login' && (
+              <button type="button" className={styles.passkeyButton} onClick={handlePasskeyLogin} disabled={authLoading}>
+                <span aria-hidden="true">⌘</span>{text('Geçiş Anahtarı ile Giriş Yap', 'Sign in with a Passkey')}
+              </button>
+            )}
+          </div>
+          <div className={styles.authDivider}><span>{text('veya', 'or')}</span></div>
           <div className={styles.authTabs}>
             <button type="button" className={authMode === 'login' ? styles.selectedTab : ''} onClick={() => { setAuthMode('login'); setAuthError('') }}>{text('Giriş yap', 'Sign in')}</button>
             <button type="button" className={authMode === 'register' ? styles.selectedTab : ''} onClick={() => { setAuthMode('register'); setAuthError('') }}>{text('Hesap oluştur', 'Create account')}</button>
@@ -297,6 +466,14 @@ export default function Chat() {
           </div>
           <b>›</b>
         </Link>
+        <div className={styles.passkeyBlock}>
+          <button onClick={registerPasskey} disabled={passkeyLoading || !passkeysSupported()}>
+            <span>⌘</span>
+            <div><strong>{passkeyEnabled ? text('Yeni geçiş anahtarı ekle', 'Add another passkey') : text('Geçiş anahtarı oluştur', 'Create a passkey')}</strong><small>{passkeyEnabled ? text('Parolasız giriş etkin', 'Passwordless sign-in is active') : text('Face ID / Touch ID ile giriş', 'Sign in with Face ID / Touch ID')}</small></div>
+          </button>
+          {passkeyEnabled && <button className={styles.removePasskey} onClick={removePasskeys} disabled={passkeyLoading}>{text('Kaldır', 'Remove')}</button>}
+          {passkeyMessage && <small className={styles.passkeyMessage}>{passkeyMessage}</small>}
+        </div>
         <div className={styles.accountBlock}>
           <span className={styles.avatar}>{(user?.name || user?.username || 'K').charAt(0).toUpperCase()}</span>
           <div><strong>{user?.name || user?.username || text('Kullanıcı', 'User')}</strong><small>{user?.email || ''}</small></div>

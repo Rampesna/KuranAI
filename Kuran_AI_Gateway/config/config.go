@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"strconv"
+	"strings"
 )
 
 type Config struct {
@@ -11,6 +12,7 @@ type Config struct {
 	Redis    RedisConfig
 	JWT      JWTConfig
 	OAuth    OAuthConfig
+	WebAuthn WebAuthnConfig
 	OpenAI   OpenAIConfig
 	AppleIAP AppleIAPConfig
 }
@@ -53,12 +55,18 @@ type JWTConfig struct {
 }
 
 type OAuthConfig struct {
-	GoogleClientID     string
+	GoogleClientIDs    []string
 	GoogleClientSecret string
-	AppleClientID      string
+	AppleClientIDs     []string
 	AppleTeamID        string
 	AppleKeyID         string
 	ApplePrivateKey    string
+}
+
+type WebAuthnConfig struct {
+	RPID      string
+	RPName    string
+	RPOrigins []string
 }
 
 func Load() *Config {
@@ -70,30 +78,35 @@ func Load() *Config {
 			Host:     getEnv("DB_HOST", "localhost"),
 			Port:     getEnv("DB_PORT", "5432"),
 			User:     getEnv("DB_USER", "kuranai_user"),
-			Password: getEnv("DB_PASSWORD", ".C91a44n4dab23."),
+			Password: getEnv("DB_PASSWORD", ""),
 			DBName:   getEnv("DB_NAME", "kuranai_pgsql"),
 			SSLMode:  getEnv("DB_SSLMODE", "disable"),
 		},
 		Redis: RedisConfig{
 			Host:     getEnv("REDIS_HOST", "localhost"),
 			Port:     getEnv("REDIS_PORT", "6379"),
-			Password: getEnv("REDIS_PASSWORD", ".4br3x4cp6X."),
+			Password: getEnv("REDIS_PASSWORD", ""),
 			DB:       getEnvInt("REDIS_DB", 0),
 		},
 		JWT: JWTConfig{
-			AccessSecret:     getEnv("JWT_ACCESS_SECRET", "kuranai-access-secret"),
-			RefreshSecret:    getEnv("JWT_REFRESH_SECRET", "kuranai-refresh-secret"),
+			AccessSecret:     getEnv("JWT_ACCESS_SECRET", ""),
+			RefreshSecret:    getEnv("JWT_REFRESH_SECRET", ""),
 			AccessExpireMin:  getEnvInt("JWT_ACCESS_EXPIRE_MIN", 1440),
 			RefreshExpireDay: getEnvInt("JWT_REFRESH_EXPIRE_DAY", 7),
 			Issuer:           getEnv("JWT_ISSUER", "kuran-ai-gateway"),
 		},
 		OAuth: OAuthConfig{
-			GoogleClientID:     getEnv("GOOGLE_CLIENT_ID", ""),
+			GoogleClientIDs:    getEnvList("GOOGLE_CLIENT_IDS", getEnv("GOOGLE_CLIENT_ID", "")),
 			GoogleClientSecret: getEnv("GOOGLE_CLIENT_SECRET", ""),
-			AppleClientID:      getEnv("APPLE_CLIENT_ID", ""),
+			AppleClientIDs:     getEnvList("APPLE_CLIENT_IDS", getEnv("APPLE_CLIENT_ID", "")),
 			AppleTeamID:        getEnv("APPLE_TEAM_ID", ""),
 			AppleKeyID:         getEnv("APPLE_KEY_ID", ""),
 			ApplePrivateKey:    getEnv("APPLE_PRIVATE_KEY", ""),
+		},
+		WebAuthn: WebAuthnConfig{
+			RPID:      getEnv("WEBAUTHN_RP_ID", "kuranai.talhacan.com"),
+			RPName:    getEnv("WEBAUTHN_RP_NAME", "Kuran AI"),
+			RPOrigins: getEnvList("WEBAUTHN_RP_ORIGINS", "https://kuranai.talhacan.com"),
 		},
 		OpenAI: OpenAIConfig{
 			APIKey: getEnv("OPENAI_API_KEY", ""),
@@ -119,4 +132,18 @@ func getEnvInt(key string, defaultVal int) int {
 		}
 	}
 	return defaultVal
+}
+
+func getEnvList(key, fallback string) []string {
+	raw := strings.TrimSpace(os.Getenv(key))
+	if raw == "" {
+		raw = fallback
+	}
+	values := make([]string, 0)
+	for _, value := range strings.Split(raw, ",") {
+		if value = strings.TrimSpace(value); value != "" {
+			values = append(values, value)
+		}
+	}
+	return values
 }

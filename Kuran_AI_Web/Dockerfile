@@ -4,7 +4,13 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 ARG VITE_API_BASE=https://kuranai-api.talhacan.com
+ARG VITE_GOOGLE_CLIENT_ID=157832066999-3tgb2daavmrd1d1vd10ptrato1iu382t.apps.googleusercontent.com
+ARG VITE_APPLE_CLIENT_ID=com.talhacan.kuranai.web
+ARG VITE_APPLE_REDIRECT_URI=https://kuranai.talhacan.com/auth/apple/callback
 ENV VITE_API_BASE=$VITE_API_BASE
+ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+ENV VITE_APPLE_CLIENT_ID=$VITE_APPLE_CLIENT_ID
+ENV VITE_APPLE_REDIRECT_URI=$VITE_APPLE_REDIRECT_URI
 RUN npm run build
 
 FROM nginx:alpine

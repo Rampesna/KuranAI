@@ -45,6 +45,9 @@ git pull --ff-only origin main
 docker build -t kuranai-gateway:latest "$PROJECT_ROOT/Kuran_AI_Gateway"
 docker build \
   --build-arg VITE_API_BASE=https://kuranai-api.talhacan.com \
+  --build-arg VITE_GOOGLE_CLIENT_ID=157832066999-3tgb2daavmrd1d1vd10ptrato1iu382t.apps.googleusercontent.com \
+  --build-arg VITE_APPLE_CLIENT_ID=com.talhacan.kuranai.web \
+  --build-arg VITE_APPLE_REDIRECT_URI=https://kuranai.talhacan.com/auth/apple/callback \
   -t kuranai-web:latest "$PROJECT_ROOT/Kuran_AI_Web"
 
 kubectl apply -f "$K8S_DIR/namespace.yaml"
@@ -72,4 +75,3 @@ curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:70
 curl --fail --silent --show-error --retry 10 --retry-delay 2 http://127.0.0.1:7007/ >/dev/null
 
 echo "Kuran AI deployed successfully at commit $(git rev-parse --short HEAD)"
-

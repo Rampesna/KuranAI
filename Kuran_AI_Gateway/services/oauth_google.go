@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/rampesna/kuran-ai-gateway/config"
 )
@@ -24,11 +25,11 @@ func (p *GoogleIDTokenPayload) Subject() string { return p.Sub }
 // ValidateGoogleIDToken Google ID token doğrular ve payload döner (tokeninfo API; secret gerekmez).
 func ValidateGoogleIDToken(ctx context.Context, idToken string) (*GoogleIDTokenPayload, error) {
 	cfg := config.Load()
-	if cfg.OAuth.GoogleClientID == "" {
+	if len(cfg.OAuth.GoogleClientIDs) == 0 {
 		return nil, fmt.Errorf("Google OAuth not configured")
 	}
-	url := fmt.Sprintf("https://oauth2.googleapis.com/tokeninfo?id_token=%s", idToken)
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	tokenURL := "https://oauth2.googleapis.com/tokeninfo?" + url.Values{"id_token": []string{idToken}}.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, tokenURL, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +52,11 @@ func ValidateGoogleIDToken(ctx context.Context, idToken string) (*GoogleIDTokenP
 	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
 		return nil, err
 	}
-	if payload.Aud != cfg.OAuth.GoogleClientID {
+	if !containsString(cfg.OAuth.GoogleClientIDs, payload.Aud) {
 		return nil, fmt.Errorf("invalid audience")
+	}
+	if payload.Sub == "" || payload.Email == "" || payload.EmailVerified != "true" {
+		return nil, fmt.Errorf("Google account email is not verified")
 	}
 	return &GoogleIDTokenPayload{
 		Sub:           payload.Sub,
@@ -61,4 +65,13 @@ func ValidateGoogleIDToken(ctx context.Context, idToken string) (*GoogleIDTokenP
 		Name:          payload.Name,
 		Picture:       payload.Picture,
 	}, nil
+}
+
+func containsString(values []string, target string) bool {
+	for _, value := range values {
+		if value == target {
+			return true
+		}
+	}
+	return false
 }

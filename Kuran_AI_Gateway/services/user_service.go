@@ -356,6 +356,8 @@ func (s *UserService) DeleteAccount(ctx context.Context, userID uint) *core.Serv
 	tx.Where("user_id = ?", userID).Delete(&models.UsageLog{})
 	// Abonelikleri sil
 	tx.Where("user_id = ?", userID).Delete(&models.UserSubscription{})
+	// WebAuthn geçiş anahtarlarını sil
+	tx.Where("user_id = ?", userID).Delete(&models.PasskeyCredential{})
 	// Avatar dosyasını sil
 	if user.AvatarURL != "" {
 		_ = os.Remove("." + user.AvatarURL)

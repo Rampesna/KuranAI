@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 	"github.com/rampesna/kuran-ai-gateway/config"
+	"github.com/redis/go-redis/v9"
 )
 
 // Client global Redis client.
@@ -34,3 +34,4 @@ func Connect(appConfig *config.Config) error {
 
 const KeyPrefixAccess = "jwt:access:"
 const KeyPrefixRefresh = "jwt:refresh:"
+const KeyPrefixPasskey = "passkey:ceremony:"

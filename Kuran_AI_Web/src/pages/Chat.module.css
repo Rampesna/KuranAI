@@ -25,6 +25,17 @@
 .authIntro ul { list-style: none; margin-top: 28px; display: grid; gap: 10px; color: var(--text-muted); }
 .authIntro li::before { content: '✓'; color: var(--gold-primary); margin-right: 10px; }
 .authCard { padding: 32px; border: 1px solid var(--border); border-radius: 22px; background: var(--bg-card); display: grid; gap: 16px; text-align: left; box-shadow: 0 30px 90px rgba(0,0,0,.25); }
+.socialLoginGroup { display: grid; gap: 10px; }
+.googleButton { min-height: 44px; display: grid; place-items: center; overflow: hidden; }
+.googleButton > div { width: 100% !important; }
+.appleButton, .passkeyButton { min-height: 44px; width: 100%; border-radius: 4px; font: inherit; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.appleButton { border: 1px solid #fff; background: #fff; color: #050505; }
+.appleButton span { font-size: 23px; line-height: 1; }
+.passkeyButton { border: 1px solid var(--border); background: rgba(255,255,255,.055); color: var(--text-primary); }
+.passkeyButton span { color: var(--gold-primary); font-size: 20px; }
+.appleButton:disabled, .passkeyButton:disabled { opacity: .55; cursor: wait; }
+.authDivider { display: flex; align-items: center; gap: 12px; color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .14em; }
+.authDivider::before, .authDivider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 .authTabs { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; margin-bottom: 8px; border-radius: 12px; background: rgba(0,0,0,.24); }
 .authTabs button { padding: 10px; border: 0; border-radius: 9px; background: transparent; color: var(--text-muted); cursor: pointer; font: inherit; font-weight: 600; }
 .authTabs .selectedTab { color: var(--text-primary); background: rgba(255,255,255,.07); }
@@ -53,6 +64,14 @@
 .planBlock strong, .planBlock small { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .planBlock strong { font-size: 11px; }.planBlock small { color: var(--text-muted); font-size: 9px; }
 .planBlock b { color: var(--gold-primary); font-size: 18px; }
+.passkeyBlock { margin: 0 0 14px; padding: 10px; border: 1px solid var(--border); border-radius: 11px; background: rgba(255,255,255,.025); }
+.passkeyBlock > button:first-child { width: 100%; padding: 0; display: grid; grid-template-columns: 30px minmax(0,1fr); align-items: center; gap: 9px; border: 0; background: transparent; color: var(--text-primary); text-align: left; cursor: pointer; }
+.passkeyBlock > button:first-child > span { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: rgba(201,162,39,.13); color: var(--gold-primary); font-weight: 900; }
+.passkeyBlock strong, .passkeyBlock small { display: block; }
+.passkeyBlock strong { font-size: 10px; }
+.passkeyBlock small { margin-top: 2px; color: var(--text-muted); font-size: 8px; }
+.passkeyBlock .removePasskey { margin-top: 8px; border: 0; padding: 0; background: transparent; color: #ff8b82; font-size: 9px; cursor: pointer; }
+.passkeyBlock .passkeyMessage { margin-top: 7px; color: var(--gold-light); }
 .accountBlock { display: grid; grid-template-columns: 38px minmax(0,1fr) 26px; align-items: center; gap: 10px; padding-top: 18px; border-top: 1px solid var(--border); }
 .avatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: var(--gold-primary); color: var(--bg-dark); font-weight: 800; }
 .accountBlock div { overflow: hidden; text-align: left; }
@@ -96,6 +115,7 @@
   .sidebar { min-height: auto; padding: 12px; border-right: 0; border-bottom: 1px solid var(--border); flex-direction: row; align-items: center; gap: 10px; }
   .sidebar .kicker, .accountBlock div, .accountBlock button { display: none; }
   .planBlock { display: none; }
+  .passkeyBlock { display: none; }
   .sourceList { margin: 0; display: flex; }.sourceList button { padding: 5px; font-size: 0; }.sourceList button span { font-size: 15px; }
   .accountBlock { padding: 0; border: 0; display: block; }.avatar { width: 34px; height: 34px; }
   .conversation { min-height: calc(100vh - 132px); }

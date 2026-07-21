@@ -8,8 +8,9 @@ import (
 )
 
 // RegisterUserRoutes user API rotalarını kaydeder.
-func RegisterUserRoutes(rg *gin.RouterGroup, userService *services.UserService, tokenService *services.TokenService) {
+func RegisterUserRoutes(rg *gin.RouterGroup, userService *services.UserService, tokenService *services.TokenService, passkeyService *services.PasskeyService) {
 	authHandler := userauth.NewAuthHandler(userService, tokenService)
+	passkeyHandler := userauth.NewPasskeyHandler(passkeyService)
 	profileHandler := userauth.NewProfileHandler(userService)
 
 	user := rg.Group("/user")
@@ -18,6 +19,8 @@ func RegisterUserRoutes(rg *gin.RouterGroup, userService *services.UserService, 
 		user.POST("/auth/login", authHandler.Login)
 		user.POST("/auth/login/google", authHandler.LoginWithGoogle)
 		user.POST("/auth/login/apple", authHandler.LoginWithApple)
+		user.POST("/auth/passkey/login/options", passkeyHandler.BeginLogin)
+		user.POST("/auth/passkey/login/finish", passkeyHandler.FinishLogin)
 		user.POST("/auth/refresh", authHandler.RefreshToken)
 	}
 
@@ -26,6 +29,10 @@ func RegisterUserRoutes(rg *gin.RouterGroup, userService *services.UserService, 
 	{
 		userProtected.GET("/auth/me", authHandler.Me)
 		userProtected.POST("/auth/logout", authHandler.Logout)
+		userProtected.GET("/auth/passkey", passkeyHandler.Status)
+		userProtected.POST("/auth/passkey/register/options", passkeyHandler.BeginRegistration)
+		userProtected.POST("/auth/passkey/register/finish", passkeyHandler.FinishRegistration)
+		userProtected.DELETE("/auth/passkey", passkeyHandler.DeleteAll)
 		userProtected.PATCH("/profile/username", profileHandler.UpdateUsername)
 		userProtected.PATCH("/profile/password", profileHandler.UpdatePassword)
 		userProtected.POST("/profile/avatar", profileHandler.UploadAvatar)
