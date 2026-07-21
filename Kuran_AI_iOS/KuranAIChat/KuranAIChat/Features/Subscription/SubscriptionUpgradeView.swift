@@ -5,6 +5,17 @@ private let collapsedCardHeight: CGFloat = 64
 private let cardCornerRadius: CGFloat = 20
 
 struct SubscriptionUpgradeView: View {
+    private static let fallbackPackages: [SubscriptionPackageDTO] = [
+        .init(id: 1, name: "Bronze", nameEn: "Bronze", slug: "bronze", dailyQuestionLimit: 100, dailyTTSLimit: 5, monthlyPriceTL: 29.99, yearlyPriceTL: 299.99),
+        .init(id: 2, name: "Gümüş", nameEn: "Silver", slug: "silver", dailyQuestionLimit: 250, dailyTTSLimit: 50, monthlyPriceTL: 49.99, yearlyPriceTL: 499.99),
+        .init(id: 3, name: "Altın", nameEn: "Gold", slug: "gold", dailyQuestionLimit: nil, dailyTTSLimit: 100, monthlyPriceTL: 79.99, yearlyPriceTL: 799.99),
+        .init(id: 4, name: "Elmas", nameEn: "Diamond", slug: "diamond", dailyQuestionLimit: nil, dailyTTSLimit: nil, monthlyPriceTL: 149.99, yearlyPriceTL: 1499.99)
+    ]
+
+    private static let storeProductIDs = fallbackPackages.flatMap { package in
+        ["kuranai.\(package.slug).monthly", "kuranai.\(package.slug).yearly"]
+    }
+
     let language: Language
     let limitInfo: APIError.LimitExceededInfo?
     let onDismiss: () -> Void
@@ -57,7 +68,7 @@ struct SubscriptionUpgradeView: View {
                 .padding(.top, 8)
             }
         }
-        .onAppear { Task { await loadPackages() } }
+        .task { await loadPackages() }
         .onChange(of: packages.count) { _, count in
             if count > 0 { selectedIndex = count - 1 }
         }
@@ -142,12 +153,31 @@ struct SubscriptionUpgradeView: View {
     }
 
     private func errorBanner(_ message: String) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: "exclamationmark.circle.fill")
-                .foregroundColor(.red.opacity(0.9))
-            Text(message)
-                .font(.caption)
-                .foregroundColor(.red.opacity(0.9))
+        VStack(spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundColor(.red.opacity(0.9))
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.red.opacity(0.9))
+                Spacer(minLength: 0)
+            }
+
+            Button {
+                Task { await loadPackages() }
+            } label: {
+                Label(
+                    language.localized("Tekrar Dene", "Try Again"),
+                    systemImage: "arrow.clockwise"
+                )
+                .font(.caption.weight(.semibold))
+                .foregroundColor(Theme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(Theme.glassColor)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .buttonStyle(.plain)
         }
         .padding(16)
         .background(RoundedRectangle(cornerRadius: 10).fill(Color.red.opacity(0.15)))
@@ -195,29 +225,64 @@ struct SubscriptionUpgradeView: View {
         .padding(.bottom, 40)
     }
 
+    @MainActor
     private func loadPackages() async {
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
-        do {
-            let fetchedPackages = try await SubscriptionService.shared.fetchPackages()
-            let productIDs = fetchedPackages.flatMap { package in
-                [productID(for: package, period: "monthly"), productID(for: package, period: "yearly")]
-            }
-            let fetchedProducts = try await Product.products(for: productIDs)
 
-            packages = fetchedPackages
+        // Paket API'si kısa süreli erişilemez olsa bile StoreKit ürünlerini yüklemeyi
+        // denemeye devam et. App Store ürünleri hiçbir zaman backend yanıtına bağlı olmamalı.
+        let remotePackages = try? await SubscriptionService.shared.fetchPackages()
+        packages = normalizedPackages(remotePackages)
+
+        do {
+            let fetchedProducts = try await fetchStoreProductsWithRetry()
             storeProducts = Dictionary(uniqueKeysWithValues: fetchedProducts.map { ($0.id, $0) })
 
-            if fetchedProducts.count != productIDs.count {
+            if fetchedProducts.count != Self.storeProductIDs.count {
                 errorMessage = language.localized(
-                    "Bazı abonelik seçenekleri şu anda App Store'dan yüklenemiyor.",
-                    "Some subscription options are currently unavailable from the App Store."
+                    "Abonelik seçenekleri App Store'dan tam olarak yüklenemedi. Lütfen bağlantınızı kontrol edip tekrar deneyin.",
+                    "Subscription options could not be fully loaded from the App Store. Check your connection and try again."
                 )
             }
         } catch {
-            errorMessage = error.localizedDescription
+            storeProducts = [:]
+            errorMessage = language.localized(
+                "Abonelik seçenekleri App Store'dan yüklenemedi. Lütfen tekrar deneyin.",
+                "Subscription options could not be loaded from the App Store. Please try again."
+            )
         }
+    }
+
+    private func normalizedPackages(_ remotePackages: [SubscriptionPackageDTO]?) -> [SubscriptionPackageDTO] {
+        guard let remotePackages, !remotePackages.isEmpty else {
+            return Self.fallbackPackages
+        }
+
+        let bySlug = Dictionary(uniqueKeysWithValues: remotePackages.map { ($0.slug.lowercased(), $0) })
+        return Self.fallbackPackages.map { bySlug[$0.slug] ?? $0 }
+    }
+
+    private func fetchStoreProductsWithRetry() async throws -> [Product] {
+        var lastError: Error?
+
+        for attempt in 0..<3 {
+            do {
+                let products = try await Product.products(for: Self.storeProductIDs)
+                if !products.isEmpty || attempt == 2 {
+                    return products
+                }
+            } catch {
+                lastError = error
+                if attempt == 2 { throw error }
+            }
+
+            try await Task.sleep(for: .milliseconds(600 * (attempt + 1)))
+        }
+
+        if let lastError { throw lastError }
+        return []
     }
 
     private func productID(for package: SubscriptionPackageDTO, period: String) -> String {
