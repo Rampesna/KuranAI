@@ -6,8 +6,10 @@ readonly NAMESPACE="kuranai"
 readonly LOCK_FILE="/var/lock/kuranai-deploy.lock"
 readonly AAPANEL_WELL_KNOWN_DIR="/www/wwwroot/kuranai.talhacan.com/.well-known"
 readonly AAPANEL_VHOST="/www/server/panel/vhost/nginx/kuranai.talhacan.com.conf"
+readonly AAPANEL_WELL_KNOWN_CONFIG="/www/server/panel/vhost/nginx/well-known/kuranai.talhacan.com.conf"
 readonly AAPANEL_NGINX="/www/server/nginx/sbin/nginx"
-readonly AASA_INCLUDE="/www/wwwroot/kuranai/Kuran_AI_Infrastructures/aapanel/kuranai-well-known.conf"
+readonly LEGACY_AASA_INCLUDE="/www/wwwroot/kuranai/Kuran_AI_Infrastructures/aapanel/kuranai-well-known.conf"
+readonly LEGACY_AASA_EXTENSION="/www/server/panel/vhost/nginx/extension/kuranai.talhacan.com/kuranai-well-known.conf"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -19,7 +21,7 @@ if [[ "$PROJECT_ROOT" != "$EXPECTED_ROOT" ]]; then
   exit 1
 fi
 
-for command_name in docker git kubectl curl flock; do
+for command_name in docker git kubectl curl flock grep sed install; do
   command -v "$command_name" >/dev/null || { echo "Missing command: $command_name" >&2; exit 1; }
 done
 
@@ -84,18 +86,27 @@ install -d -m 755 "$AAPANEL_WELL_KNOWN_DIR"
 install -m 644 \
   "$PROJECT_ROOT/Kuran_AI_Web/public/.well-known/apple-app-site-association" \
   "$AAPANEL_WELL_KNOWN_DIR/apple-app-site-association"
-if ! grep -Fq "include $AASA_INCLUDE;" "$AAPANEL_VHOST"; then
-  sed -i "/#SERVER-BLOCK START/a\\    include $AASA_INCLUDE;" "$AAPANEL_VHOST"
+sed -i "\\|include $LEGACY_AASA_INCLUDE;|d" "$AAPANEL_VHOST"
+if [[ -f "$LEGACY_AASA_EXTENSION" ]] && \
+   grep -Fq 'proxy_pass http://127.0.0.1:7007;' "$LEGACY_AASA_EXTENSION"; then
+  rm -f "$LEGACY_AASA_EXTENSION"
 fi
+if grep -Fq "ngx.header['content-type'] = 'text/plain'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
+  sed -i "s#ngx.header\\['content-type'\\] = 'text/plain'#if ngx.var.uri == '/.well-known/apple-app-site-association' then ngx.header['content-type'] = 'application/json' else ngx.header['content-type'] = 'text/plain' end#" \
+    "$AAPANEL_WELL_KNOWN_CONFIG"
+fi
+grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"
 "$AAPANEL_NGINX" -t
 "$AAPANEL_NGINX" -s reload
-curl --fail --silent --show-error --retry 10 --retry-delay 2 \
-  --resolve kuranai.talhacan.com:443:127.0.0.1 \
-  https://kuranai.talhacan.com/.well-known/apple-app-site-association >/dev/null
-aasa_content_type="$(curl --fail --silent --show-error \
-  --resolve kuranai.talhacan.com:443:127.0.0.1 \
-  --output /dev/null --write-out '%{content_type}' \
-  https://kuranai.talhacan.com/.well-known/apple-app-site-association)"
+aasa_content_type=""
+for _ in {1..10}; do
+  aasa_content_type="$(curl --fail --silent --show-error \
+    --resolve kuranai.talhacan.com:443:127.0.0.1 \
+    --output /dev/null --write-out '%{content_type}' \
+    https://kuranai.talhacan.com/.well-known/apple-app-site-association)"
+  [[ "$aasa_content_type" == application/json* ]] && break
+  sleep 1
+done
 [[ "$aasa_content_type" == application/json* ]] || {
   echo "Unexpected AASA content type: $aasa_content_type" >&2
   exit 1
