@@ -5,10 +5,10 @@ import { useLanguage } from '../i18n/LanguageContext'
 import styles from './Packages.module.css'
 
 const fallbackPackages = [
-  { id: 'bronze', slug: 'bronze', name: 'Bronze', nameEn: 'Bronze', dailyQuestionLimit: 100, dailyTTSLimit: 5, monthlyPriceTL: 29.99, yearlyPriceTL: 299.90 },
-  { id: 'silver', slug: 'silver', name: 'Gümüş', nameEn: 'Silver', dailyQuestionLimit: 250, dailyTTSLimit: 50, monthlyPriceTL: 49.99, yearlyPriceTL: 499.90 },
-  { id: 'gold', slug: 'gold', name: 'Altın', nameEn: 'Gold', dailyQuestionLimit: null, dailyTTSLimit: 100, monthlyPriceTL: 79.99, yearlyPriceTL: 799.90 },
-  { id: 'diamond', slug: 'diamond', name: 'Elmas', nameEn: 'Diamond', dailyQuestionLimit: null, dailyTTSLimit: null, monthlyPriceTL: 149.99, yearlyPriceTL: 1499.90 },
+  { id: 'bronze', slug: 'bronze', name: 'Bronze', nameEn: 'Bronze', dailyQuestionLimit: 100, dailyTTSLimit: 5, monthlyPriceTL: 29.99, yearlyPriceTL: 299.99 },
+  { id: 'silver', slug: 'silver', name: 'Gümüş', nameEn: 'Silver', dailyQuestionLimit: 250, dailyTTSLimit: 50, monthlyPriceTL: 49.99, yearlyPriceTL: 499.99 },
+  { id: 'gold', slug: 'gold', name: 'Altın', nameEn: 'Gold', dailyQuestionLimit: null, dailyTTSLimit: 100, monthlyPriceTL: 79.99, yearlyPriceTL: 799.99 },
+  { id: 'diamond', slug: 'diamond', name: 'Elmas', nameEn: 'Diamond', dailyQuestionLimit: null, dailyTTSLimit: null, monthlyPriceTL: 149.99, yearlyPriceTL: 1499.99 },
 ]
 
 function readAccessToken() {

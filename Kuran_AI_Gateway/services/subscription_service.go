@@ -94,10 +94,10 @@ func (s *SubscriptionService) CreateSubscription(ctx context.Context, userID uin
 // SeedPackages paketleri seed eder (yoksa oluşturur).
 func (s *SubscriptionService) SeedPackages(ctx context.Context) error {
 	pkgs := []models.SubscriptionPackage{
-		{Name: "Bronze", NameEn: "Bronze", Slug: "bronze", DailyQuestionLimit: intPtr(100), DailyTTSLimit: intPtr(5), MonthlyPriceTL: 29.99, YearlyPriceTL: 299.90, SortOrder: 1},
-		{Name: "Gümüş", NameEn: "Silver", Slug: "silver", DailyQuestionLimit: intPtr(250), DailyTTSLimit: intPtr(50), MonthlyPriceTL: 49.99, YearlyPriceTL: 499.90, SortOrder: 2},
-		{Name: "Altın", NameEn: "Gold", Slug: "gold", DailyQuestionLimit: nil, DailyTTSLimit: intPtr(100), MonthlyPriceTL: 79.99, YearlyPriceTL: 799.90, SortOrder: 3},
-		{Name: "Elmas", NameEn: "Diamond", Slug: "diamond", DailyQuestionLimit: nil, DailyTTSLimit: nil, MonthlyPriceTL: 149.99, YearlyPriceTL: 1499.90, SortOrder: 4},
+		{Name: "Bronze", NameEn: "Bronze", Slug: "bronze", DailyQuestionLimit: intPtr(100), DailyTTSLimit: intPtr(5), MonthlyPriceTL: 29.99, YearlyPriceTL: 299.99, SortOrder: 1},
+		{Name: "Gümüş", NameEn: "Silver", Slug: "silver", DailyQuestionLimit: intPtr(250), DailyTTSLimit: intPtr(50), MonthlyPriceTL: 49.99, YearlyPriceTL: 499.99, SortOrder: 2},
+		{Name: "Altın", NameEn: "Gold", Slug: "gold", DailyQuestionLimit: nil, DailyTTSLimit: intPtr(100), MonthlyPriceTL: 79.99, YearlyPriceTL: 799.99, SortOrder: 3},
+		{Name: "Elmas", NameEn: "Diamond", Slug: "diamond", DailyQuestionLimit: nil, DailyTTSLimit: nil, MonthlyPriceTL: 149.99, YearlyPriceTL: 1499.99, SortOrder: 4},
 	}
 	for i := range pkgs {
 		if err := database.DB.WithContext(ctx).Clauses(clause.OnConflict{
