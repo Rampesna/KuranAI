@@ -94,7 +94,8 @@ if [[ -f "$LEGACY_AASA_EXTENSION" ]] && \
   rm -f "$LEGACY_AASA_EXTENSION"
   nginx_config_changed=1
 fi
-if grep -Fq "ngx.header['content-type'] = 'text/plain'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
+if ! grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
+  grep -Fq "ngx.header['content-type'] = 'text/plain'" "$AAPANEL_WELL_KNOWN_CONFIG"
   sed -i "s#ngx.header\\['content-type'\\] = 'text/plain'#if ngx.var.uri == '/.well-known/apple-app-site-association' then ngx.header['content-type'] = 'application/json' else ngx.header['content-type'] = 'text/plain' end#" \
     "$AAPANEL_WELL_KNOWN_CONFIG"
   nginx_config_changed=1
