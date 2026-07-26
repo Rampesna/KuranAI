@@ -83,18 +83,27 @@ install -d -m 755 "$AAPANEL_WELL_KNOWN_DIR"
 install -m 644 \
   "$PROJECT_ROOT/Kuran_AI_Web/public/.well-known/apple-app-site-association" \
   "$AAPANEL_WELL_KNOWN_DIR/apple-app-site-association"
-sed -i "\\|include $LEGACY_AASA_INCLUDE;|d" "$AAPANEL_VHOST"
+
+nginx_config_changed=0
+if grep -Fq "include $LEGACY_AASA_INCLUDE;" "$AAPANEL_VHOST"; then
+  sed -i "\\|include $LEGACY_AASA_INCLUDE;|d" "$AAPANEL_VHOST"
+  nginx_config_changed=1
+fi
 if [[ -f "$LEGACY_AASA_EXTENSION" ]] && \
    grep -Fq 'proxy_pass http://127.0.0.1:7007;' "$LEGACY_AASA_EXTENSION"; then
   rm -f "$LEGACY_AASA_EXTENSION"
+  nginx_config_changed=1
 fi
 if grep -Fq "ngx.header['content-type'] = 'text/plain'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
   sed -i "s#ngx.header\\['content-type'\\] = 'text/plain'#if ngx.var.uri == '/.well-known/apple-app-site-association' then ngx.header['content-type'] = 'application/json' else ngx.header['content-type'] = 'text/plain' end#" \
     "$AAPANEL_WELL_KNOWN_CONFIG"
+  nginx_config_changed=1
 fi
 grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"
-"$AAPANEL_NGINX" -t
-"$AAPANEL_NGINX" -s reload
+if (( nginx_config_changed )); then
+  "$AAPANEL_NGINX" -t
+  "$AAPANEL_NGINX" -s reload
+fi
 aasa_content_type=""
 for _ in {1..10}; do
   aasa_content_type="$(curl --fail --silent --show-error \
