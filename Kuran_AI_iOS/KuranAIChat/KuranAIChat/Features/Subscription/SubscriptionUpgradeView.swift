@@ -5,6 +5,8 @@ private let collapsedCardHeight: CGFloat = 64
 private let cardCornerRadius: CGFloat = 20
 
 struct SubscriptionUpgradeView: View {
+    private static let pendingReceiptSyncKey = "kuranai.pendingReceiptSync"
+
     private static let fallbackPackages: [SubscriptionPackageDTO] = [
         .init(id: 1, name: "Bronze", nameEn: "Bronze", slug: "bronze", dailyQuestionLimit: 100, dailyTTSLimit: 5, monthlyPriceTL: 29.99, yearlyPriceTL: 299.99),
         .init(id: 2, name: "Gümüş", nameEn: "Silver", slug: "silver", dailyQuestionLimit: 250, dailyTTSLimit: 50, monthlyPriceTL: 49.99, yearlyPriceTL: 499.99),
@@ -68,7 +70,10 @@ struct SubscriptionUpgradeView: View {
                 .padding(.top, 8)
             }
         }
-        .task { await loadPackages() }
+        .task {
+            await syncPendingPurchaseIfNeeded()
+            await loadPackages()
+        }
         .onChange(of: packages.count) { _, count in
             if count > 0 { selectedIndex = count - 1 }
         }
@@ -140,7 +145,7 @@ struct SubscriptionUpgradeView: View {
                     isLast: index == packages.count - 1,
                     isPurchasing: purchasingProductId != nil
                 ) { product in
-                    Task { await purchase(product: product, package: pkg) }
+                    Task { await purchase(product: product) }
                 } onTap: {
                     withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
                         selectedIndex = index
@@ -289,7 +294,7 @@ struct SubscriptionUpgradeView: View {
         "kuranai.\(package.slug.lowercased()).\(period)"
     }
 
-    private func purchase(product: Product, package: SubscriptionPackageDTO) async {
+    private func purchase(product: Product) async {
         purchasingProductId = product.id
         errorMessage = nil
         defer { purchasingProductId = nil }
@@ -299,11 +304,21 @@ struct SubscriptionUpgradeView: View {
             switch result {
             case .success(let verification):
                 let transaction: StoreKit.Transaction = try checkVerified(verification)
-                guard let receipt = getAppReceiptBase64(), !receipt.isEmpty else {
-                    throw StoreError.receiptUnavailable
-                }
-                _ = try await SubscriptionService.shared.purchase(receiptData: receipt)
+
+                // StoreKit 2 may update the app receipt shortly after a successful
+                // transaction. Finish the verified transaction first, then retry
+                // backend synchronization instead of reporting a completed purchase
+                // as failed because the receipt was not available immediately.
+                UserDefaults.standard.set(true, forKey: Self.pendingReceiptSyncKey)
                 await transaction.finish()
+
+                do {
+                    try await syncReceiptToBackendWithRetry()
+                } catch {
+                    // The App Store purchase is complete. Keep the pending marker so
+                    // the next subscription-screen visit can synchronize it again.
+                }
+
                 onPurchaseSuccess()
                 dismiss()
             case .userCancelled:
@@ -333,18 +348,47 @@ struct SubscriptionUpgradeView: View {
         return data.base64EncodedString()
     }
 
+    private func syncReceiptToBackendWithRetry(maxAttempts: Int = 6) async throws {
+        var lastError: Error?
+
+        for attempt in 0..<maxAttempts {
+            if let receipt = getAppReceiptBase64(), !receipt.isEmpty {
+                do {
+                    _ = try await SubscriptionService.shared.purchase(receiptData: receipt)
+                    UserDefaults.standard.removeObject(forKey: Self.pendingReceiptSyncKey)
+                    return
+                } catch {
+                    lastError = error
+                }
+            } else {
+                lastError = StoreError.receiptUnavailable
+            }
+
+            if attempt < maxAttempts - 1 {
+                try await Task.sleep(for: .milliseconds(500 * (attempt + 1)))
+            }
+        }
+
+        throw lastError ?? StoreError.receiptUnavailable
+    }
+
+    private func syncPendingPurchaseIfNeeded() async {
+        guard UserDefaults.standard.bool(forKey: Self.pendingReceiptSyncKey) else { return }
+        try? await syncReceiptToBackendWithRetry(maxAttempts: 3)
+    }
+
     private func restorePurchases() async {
         do {
             try await AppStore.sync()
-            if let receipt = getAppReceiptBase64(), !receipt.isEmpty {
-                _ = try await SubscriptionService.shared.purchase(receiptData: receipt)
-                onPurchaseSuccess()
-                dismiss()
-            } else {
-                errorMessage = language.localized("Geri yüklenecek satın alma bulunamadı.", "No purchases to restore.")
-            }
+            UserDefaults.standard.set(true, forKey: Self.pendingReceiptSyncKey)
+            try await syncReceiptToBackendWithRetry()
+            onPurchaseSuccess()
+            dismiss()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = language.localized(
+                "Satın alma bilgileri geri yüklenemedi. Lütfen tekrar deneyin.",
+                "Purchase information could not be restored. Please try again."
+            )
         }
     }
 }
