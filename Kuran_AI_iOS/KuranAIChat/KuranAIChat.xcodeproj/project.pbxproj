@@ -21,6 +21,7 @@
 		814EDDC32F323095000DBF94 /* Exceptions for "KuranAIChat" folder in "KuranAIChat" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Configuration.storekit,
 				Info.plist,
 			);
 			target = 81D808432F31E76600E0FB8B /* KuranAIChat */;

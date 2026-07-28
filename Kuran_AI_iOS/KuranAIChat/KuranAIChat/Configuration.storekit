@@ -9,7 +9,9 @@
   "settings" : {
     "_applicationInternalID" : "6758725997",
     "_developerTeamID" : "SGQ86WW4J3",
-    "_lastSynchronizedDate" : 757382400
+    "_lastSynchronizedDate" : 757382400,
+    "_locale" : "tr_TR",
+    "_storefront" : "TUR"
   },
   "subscriptionGroups" : [
     {
@@ -26,19 +28,19 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "25",
+          "displayPrice" : "29.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "bronze_monthly",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Bronze Paket Aylık",
-              "displayName" : "Bronze Aylık",
+              "description" : "Günde 100 soru, 5 ses; aylık abonelik",
+              "displayName" : "Bronz Aylık",
               "locale" : "tr"
             },
             {
-              "description" : "Bronze Monthly",
+              "description" : "100 daily questions, 5 voices, billed monthly",
               "displayName" : "Bronze Monthly",
               "locale" : "en_US"
             }
@@ -56,16 +58,21 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "250",
+          "displayPrice" : "299.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "bronze_yearly",
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "Bronze Paket Yıllık",
-              "displayName" : "Bronze Yıllık",
+              "description" : "Günde 100 soru, 5 ses; yıllık abonelik",
+              "displayName" : "Bronz Yıllık",
               "locale" : "tr"
+            },
+            {
+              "description" : "100 daily questions, 5 voices, billed yearly",
+              "displayName" : "Bronze Yearly",
+              "locale" : "en_US"
             }
           ],
           "productID" : "kuranai.bronze.yearly",
@@ -81,13 +88,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "35",
+          "displayPrice" : "49.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "silver_monthly",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "Günde 250 soru, 50 ses; aylık abonelik",
+              "displayName" : "Gümüş Aylık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "250 daily questions, 50 voices, billed monthly",
+              "displayName" : "Silver Monthly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "kuranai.silver.monthly",
           "recurringSubscriptionPeriod" : "P1M",
@@ -102,13 +118,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "350",
+          "displayPrice" : "499.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "silver_yearly",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "Günde 250 soru, 50 ses; yıllık abonelik",
+              "displayName" : "Gümüş Yıllık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "250 daily questions, 50 voices, billed yearly",
+              "displayName" : "Silver Yearly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "kuranai.silver.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
@@ -123,13 +148,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "75",
+          "displayPrice" : "79.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "gold_monthly",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "Sınırsız soru, 100 ses; aylık abonelik",
+              "displayName" : "Altın Aylık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "Unlimited questions, 100 voices, billed monthly",
+              "displayName" : "Gold Monthly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "kuranai.gold.monthly",
           "recurringSubscriptionPeriod" : "P1M",
@@ -144,13 +178,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "750",
+          "displayPrice" : "799.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "gold_yearly",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "Sınırsız soru, 100 ses; yıllık abonelik",
+              "displayName" : "Altın Yıllık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "Unlimited questions, 100 voices, billed yearly",
+              "displayName" : "Gold Yearly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "kuranai.gold.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
@@ -165,13 +208,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "120",
+          "displayPrice" : "149.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "diamond_monthly",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "Sınırsız soru ve ses; aylık abonelik",
+              "displayName" : "Elmas Aylık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "Unlimited questions and voices, billed monthly",
+              "displayName" : "Diamond Monthly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "kuranai.diamond.monthly",
           "recurringSubscriptionPeriod" : "P1M",
@@ -186,13 +238,22 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "1200",
+          "displayPrice" : "1499.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "diamond_yearly",
           "introductoryOffer" : null,
           "localizations" : [
-
+            {
+              "description" : "Sınırsız soru ve ses; yıllık abonelik",
+              "displayName" : "Elmas Yıllık",
+              "locale" : "tr"
+            },
+            {
+              "description" : "Unlimited questions and voices, billed yearly",
+              "displayName" : "Diamond Yearly",
+              "locale" : "en_US"
+            }
           ],
           "productID" : "kuranai.diamond.yearly",
           "recurringSubscriptionPeriod" : "P1Y",
