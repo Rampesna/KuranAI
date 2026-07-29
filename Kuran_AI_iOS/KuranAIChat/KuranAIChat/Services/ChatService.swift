@@ -35,7 +35,13 @@ final class ChatService {
         return (data.items, data.total)
     }
 
-    func sendMessageStream(sessionId: UInt?, sourceType: SourceFilter, content: String, onChunk: @escaping (String) -> Void) async throws -> UInt {
+    func sendMessageStream(
+        sessionId: UInt?,
+        sourceType: SourceFilter,
+        content: String,
+        onChunk: @escaping (String) -> Void,
+        onCompleted: @escaping (String) -> Void
+    ) async throws -> UInt {
         let token = await APIClient.shared.authToken
         guard let token else { throw APIError.serverError("Not authenticated") }
 
@@ -86,6 +92,8 @@ final class ChatService {
                 lastSessionId = UInt(sid)
             } else if type == "chunk", let content = event["content"] as? String {
                 onChunk(content)
+            } else if type == "completed", let content = event["content"] as? String {
+                onCompleted(content)
             } else if type == "done", let sid = event["sessionId"] as? Int {
                 lastSessionId = UInt(sid)
             } else if type == "error", let msg = event["message"] as? String {

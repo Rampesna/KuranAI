@@ -357,6 +357,11 @@ export default function Chat() {
               index === previous.length - 1 ? { ...message, content: message.content + payload.content } : message
             )))
           }
+          if (payload.type === 'completed') {
+            setMessages(previous => previous.map((message, index) => (
+              index === previous.length - 1 ? { ...message, content: payload.content } : message
+            )))
+          }
         }
         if (done) break
       }

@@ -19,7 +19,9 @@ type Config struct {
 }
 
 type OpenAIConfig struct {
-	APIKey string
+	APIKey          string
+	ChatModel       string
+	ReasoningEffort string
 }
 
 type AppleIAPConfig struct {
@@ -116,7 +118,9 @@ func Load() *Config {
 			RPOrigins: getEnvList("WEBAUTHN_RP_ORIGINS", "https://kuranai.talhacan.com"),
 		},
 		OpenAI: OpenAIConfig{
-			APIKey: getEnv("OPENAI_API_KEY", ""),
+			APIKey:          getEnv("OPENAI_API_KEY", ""),
+			ChatModel:       getEnv("OPENAI_CHAT_MODEL", "gpt-5.6-terra"),
+			ReasoningEffort: getEnv("OPENAI_REASONING_EFFORT", "medium"),
 		},
 		AppleIAP: AppleIAPConfig{
 			SharedSecret: getEnv("APPLE_IAP_SHARED_SECRET", ""),

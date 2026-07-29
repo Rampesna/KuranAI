@@ -176,7 +176,7 @@ func main() {
 	routes.RegisterUserRoutes(apiGroup, userService, tokenService, passkeyService)
 	routes.RegisterManagerRoutes(apiGroup, managerService, tokenService)
 	routes.RegisterPrayerRoutes(apiGroup, prayerService)
-	routes.RegisterChatRoutes(apiGroup, tokenService, appConfig.OpenAI.APIKey, usageSvc)
+	routes.RegisterChatRoutes(apiGroup, tokenService, appConfig.OpenAI, usageSvc)
 	routes.RegisterSubscriptionRoutes(
 		apiGroup,
 		tokenService,

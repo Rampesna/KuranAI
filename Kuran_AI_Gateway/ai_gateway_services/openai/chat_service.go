@@ -14,24 +14,39 @@ import (
 )
 
 const (
-	chatModel   = "gpt-5.6-terra"
-	chatBaseURL = "https://api.openai.com/v1"
+	defaultChatModel           = "gpt-5.6-terra"
+	defaultChatReasoningEffort = "medium"
+	chatBaseURL                = "https://api.openai.com/v1"
 )
 
 // ChatService OpenAI chat completions servisi.
 type ChatService struct {
-	baseURL string
-	apiKey  string
-	client  *http.Client
+	baseURL         string
+	apiKey          string
+	model           string
+	reasoningEffort string
+	client          *http.Client
 }
 
 // NewChatService ChatService oluşturur.
-func NewChatService(apiKey string) *ChatService {
-	return &ChatService{
-		baseURL: chatBaseURL,
-		apiKey:  apiKey,
-		client:  &http.Client{Timeout: 120 * time.Second},
+func NewChatService(apiKey, model, reasoningEffort string) *ChatService {
+	model = strings.TrimSpace(model)
+	if model == "" {
+		model = defaultChatModel
 	}
+	reasoningEffort = strings.TrimSpace(reasoningEffort)
+	if reasoningEffort == "" {
+		reasoningEffort = defaultChatReasoningEffort
+	}
+	service := &ChatService{
+		baseURL:         chatBaseURL,
+		apiKey:          apiKey,
+		model:           model,
+		reasoningEffort: reasoningEffort,
+		client:          &http.Client{Timeout: 120 * time.Second},
+	}
+	log.Printf("[Chat] OpenAI configured model=%s reasoning_effort=%s", service.model, service.reasoningEffort)
+	return service
 }
 
 // ChatMessage chat mesajı.
@@ -42,9 +57,10 @@ type ChatMessage struct {
 
 // ChatRequest chat isteği.
 type ChatRequest struct {
-	Model    string        `json:"model"`
-	Messages []ChatMessage `json:"messages"`
-	Stream   bool          `json:"stream"`
+	Model           string        `json:"model"`
+	Messages        []ChatMessage `json:"messages"`
+	Stream          bool          `json:"stream"`
+	ReasoningEffort string        `json:"reasoning_effort,omitempty"`
 }
 
 // ChatStreamDelta SSE stream delta.
@@ -70,9 +86,10 @@ func (s *ChatService) StreamChat(ctx context.Context, messages []ChatMessage, on
 	}
 
 	reqBody := ChatRequest{
-		Model:    chatModel,
-		Messages: messages,
-		Stream:   true,
+		Model:           s.model,
+		Messages:        messages,
+		Stream:          true,
+		ReasoningEffort: s.reasoningEffort,
 	}
 	bodyBytes, err := json.Marshal(reqBody)
 	if err != nil {

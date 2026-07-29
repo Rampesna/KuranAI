@@ -87,6 +87,10 @@ func (h *MessageHandler) SendMessage(c *gin.Context) {
 		func(chunk string) error {
 			writeSSE(map[string]interface{}{"type": "chunk", "content": chunk})
 			return nil
+		},
+		func(content string) error {
+			writeSSE(map[string]interface{}{"type": "completed", "content": content})
+			return nil
 		})
 	if err != nil {
 		log.Printf("[Chat] ProcessMessage error: %v", err)

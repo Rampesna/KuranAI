@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.talhacan.kuranai.billing.BillingStore
 import com.talhacan.kuranai.data.ApiException
 import com.talhacan.kuranai.media.AudioController
+import com.talhacan.kuranai.media.RecordingStopReason
 import com.talhacan.kuranai.model.AppLanguage
 import com.talhacan.kuranai.model.AppPage
 import com.talhacan.kuranai.model.AppState
@@ -352,6 +353,13 @@ class KuranAIViewModel(application: Application) : AndroidViewModel(application)
                             },
                         )
                     },
+                    onCompleted = { content ->
+                        _state.value = _state.value.copy(
+                            messages = _state.value.messages.map {
+                                if (it.id == assistantId) it.copy(content = content) else it
+                            },
+                        )
+                    },
                 )
                 _state.value = _state.value.copy(
                     sending = false,
@@ -386,26 +394,58 @@ class KuranAIViewModel(application: Application) : AndroidViewModel(application)
             return
         }
         if (_state.value.recording) {
-            val file = runCatching(audio::stopRecording).getOrElse {
-                _state.value = _state.value.copy(recording = false, error = it.localizedMessage)
-                return
-            }
-            _state.value = _state.value.copy(recording = false, loading = true)
-            viewModelScope.launch {
-                try {
-                    val transcription = api.transcribe(file)
-                    sendMessage(transcription)
-                } catch (error: Exception) {
-                    _state.value = _state.value.copy(error = friendlyError(error))
-                } finally {
-                    file.delete()
-                    _state.value = _state.value.copy(loading = false)
+            finishRecording()
+        } else {
+            runCatching {
+                audio.startRecording { reason ->
+                    finishRecording(reason)
                 }
             }
-        } else {
-            runCatching { audio.startRecording() }
                 .onSuccess { _state.value = _state.value.copy(recording = true, error = null) }
                 .onFailure { _state.value = _state.value.copy(error = it.localizedMessage) }
+        }
+    }
+
+    private fun finishRecording(reason: RecordingStopReason? = null) {
+        if (!_state.value.recording) return
+        if (reason == RecordingStopReason.NoSpeech) {
+            audio.cancelRecording()
+            _state.value = _state.value.copy(
+                recording = false,
+                error = localized(
+                    "Konuşma algılanamadı. Mikrofona biraz daha yakın konuşup tekrar deneyin.",
+                    "No speech was detected. Move a little closer to the microphone and try again.",
+                    "لم يتم اكتشاف كلام. اقترب قليلاً من الميكروفون وحاول مرة أخرى.",
+                ),
+            )
+            return
+        }
+
+        val file = runCatching(audio::stopRecording).getOrElse {
+            _state.value = _state.value.copy(recording = false, error = it.localizedMessage)
+            return
+        }
+        _state.value = _state.value.copy(recording = false, loading = true)
+        viewModelScope.launch {
+            try {
+                val transcription = api.transcribe(file).trim()
+                if (transcription.isBlank()) {
+                    _state.value = _state.value.copy(
+                        error = localized(
+                            "Ses anlaşılamadı. Lütfen tekrar deneyin.",
+                            "The audio could not be understood. Please try again.",
+                            "تعذر فهم الصوت. يرجى المحاولة مرة أخرى.",
+                        ),
+                    )
+                } else {
+                    sendMessage(transcription)
+                }
+            } catch (error: Exception) {
+                _state.value = _state.value.copy(error = friendlyError(error))
+            } finally {
+                file.delete()
+                _state.value = _state.value.copy(loading = false)
+            }
         }
     }
 
@@ -580,5 +620,10 @@ class KuranAIViewModel(application: Application) : AndroidViewModel(application)
         AppLanguage.Turkish -> tr
         AppLanguage.English -> en
         AppLanguage.Arabic -> ar
+    }
+
+    override fun onCleared() {
+        audio.close()
+        super.onCleared()
     }
 }

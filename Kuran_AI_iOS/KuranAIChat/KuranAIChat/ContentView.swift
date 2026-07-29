@@ -364,6 +364,12 @@ struct ChatView: View {
                 speechService.limitExceededInfo = nil
             }
         }
+        .onDisappear {
+            if isRecording {
+                AudioRecorderService.shared.cancelRecording()
+                isRecording = false
+            }
+        }
         .overlay(alignment: .bottomTrailing) {
             if userScrolledAway, !messages.isEmpty {
                 Button {
@@ -541,7 +547,10 @@ struct ChatView: View {
             } else {
                 VStack(alignment: .leading, spacing: 12) {
                     ForEach(Array(blocks.enumerated()), id: \.offset) { _, block in
-                        if let attr = try? AttributedString(markdown: block) {
+                        if let attr = try? AttributedString(
+                            markdown: portableBlock(block),
+                            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+                        ) {
                             Text(attr)
                                 .font(.system(size: 15))
                                 .lineSpacing(6)
@@ -561,6 +570,37 @@ struct ChatView: View {
             text.components(separatedBy: "\n\n")
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
                 .filter { !$0.isEmpty }
+        }
+
+        private func portableBlock(_ block: String) -> String {
+            block.components(separatedBy: .newlines)
+                .compactMap { rawLine -> String? in
+                    var line = rawLine.trimmingCharacters(in: .whitespaces)
+                    while line.hasPrefix("#") {
+                        line.removeFirst()
+                        line = line.trimmingCharacters(in: .whitespaces)
+                    }
+                    if line.hasPrefix("- ") || line.hasPrefix("* ") || line.hasPrefix("+ ") {
+                        line = "• " + String(line.dropFirst(2))
+                    }
+                    if line.hasPrefix("|"), line.hasSuffix("|") {
+                        let cells = line
+                            .dropFirst()
+                            .dropLast()
+                            .split(separator: "|")
+                            .map { $0.trimmingCharacters(in: .whitespaces) }
+                        let isSeparator = !cells.isEmpty && cells.allSatisfy {
+                            let value = $0.replacingOccurrences(of: ":", with: "")
+                            return value.count >= 3 && value.allSatisfy { $0 == "-" }
+                        }
+                        if isSeparator { return nil }
+                        if cells.count > 1 {
+                            line = cells[0] + ": " + cells.dropFirst().joined(separator: " — ")
+                        }
+                    }
+                    return line
+                }
+                .joined(separator: "\n")
         }
     }
 
@@ -706,18 +746,30 @@ struct ChatView: View {
                 let sid = try await ChatService.shared.sendMessageStream(
                     sessionId: currentSessionId,
                     sourceType: selectedSource,
-                    content: userContent
-                ) { chunk in
-                    DispatchQueue.main.async {
-                        guard let idx = messages.lastIndex(where: { $0.role == "assistant" && $0.isStreaming }) else { return }
-                        var copy = messages
-                        var m = copy[idx]
-                        m.content += chunk
-                        copy[idx] = m
-                        messages = copy
-                        scrollTrigger += 1
+                    content: userContent,
+                    onChunk: { chunk in
+                        DispatchQueue.main.async {
+                            guard let idx = messages.lastIndex(where: { $0.role == "assistant" && $0.isStreaming }) else { return }
+                            var copy = messages
+                            var m = copy[idx]
+                            m.content += chunk
+                            copy[idx] = m
+                            messages = copy
+                            scrollTrigger += 1
+                        }
+                    },
+                    onCompleted: { content in
+                        DispatchQueue.main.async {
+                            guard let idx = messages.lastIndex(where: { $0.role == "assistant" && $0.isStreaming }) else { return }
+                            var copy = messages
+                            var m = copy[idx]
+                            m.content = content
+                            copy[idx] = m
+                            messages = copy
+                            scrollTrigger += 1
+                        }
                     }
-                }
+                )
                 currentSessionId = sid
                 if let idx = messages.lastIndex(where: { $0.role == "assistant" && $0.isStreaming }) {
                     var copy = messages
@@ -765,30 +817,56 @@ struct ChatView: View {
             return
         }
         if isRecording {
-            isRecording = false
-            isTranscribing = true
-            transcribeError = nil
-            defer { isTranscribing = false }
-            do {
-                let data = try AudioRecorderService.shared.stopRecording()
-                let text = try await TranscribeService.shared.transcribe(audioData: data)
-                let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-                if !trimmed.isEmpty {
-                    input = input.isEmpty ? trimmed : (input + " " + trimmed)
-                }
-            } catch {
-                transcribeError = error.localizedDescription
-            }
+            await finishRecording()
         } else {
             transcribeError = nil
-            isRecording = true
             do {
                 try await AudioRecorderService.shared.requestPermissionAndPrepare()
-                try AudioRecorderService.shared.startRecording()
+                try AudioRecorderService.shared.startRecording { reason in
+                    Task { @MainActor in
+                        await finishRecording(reason: reason)
+                    }
+                }
+                isRecording = true
             } catch {
                 isRecording = false
                 transcribeError = error.localizedDescription
             }
+        }
+    }
+
+    private func finishRecording(reason: AudioRecordingStopReason? = nil) async {
+        guard isRecording || AudioRecorderService.shared.isRecording else { return }
+        isRecording = false
+        transcribeError = nil
+
+        if reason == .noSpeech {
+            AudioRecorderService.shared.cancelRecording()
+            transcribeError = language.localized(
+                "Konuşma algılanamadı. Mikrofona biraz daha yakın konuşup tekrar deneyin.",
+                "No speech was detected. Move a little closer to the microphone and try again.",
+                "لم يتم اكتشاف كلام. اقترب قليلاً من الميكروفون وحاول مرة أخرى."
+            )
+            return
+        }
+
+        isTranscribing = true
+        defer { isTranscribing = false }
+        do {
+            let data = try AudioRecorderService.shared.stopRecording()
+            let text = try await TranscribeService.shared.transcribe(audioData: data)
+            let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty {
+                transcribeError = language.localized(
+                    "Ses anlaşılamadı. Lütfen tekrar deneyin.",
+                    "The audio could not be understood. Please try again.",
+                    "تعذر فهم الصوت. يرجى المحاولة مرة أخرى."
+                )
+            } else {
+                input = input.isEmpty ? trimmed : (input + " " + trimmed)
+            }
+        } catch {
+            transcribeError = error.localizedDescription
         }
     }
 

@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"io"
 	"net/http"
 	"strings"
 
@@ -41,7 +42,13 @@ func (h *TranscribeHandler) Transcribe(c *gin.Context) {
 	}
 	defer f.Close()
 
-	// Max 25MB (Whisper limiti)
+	// Çok kısa/boş kayıtları OpenAI'a göndermeden reddet.
+	if file.Size < 1024 {
+		c.JSON(http.StatusBadRequest, core.NewServiceResponse(false, "audio file too short", 400, nil))
+		return
+	}
+
+	// Max 25MB (transkripsiyon servisi limiti)
 	if file.Size > 25*1024*1024 {
 		c.JSON(http.StatusBadRequest, core.NewServiceResponse(false, "file too large (max 25MB)", 400, nil))
 		return
@@ -61,8 +68,8 @@ func (h *TranscribeHandler) Transcribe(c *gin.Context) {
 		return
 	}
 
-	data := make([]byte, file.Size)
-	if _, err := f.Read(data); err != nil {
+	data, err := io.ReadAll(f)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, core.NewServiceResponse(false, "failed to read audio", 500, nil))
 		return
 	}
@@ -73,5 +80,11 @@ func (h *TranscribeHandler) Transcribe(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, core.NewServiceResponse(true, "ok", 200, gin.H{"text": strings.TrimSpace(text)}))
+	text = strings.TrimSpace(text)
+	if text == "" {
+		c.JSON(http.StatusUnprocessableEntity, core.NewServiceResponse(false, "speech could not be detected", 422, nil))
+		return
+	}
+
+	c.JSON(http.StatusOK, core.NewServiceResponse(true, "ok", 200, gin.H{"text": text}))
 }

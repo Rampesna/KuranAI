@@ -219,6 +219,7 @@ class ApiClient(private val sessionStore: SessionStore) {
         content: String,
         onStarted: suspend (Long) -> Unit,
         onChunk: suspend (String) -> Unit,
+        onCompleted: suspend (String) -> Unit,
     ): Long = withContext(Dispatchers.IO) {
         val requestBody = JsonObject().apply {
             if (sessionId != null) addProperty("sessionId", sessionId)
@@ -235,7 +236,14 @@ class ApiClient(private val sessionStore: SessionStore) {
         val response = client.newCall(callRequest).execute()
         if (response.code == 401 && refresh()) {
             response.close()
-            return@withContext streamMessage(sessionId, source, content, onStarted, onChunk)
+            return@withContext streamMessage(
+                sessionId,
+                source,
+                content,
+                onStarted,
+                onChunk,
+                onCompleted,
+            )
         }
         if (!response.isSuccessful) {
             val raw = response.body?.string().orEmpty()
@@ -252,6 +260,7 @@ class ApiClient(private val sessionStore: SessionStore) {
                     onStarted(resolvedSessionId)
                 }
                 "chunk" -> onChunk(payload.stringOrNull("content").orEmpty())
+                "completed" -> onCompleted(payload.stringOrNull("content").orEmpty())
                 "done" -> {
                     resolvedSessionId = payload.long("sessionId")
                     onStarted(resolvedSessionId)
