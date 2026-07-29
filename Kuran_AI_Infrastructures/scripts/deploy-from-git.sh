@@ -6,10 +6,11 @@ readonly NAMESPACE="kuranai"
 readonly LOCK_FILE="/var/lock/kuranai-deploy.lock"
 readonly AAPANEL_WELL_KNOWN_DIR="/www/wwwroot/kuranai.talhacan.com/.well-known"
 readonly AAPANEL_VHOST="/www/server/panel/vhost/nginx/kuranai.talhacan.com.conf"
-readonly AAPANEL_WELL_KNOWN_CONFIG="/www/server/panel/vhost/nginx/well-known/kuranai.talhacan.com.conf"
 readonly AAPANEL_NGINX="/www/server/nginx/sbin/nginx"
 readonly LEGACY_AASA_INCLUDE="/www/wwwroot/kuranai/Kuran_AI_Infrastructures/aapanel/kuranai-well-known.conf"
 readonly LEGACY_AASA_EXTENSION="/www/server/panel/vhost/nginx/extension/kuranai.talhacan.com/kuranai-well-known.conf"
+readonly ASSOCIATIONS_TEMPLATE="$EXPECTED_ROOT/Kuran_AI_Infrastructures/aapanel/kuranai-associations.conf"
+readonly ASSOCIATIONS_EXTENSION="/www/server/panel/vhost/nginx/extension/kuranai.talhacan.com/kuranai-associations.conf"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INFRA_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -86,38 +87,21 @@ install -m 644 \
 install -m 644 \
   "$PROJECT_ROOT/Kuran_AI_Web/public/.well-known/assetlinks.json" \
   "$AAPANEL_WELL_KNOWN_DIR/assetlinks.json"
+install -m 644 "$ASSOCIATIONS_TEMPLATE" "$ASSOCIATIONS_EXTENSION"
 
-nginx_config_changed=0
 if grep -Fq "include $LEGACY_AASA_INCLUDE;" "$AAPANEL_VHOST"; then
   sed -i "\\|include $LEGACY_AASA_INCLUDE;|d" "$AAPANEL_VHOST"
-  nginx_config_changed=1
 fi
 if [[ -f "$LEGACY_AASA_EXTENSION" ]] && \
    grep -Fq 'proxy_pass http://127.0.0.1:7007;' "$LEGACY_AASA_EXTENSION"; then
   rm -f "$LEGACY_AASA_EXTENSION"
-  nginx_config_changed=1
 fi
-if grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG" && \
-   ! grep -Fq "ngx.var.uri == '/.well-known/assetlinks.json'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
-  sed -i "s#ngx.var.uri == '/.well-known/apple-app-site-association'#ngx.var.uri == '/.well-known/apple-app-site-association' or ngx.var.uri == '/.well-known/assetlinks.json'#" \
-    "$AAPANEL_WELL_KNOWN_CONFIG"
-  nginx_config_changed=1
-elif ! grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
-  grep -Fq "ngx.header['content-type'] = 'text/plain'" "$AAPANEL_WELL_KNOWN_CONFIG"
-  sed -i "s#ngx.header\\['content-type'\\] = 'text/plain'#if ngx.var.uri == '/.well-known/apple-app-site-association' or ngx.var.uri == '/.well-known/assetlinks.json' then ngx.header['content-type'] = 'application/json' else ngx.header['content-type'] = 'text/plain' end#" \
-    "$AAPANEL_WELL_KNOWN_CONFIG"
-  nginx_config_changed=1
-fi
-grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"
-grep -Fq "ngx.var.uri == '/.well-known/assetlinks.json'" "$AAPANEL_WELL_KNOWN_CONFIG"
-if (( nginx_config_changed )); then
-  "$AAPANEL_NGINX" -t
-  "$AAPANEL_NGINX" -s reload
-fi
+"$AAPANEL_NGINX" -t
+"$AAPANEL_NGINX" -s reload
+
 aasa_content_type=""
 for _ in {1..10}; do
   aasa_content_type="$(curl --fail --silent --show-error \
-    --resolve kuranai.talhacan.com:443:127.0.0.1 \
     --output /dev/null --write-out '%{content_type}' \
     https://kuranai.talhacan.com/.well-known/apple-app-site-association)"
   [[ "$aasa_content_type" == application/json* ]] && break
@@ -131,7 +115,6 @@ done
 assetlinks_content_type=""
 for _ in {1..10}; do
   assetlinks_content_type="$(curl --fail --silent --show-error \
-    --resolve kuranai.talhacan.com:443:127.0.0.1 \
     --output /dev/null --write-out '%{content_type}' \
     https://kuranai.talhacan.com/.well-known/assetlinks.json)"
   [[ "$assetlinks_content_type" == application/json* ]] && break
