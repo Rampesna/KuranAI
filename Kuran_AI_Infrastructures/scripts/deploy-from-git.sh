@@ -56,6 +56,9 @@ docker build \
   --build-arg VITE_APPLE_CLIENT_ID=com.talhacan.kuranai.web \
   --build-arg VITE_APPLE_REDIRECT_URI=https://kuranai.talhacan.com/auth/apple/callback \
   -t kuranai-web:latest "$PROJECT_ROOT/Kuran_AI_Web"
+docker build \
+  --build-arg VITE_API_BASE=https://kuranai-api.talhacan.com \
+  -t kuranai-admin:latest "$PROJECT_ROOT/Kuran_AI_Admin"
 
 kubectl apply -f "$K8S_DIR/namespace.yaml"
 kubectl apply -f "$K8S_DIR/config.yaml"
@@ -69,14 +72,17 @@ kubectl apply -f "$K8S_DIR/migration.yaml"
 kubectl wait --for=condition=complete job/gateway-migrate -n "$NAMESPACE" --timeout=240s
 
 kubectl apply -f "$K8S_DIR/apps.yaml"
-kubectl rollout restart deployment/gateway deployment/web -n "$NAMESPACE"
+kubectl rollout restart deployment/gateway deployment/web deployment/admin -n "$NAMESPACE"
 kubectl rollout status deployment/gateway -n "$NAMESPACE" --timeout=300s
 kubectl rollout status deployment/web -n "$NAMESPACE" --timeout=180s
+kubectl rollout status deployment/admin -n "$NAMESPACE" --timeout=180s
 
 gateway_ready="$(kubectl get deployment/gateway -n "$NAMESPACE" -o jsonpath='{.status.readyReplicas}')"
 web_ready="$(kubectl get deployment/web -n "$NAMESPACE" -o jsonpath='{.status.readyReplicas}')"
+admin_ready="$(kubectl get deployment/admin -n "$NAMESPACE" -o jsonpath='{.status.readyReplicas}')"
 [[ "$gateway_ready" == "2" ]] || { echo "Expected 2 ready gateway pods, found $gateway_ready" >&2; exit 1; }
 [[ "$web_ready" == "1" ]] || { echo "Expected 1 ready web pod, found $web_ready" >&2; exit 1; }
+[[ "$admin_ready" == "1" ]] || { echo "Expected 1 ready admin pod, found $admin_ready" >&2; exit 1; }
 
 # aaPanel serves /.well-known from its own document root before the proxy project.
 # Keep Apple and Android association files there in addition to the web image.

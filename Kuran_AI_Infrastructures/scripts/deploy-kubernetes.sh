@@ -57,6 +57,9 @@ docker build \
   --build-arg VITE_APPLE_CLIENT_ID=com.talhacan.kuranai.web \
   --build-arg VITE_APPLE_REDIRECT_URI=https://kuranai.talhacan.com/auth/apple/callback \
   -t kuranai-web:latest "$PROJECT_ROOT/Kuran_AI_Web"
+docker build \
+  --build-arg VITE_API_BASE=https://kuranai-api.talhacan.com \
+  -t kuranai-admin:latest "$PROJECT_ROOT/Kuran_AI_Admin"
 
 kubectl apply -f "$K8S_DIR/config.yaml"
 kubectl apply -f "$K8S_DIR/data.yaml"
@@ -68,8 +71,9 @@ kubectl apply -f "$K8S_DIR/migration.yaml"
 kubectl wait --for=condition=complete job/gateway-migrate -n "$NAMESPACE" --timeout=240s
 
 kubectl apply -f "$K8S_DIR/apps.yaml"
-kubectl rollout restart deployment/gateway deployment/web -n "$NAMESPACE"
+kubectl rollout restart deployment/gateway deployment/web deployment/admin -n "$NAMESPACE"
 kubectl rollout status deployment/gateway -n "$NAMESPACE" --timeout=300s
 kubectl rollout status deployment/web -n "$NAMESPACE" --timeout=180s
+kubectl rollout status deployment/admin -n "$NAMESPACE" --timeout=180s
 
 kubectl get pods,svc,pvc -n "$NAMESPACE"

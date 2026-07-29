@@ -6,6 +6,7 @@ Production kurulumu diğer projelerden ayrılmış `kuranai` namespace'inde çal
 
 - Gateway: 2 pod, NodePort `7008`, `https://kuranai-api.talhacan.com`
 - Web: 1 pod, NodePort `7007`, `https://kuranai.talhacan.com`
+- Yönetim paneli: 1 pod, NodePort `7009`, `https://kuranaip.talhacan.com`
 - PostgreSQL + pgvector: 1 StatefulSet ve kalıcı disk
 - Redis: 1 StatefulSet ve kalıcı disk
 - Avatar yüklemeleri: kalıcı disk
@@ -31,6 +32,7 @@ Script tablo doluysa tekrar import etmez. Durumu kontrol etmek için:
 kubectl get pods,svc,pvc -n kuranai
 kubectl rollout status deployment/gateway -n kuranai
 kubectl rollout status deployment/web -n kuranai
+kubectl rollout status deployment/admin -n kuranai
 ```
 
 ## Local Development: Docker Compose
@@ -119,6 +121,7 @@ Gateway çalışırken: **http://localhost:9300/docs** adresinden Scalar API Ref
 |---|---:|---|---|
 | Kubernetes | 7007 | Web | aaPanel proxy hedefi |
 | Kubernetes | 7008 | Gateway | aaPanel API proxy hedefi |
+| Kubernetes | 7009 | Yönetim paneli | aaPanel yönetim paneli proxy hedefi |
 | Docker Compose | 9300 | Gateway | Yerel API ve Scalar docs |
 | Docker Compose | 9301 | PostgreSQL | Yerel pgvector |
 | Docker Compose | 9302 | Redis | Yerel JWT cache |

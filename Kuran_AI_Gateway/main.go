@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -18,9 +19,12 @@ import (
 	"github.com/rampesna/kuran-ai-gateway/docs"
 	publicHandlers "github.com/rampesna/kuran-ai-gateway/handlers/public"
 	"github.com/rampesna/kuran-ai-gateway/middleware"
+	"github.com/rampesna/kuran-ai-gateway/models"
 	"github.com/rampesna/kuran-ai-gateway/redis"
 	"github.com/rampesna/kuran-ai-gateway/routes"
 	"github.com/rampesna/kuran-ai-gateway/services"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 //go:embed static/privacy-policy.html
@@ -45,6 +49,10 @@ func main() {
 			log.Fatalf("migration: %v", err)
 		}
 		log.Println("migration completed")
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "manager:create" {
+		createManagerFromEnvironment()
 		return
 	}
 
@@ -193,4 +201,57 @@ func main() {
 	if err := ginEngine.Run(addr); err != nil {
 		log.Fatalf("run: %v", err)
 	}
+}
+
+func createManagerFromEnvironment() {
+	email := strings.ToLower(strings.TrimSpace(os.Getenv("MANAGER_EMAIL")))
+	password := os.Getenv("MANAGER_PASSWORD")
+	name := strings.TrimSpace(os.Getenv("MANAGER_NAME"))
+	username := strings.TrimSpace(os.Getenv("MANAGER_USERNAME"))
+	if email == "" || password == "" {
+		log.Fatal("MANAGER_EMAIL and MANAGER_PASSWORD are required")
+	}
+	if len(password) < 12 {
+		log.Fatal("MANAGER_PASSWORD must contain at least 12 characters")
+	}
+	if name == "" {
+		name = "Kuran AI Manager"
+	}
+	if username == "" {
+		username = strings.SplitN(email, "@", 2)[0]
+	}
+
+	appConfig := config.Load()
+	if err := database.Connect(appConfig); err != nil {
+		log.Fatalf("manager:create database: %v", err)
+	}
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		log.Fatalf("manager:create hash: %v", err)
+	}
+
+	var manager models.Manager
+	result := database.DB.Unscoped().Where("email = ?", email).First(&manager)
+	if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		log.Fatalf("manager:create lookup: %v", result.Error)
+	}
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		manager = models.Manager{
+			Email: email, Username: username, Password: string(passwordHash), Name: name, Status: 1,
+		}
+		if err := database.DB.Create(&manager).Error; err != nil {
+			log.Fatalf("manager:create insert: %v", err)
+		}
+	} else {
+		if err := database.DB.Unscoped().Model(&manager).Updates(map[string]interface{}{
+			"username":   username,
+			"password":   string(passwordHash),
+			"name":       name,
+			"status":     1,
+			"deleted_at": nil,
+		}).Error; err != nil {
+			log.Fatalf("manager:create update: %v", err)
+		}
+	}
+	log.Printf("manager account ready for %s", email)
 }

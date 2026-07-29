@@ -217,3 +217,65 @@ spec:
       port: 80
       targetPort: http
       nodePort: 7007
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  namespace: kuranai
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: kuranai-admin
+  template:
+    metadata:
+      labels:
+        app: kuranai-admin
+    spec:
+      containers:
+        - name: admin
+          image: kuranai-admin:latest
+          imagePullPolicy: Never
+          ports:
+            - name: http
+              containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 25m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admin
+  namespace: kuranai
+spec:
+  type: NodePort
+  selector:
+    app: kuranai-admin
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 7009

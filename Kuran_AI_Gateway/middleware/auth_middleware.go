@@ -12,9 +12,9 @@ import (
 type ContextKey string
 
 const (
-	ContextKeyClaims     ContextKey = "claims"
-	ContextKeyUserID     ContextKey = "userId"
-	ContextKeyManagerID  ContextKey = "managerId"
+	ContextKeyClaims    ContextKey = "claims"
+	ContextKeyUserID    ContextKey = "userId"
+	ContextKeyManagerID ContextKey = "managerId"
 )
 
 // AuthMiddleware JWT token doğrular; geçerliyse claims'i context'e ekler (Redis + JWT kontrolü).
@@ -50,7 +50,11 @@ func AuthMiddleware(tokenService *services.TokenService) gin.HandlerFunc {
 
 		ginContext.Set(string(ContextKeyClaims), tokenClaims)
 		if tokenClaims.TokenableType == "user" {
+			if tokenClaims.DeviceType == "" || tokenClaims.DeviceType == "unknown" {
+				tokenClaims.DeviceType = ginContext.GetHeader("X-Device-Type")
+			}
 			ginContext.Set(string(ContextKeyUserID), tokenClaims.TokenableID)
+			tokenService.TrackUserPresence(ginContext.Request.Context(), tokenClaims)
 		} else if tokenClaims.TokenableType == "manager" {
 			ginContext.Set(string(ContextKeyManagerID), tokenClaims.TokenableID)
 		}

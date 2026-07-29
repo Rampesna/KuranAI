@@ -6,8 +6,9 @@
 |------|--------|--------|
 | 7007 | React web NodePort | `kuranai.talhacan.com` |
 | 7008 | Gateway NodePort | `kuranai-api.talhacan.com` |
+| 7009 | React yönetim paneli NodePort | `kuranaip.talhacan.com` |
 
-Her iki servis `kuranai` namespace'indedir. PostgreSQL ve Redis yalnızca ClusterIP ile küme içinden erişilir.
+Üç servis de `kuranai` namespace'indedir. PostgreSQL ve Redis yalnızca ClusterIP ile küme içinden erişilir.
 
 ## Docker Compose Development (9300–9400)
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { API_BASE, APPLE_CLIENT_ID, APPLE_REDIRECT_URI, GOOGLE_CLIENT_ID, TOKEN_KEY } from '../config/app'
+import { API_BASE, APPLE_CLIENT_ID, APPLE_REDIRECT_URI, GOOGLE_CLIENT_ID, TOKEN_KEY, WEB_DEVICE_HEADERS } from '../config/app'
 import { createPasskey, getPasskey, passkeysSupported } from '../auth/passkeys'
 import { loadScript } from '../auth/providerScripts'
 import { useLanguage } from '../i18n/LanguageContext'
@@ -56,7 +56,7 @@ export default function Chat() {
     try {
       const response = await fetch(`${API_BASE}/api/user/auth/refresh`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...WEB_DEVICE_HEADERS },
         body: JSON.stringify({ refreshToken: currentTokens.refreshToken }),
       })
       const nextTokens = await parseResponse(response)
@@ -74,7 +74,7 @@ export default function Chat() {
     if (!activeTokens?.accessToken) throw new Error(text('Oturum açmanız gerekiyor.', 'You need to sign in.'))
     const run = token => fetch(`${API_BASE}${path}`, {
       ...options,
-      headers: { ...options.headers, Authorization: `Bearer ${token}` },
+      headers: { ...WEB_DEVICE_HEADERS, ...options.headers, Authorization: `Bearer ${token}` },
     })
     let response = await run(activeTokens.accessToken)
     if (response.status === 401) {
@@ -112,7 +112,7 @@ export default function Chat() {
   const login = async (credential, password) => {
     const response = await fetch(`${API_BASE}/api/user/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...WEB_DEVICE_HEADERS },
       body: JSON.stringify({ credential, password }),
     })
     const nextTokens = await parseResponse(response)
@@ -127,7 +127,7 @@ export default function Chat() {
       if (authMode === 'register') {
         const response = await fetch(`${API_BASE}/api/user/auth/register`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...WEB_DEVICE_HEADERS },
           body: JSON.stringify({
             name: authForm.name.trim(),
             username: authForm.username.trim(),
@@ -153,7 +153,7 @@ export default function Chat() {
     try {
       const response = await fetch(`${API_BASE}${path}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...WEB_DEVICE_HEADERS },
         body: JSON.stringify(body),
       })
       storeTokens(await parseResponse(response))
@@ -218,7 +218,7 @@ export default function Chat() {
       if (!identityToken) throw new Error(text('Apple kimlik belirteci alınamadı.', 'Apple identity token was not returned.'))
       const response = await fetch(`${API_BASE}/api/user/auth/login/apple`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...WEB_DEVICE_HEADERS },
         body: JSON.stringify({ identityToken }),
       })
       storeTokens(await parseResponse(response))
@@ -237,13 +237,14 @@ export default function Chat() {
     setAuthLoading(true)
     setAuthError('')
     try {
-      const begin = await parseResponse(await fetch(`${API_BASE}/api/user/auth/passkey/login/options`, { method: 'POST' }))
+      const begin = await parseResponse(await fetch(`${API_BASE}/api/user/auth/passkey/login/options`, { method: 'POST', headers: WEB_DEVICE_HEADERS }))
       const credential = await getPasskey(begin.options)
       const finish = await fetch(`${API_BASE}/api/user/auth/passkey/login/finish`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-Passkey-Transaction': begin.transactionId,
+          ...WEB_DEVICE_HEADERS,
         },
         body: JSON.stringify(credential),
       })

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -13,6 +15,7 @@ import (
 	"github.com/rampesna/kuran-ai-gateway/dto"
 	"github.com/rampesna/kuran-ai-gateway/models"
 	"github.com/rampesna/kuran-ai-gateway/redis"
+	goredis "github.com/redis/go-redis/v9"
 )
 
 // TokenService JWT token üretimi, doğrulama ve Redis/DB kaydı.
@@ -30,6 +33,7 @@ type Claims struct {
 	TokenableID   uint   `json:"tokenableId"`
 	TokenableType string `json:"tokenableType"`
 	TokenID       uint   `json:"tokenId"`
+	DeviceType    string `json:"-"`
 	jwt.RegisteredClaims
 }
 
@@ -68,7 +72,7 @@ func (s *TokenService) IssueTokens(ctx context.Context, tokenableID uint, tokena
 	accessTTL := time.Until(accessExp)
 	refreshTTL := time.Duration(s.appConfig.JWT.RefreshExpireDay) * 24 * time.Hour
 	if accessTTL > 0 {
-		redis.Client.Set(ctx, accessKey, fmt.Sprintf("%d|%s", token.ID, string(tokenableType)), accessTTL)
+		redis.Client.Set(ctx, accessKey, fmt.Sprintf("%d|%s|%s", token.ID, string(tokenableType), normalizeDeviceType(deviceType)), accessTTL)
 	}
 	if refreshTTL > 0 {
 		redis.Client.Set(ctx, refreshKey, fmt.Sprintf("%d|%d|%s", token.ID, tokenableID, tokenableType), refreshTTL)
@@ -115,14 +119,54 @@ func (s *TokenService) RevokeAccessToken(ctx context.Context, accessToken string
 
 // ValidateAccessToken token'ı Redis + JWT ile doğrular.
 func (s *TokenService) ValidateAccessToken(ctx context.Context, accessToken string) (*Claims, *core.ServiceResponse) {
-	if _, err := redis.Client.Get(ctx, redis.KeyPrefixAccess+accessToken).Result(); err != nil {
+	redisValue, err := redis.Client.Get(ctx, redis.KeyPrefixAccess+accessToken).Result()
+	if err != nil {
 		return nil, core.NewServiceResponse(false, "Invalid or expired token", 401, nil)
 	}
 	claims, err := s.parseAccessToken(accessToken)
 	if err != nil {
 		return nil, core.NewServiceResponse(false, "Invalid token", 401, nil)
 	}
+	parts := strings.Split(redisValue, "|")
+	if len(parts) > 0 {
+		if tokenID, parseErr := strconv.ParseUint(parts[0], 10, 64); parseErr == nil {
+			claims.TokenID = uint(tokenID)
+		}
+	}
+	if len(parts) > 2 {
+		claims.DeviceType = normalizeDeviceType(parts[2])
+	}
 	return claims, core.NewServiceResponse(true, "OK", 200, nil)
+}
+
+// TrackUserPresence records authenticated user activity without persisting
+// request-level events in PostgreSQL. Members older than two minutes are pruned.
+func (s *TokenService) TrackUserPresence(ctx context.Context, claims *Claims) {
+	if claims == nil || claims.TokenableType != string(models.TokenableTypeUser) {
+		return
+	}
+	platform := normalizeDeviceType(claims.DeviceType)
+	member := fmt.Sprintf("%d|%s|%d", claims.TokenableID, platform, claims.TokenID)
+	now := time.Now().Unix()
+	pipe := redis.Client.TxPipeline()
+	pipe.ZAdd(ctx, redis.KeyUserPresence, goredis.Z{Score: float64(now), Member: member})
+	pipe.ZRemRangeByScore(ctx, redis.KeyUserPresence, "-inf", strconv.FormatInt(now-120, 10))
+	pipe.Expire(ctx, redis.KeyUserPresence, 10*time.Minute)
+	_, _ = pipe.Exec(ctx)
+}
+
+func normalizeDeviceType(value string) string {
+	value = strings.ToLower(strings.TrimSpace(value))
+	switch {
+	case strings.Contains(value, "ios"), strings.Contains(value, "iphone"), strings.Contains(value, "ipad"):
+		return "ios"
+	case strings.Contains(value, "android"):
+		return "android"
+	case strings.Contains(value, "web"), strings.Contains(value, "browser"):
+		return "web"
+	default:
+		return "unknown"
+	}
 }
 
 func (s *TokenService) parseAccessToken(tokenString string) (*Claims, error) {

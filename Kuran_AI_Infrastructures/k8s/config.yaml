@@ -26,5 +26,5 @@ data:
   WEBAUTHN_RP_ID: kuranai.talhacan.com
   WEBAUTHN_RP_NAME: Kuran AI
   WEBAUTHN_RP_ORIGINS: "https://kuranai.talhacan.com,android:apk-key-hash:avWvUoG9uWaFLs7oJC8mnbX-wsPsyKwlJcZjUechgiI,android:apk-key-hash:FYBZ-DeOeuM2WhoWpYSJoMnu-dJi7x97ldOvCToDLFs"
-  CORS_ORIGINS: https://kuranai.talhacan.com
+  CORS_ORIGINS: https://kuranai.talhacan.com,https://kuranaip.talhacan.com
   PUBLIC_API_URL: https://kuranai-api.talhacan.com

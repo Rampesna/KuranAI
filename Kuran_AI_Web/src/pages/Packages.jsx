@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { API_BASE, APP_STORE_URL, PLAY_STORE_URL, TOKEN_KEY } from '../config/app'
+import { API_BASE, APP_STORE_URL, PLAY_STORE_URL, TOKEN_KEY, WEB_DEVICE_HEADERS } from '../config/app'
 import { useLanguage } from '../i18n/LanguageContext'
 import styles from './Packages.module.css'
 
@@ -25,7 +25,7 @@ export default function Packages() {
     const accessToken = readAccessToken()
     if (!accessToken) return
 
-    const headers = { Authorization: `Bearer ${accessToken}` }
+    const headers = { Authorization: `Bearer ${accessToken}`, ...WEB_DEVICE_HEADERS }
     Promise.allSettled([
       fetch(`${API_BASE}/api/v1/subscription/packages`, { headers }).then(response => response.json()),
       fetch(`${API_BASE}/api/v1/subscription/me`, { headers }).then(response => response.json()),

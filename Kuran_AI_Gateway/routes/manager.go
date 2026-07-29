@@ -10,6 +10,7 @@ import (
 // RegisterManagerRoutes manager API rotalarını kaydeder.
 func RegisterManagerRoutes(rg *gin.RouterGroup, managerService *services.ManagerService, tokenService *services.TokenService) {
 	authHandler := managerHandler.NewAuthHandler(managerService)
+	dashboardHandler := managerHandler.NewDashboardHandler(services.NewManagerDashboardService())
 
 	mgr := rg.Group("/manager")
 	{
@@ -20,5 +21,12 @@ func RegisterManagerRoutes(rg *gin.RouterGroup, managerService *services.Manager
 	mgrProtected.Use(middleware.AuthMiddleware(tokenService), middleware.RequireManager())
 	{
 		mgrProtected.GET("/auth/me", authHandler.Me)
+		mgrProtected.GET("/dashboard/overview", dashboardHandler.Overview)
+		mgrProtected.GET("/users", dashboardHandler.Users)
+		mgrProtected.GET("/users/:id", dashboardHandler.UserDetail)
+		mgrProtected.GET("/users/:id/conversations", dashboardHandler.Conversations)
+		mgrProtected.GET("/conversations/:id/messages", dashboardHandler.ConversationMessages)
+		mgrProtected.GET("/purchases", dashboardHandler.Purchases)
+		mgrProtected.GET("/questions", dashboardHandler.Questions)
 	}
 }
