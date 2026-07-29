@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
 	userauth "github.com/rampesna/kuran-ai-gateway/handlers/user"
 	"github.com/rampesna/kuran-ai-gateway/middleware"
@@ -19,6 +21,16 @@ func RegisterUserRoutes(rg *gin.RouterGroup, userService *services.UserService, 
 		user.POST("/auth/login", authHandler.Login)
 		user.POST("/auth/login/google", authHandler.LoginWithGoogle)
 		user.POST("/auth/login/apple", authHandler.LoginWithApple)
+		user.POST(
+			"/auth/login/apple/mobile/start",
+			middleware.RateLimiter(10, 10*time.Minute),
+			authHandler.StartAppleMobileAuth,
+		)
+		user.POST(
+			"/auth/login/mobile/finish",
+			middleware.RateLimiter(20, 10*time.Minute),
+			authHandler.FinishMobileAuth,
+		)
 		user.POST("/auth/passkey/login/options", passkeyHandler.BeginLogin)
 		user.POST("/auth/passkey/login/finish", passkeyHandler.FinishLogin)
 		user.POST("/auth/refresh", authHandler.RefreshToken)

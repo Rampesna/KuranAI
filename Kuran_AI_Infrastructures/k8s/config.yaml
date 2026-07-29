@@ -16,10 +16,13 @@ data:
   JWT_REFRESH_EXPIRE_DAY: "7"
   JWT_ISSUER: kuran-ai-gateway
   APPLE_BUNDLE_ID: talhacan.KuranAIChat
+  GOOGLE_PLAY_PACKAGE_NAME: com.talhacan.kuranai
+  GOOGLE_PLAY_CREDENTIALS_PATH: /var/run/secrets/google-play/service-account.json
+  GOOGLE_PLAY_ALLOW_TEST: "true"
   GOOGLE_CLIENT_IDS: 157832066999-j2rtge34n3u5r8gtejini3kel827d7j2.apps.googleusercontent.com,157832066999-3tgb2daavmrd1d1vd10ptrato1iu382t.apps.googleusercontent.com
   APPLE_CLIENT_IDS: talhacan.KuranAIChat,com.talhacan.kuranai.web
   WEBAUTHN_RP_ID: kuranai.talhacan.com
   WEBAUTHN_RP_NAME: Kuran AI
-  WEBAUTHN_RP_ORIGINS: https://kuranai.talhacan.com
+  WEBAUTHN_RP_ORIGINS: "https://kuranai.talhacan.com,android:apk-key-hash:avWvUoG9uWaFLs7oJC8mnbX-wsPsyKwlJcZjUechgiI,android:apk-key-hash:FYBZ-DeOeuM2WhoWpYSJoMnu-dJi7x97ldOvCToDLFs"
   CORS_ORIGINS: https://kuranai.talhacan.com
   PUBLIC_API_URL: https://kuranai-api.talhacan.com

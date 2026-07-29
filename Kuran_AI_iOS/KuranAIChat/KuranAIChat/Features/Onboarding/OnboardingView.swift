@@ -35,11 +35,11 @@ struct OnboardingView: View {
                     let vertical = abs(value.translation.height)
                     // Yatay hareket dikeyden büyükse swipe say
                     guard abs(horizontal) > vertical else { return }
-                    if horizontal < -50 {
-                        // Sola kaydırma → Chat aç
+                    let opensChat = language == .arabic ? horizontal > 50 : horizontal < -50
+                    let opensProfile = language == .arabic ? horizontal < -50 : horizontal > 50
+                    if opensChat {
                         onPrimaryAction(nil)
-                    } else if horizontal > 50 {
-                        // Sağa kaydırma → Profil aç
+                    } else if opensProfile {
                         onProfileTap()
                     }
                 }

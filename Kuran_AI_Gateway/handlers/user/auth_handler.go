@@ -47,6 +47,20 @@ func (h *AuthHandler) LoginWithApple(c *gin.Context) {
 	})
 }
 
+// StartAppleMobileAuth Apple web girişini tek kullanımlık Android koduna çevirir.
+func (h *AuthHandler) StartAppleMobileAuth(c *gin.Context) {
+	core.WithValidatedJSONAndDeviceInfo(c, func(req *userRequest.AppleMobileStartRequest) *core.ServiceResponse {
+		return h.userService.StartAppleMobileAuth(c.Request.Context(), req)
+	})
+}
+
+// FinishMobileAuth tek kullanımlık mobil kodu oturum anahtarlarına çevirir.
+func (h *AuthHandler) FinishMobileAuth(c *gin.Context) {
+	core.WithValidatedJSONAndDeviceInfo(c, func(req *userRequest.MobileAuthExchangeRequest) *core.ServiceResponse {
+		return h.userService.FinishMobileAuth(c.Request.Context(), req)
+	})
+}
+
 // RefreshToken token yenileme.
 func (h *AuthHandler) RefreshToken(c *gin.Context) {
 	core.WithValidatedJSONAndDeviceInfo(c, func(req *userRequest.RefreshTokenRequest) *core.ServiceResponse {

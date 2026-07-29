@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.get_login_creds"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.talhacan.kuranai",
+      "sha256_cert_fingerprints": [
+        "6A:F5:AF:52:81:BD:B9:66:85:2E:CE:E8:24:2F:26:9D:B5:FE:C2:C3:EC:C8:AC:25:25:C6:63:51:E7:21:82:22",
+        "15:80:59:F8:37:8E:7A:E3:36:5A:1A:16:A5:84:89:A0:C9:EE:F9:D2:62:EF:1F:7B:95:D3:AF:09:3A:03:2C:5B"
+      ]
+    }
+  }
+]

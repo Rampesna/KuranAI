@@ -78,11 +78,14 @@ web_ready="$(kubectl get deployment/web -n "$NAMESPACE" -o jsonpath='{.status.re
 [[ "$web_ready" == "1" ]] || { echo "Expected 1 ready web pod, found $web_ready" >&2; exit 1; }
 
 # aaPanel serves /.well-known from its own document root before the proxy project.
-# Keep Apple's association file there in addition to the copy in the web image.
+# Keep Apple and Android association files there in addition to the web image.
 install -d -m 755 "$AAPANEL_WELL_KNOWN_DIR"
 install -m 644 \
   "$PROJECT_ROOT/Kuran_AI_Web/public/.well-known/apple-app-site-association" \
   "$AAPANEL_WELL_KNOWN_DIR/apple-app-site-association"
+install -m 644 \
+  "$PROJECT_ROOT/Kuran_AI_Web/public/.well-known/assetlinks.json" \
+  "$AAPANEL_WELL_KNOWN_DIR/assetlinks.json"
 
 nginx_config_changed=0
 if grep -Fq "include $LEGACY_AASA_INCLUDE;" "$AAPANEL_VHOST"; then
@@ -94,13 +97,19 @@ if [[ -f "$LEGACY_AASA_EXTENSION" ]] && \
   rm -f "$LEGACY_AASA_EXTENSION"
   nginx_config_changed=1
 fi
-if ! grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
+if grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG" && \
+   ! grep -Fq "ngx.var.uri == '/.well-known/assetlinks.json'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
+  sed -i "s#ngx.var.uri == '/.well-known/apple-app-site-association'#ngx.var.uri == '/.well-known/apple-app-site-association' or ngx.var.uri == '/.well-known/assetlinks.json'#" \
+    "$AAPANEL_WELL_KNOWN_CONFIG"
+  nginx_config_changed=1
+elif ! grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"; then
   grep -Fq "ngx.header['content-type'] = 'text/plain'" "$AAPANEL_WELL_KNOWN_CONFIG"
-  sed -i "s#ngx.header\\['content-type'\\] = 'text/plain'#if ngx.var.uri == '/.well-known/apple-app-site-association' then ngx.header['content-type'] = 'application/json' else ngx.header['content-type'] = 'text/plain' end#" \
+  sed -i "s#ngx.header\\['content-type'\\] = 'text/plain'#if ngx.var.uri == '/.well-known/apple-app-site-association' or ngx.var.uri == '/.well-known/assetlinks.json' then ngx.header['content-type'] = 'application/json' else ngx.header['content-type'] = 'text/plain' end#" \
     "$AAPANEL_WELL_KNOWN_CONFIG"
   nginx_config_changed=1
 fi
 grep -Fq "ngx.var.uri == '/.well-known/apple-app-site-association'" "$AAPANEL_WELL_KNOWN_CONFIG"
+grep -Fq "ngx.var.uri == '/.well-known/assetlinks.json'" "$AAPANEL_WELL_KNOWN_CONFIG"
 if (( nginx_config_changed )); then
   "$AAPANEL_NGINX" -t
   "$AAPANEL_NGINX" -s reload
@@ -116,6 +125,20 @@ for _ in {1..10}; do
 done
 [[ "$aasa_content_type" == application/json* ]] || {
   echo "Unexpected AASA content type: $aasa_content_type" >&2
+  exit 1
+}
+
+assetlinks_content_type=""
+for _ in {1..10}; do
+  assetlinks_content_type="$(curl --fail --silent --show-error \
+    --resolve kuranai.talhacan.com:443:127.0.0.1 \
+    --output /dev/null --write-out '%{content_type}' \
+    https://kuranai.talhacan.com/.well-known/assetlinks.json)"
+  [[ "$assetlinks_content_type" == application/json* ]] && break
+  sleep 1
+done
+[[ "$assetlinks_content_type" == application/json* ]] || {
+  echo "Unexpected assetlinks content type: $assetlinks_content_type" >&2
   exit 1
 }
 

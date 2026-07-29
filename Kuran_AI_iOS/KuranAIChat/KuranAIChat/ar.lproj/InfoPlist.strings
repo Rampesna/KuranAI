@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "قرآن AI";
+"NSMicrophoneUsageDescription" = "يسجّل قرآن AI سؤالك الصوتي ويرسله إلى OpenAI لتحويله إلى نص بعد موافقتك الصريحة فقط.";
+"NSLocationWhenInUseUsageDescription" = "يُستخدم موقعك لعرض مواقيت الصلاة المحلية.";

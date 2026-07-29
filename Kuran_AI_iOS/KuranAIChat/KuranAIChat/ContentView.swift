@@ -9,18 +9,29 @@ struct AppRootView: View {
     @State private var showProfile = false
     @State private var path = NavigationPath()
     @State private var profilePath = NavigationPath()
-    @State private var language: Language = .turkish
+    @AppStorage("kuranai_language") private var languageCode = Language.turkish.rawValue
     @State private var selectedSource: SourceFilter = .kuran
     @State private var pendingInitialQuery: String?
     @State private var skipNavigateFromRestore = false
     @ObservedObject private var themeManager = ThemeManager.shared
+
+    private var language: Language {
+        Language(rawValue: languageCode) ?? .turkish
+    }
+
+    private var languageBinding: Binding<Language> {
+        Binding(
+            get: { language },
+            set: { languageCode = $0.rawValue }
+        )
+    }
 
     var body: some View {
         ZStack {
             // Ana NavigationStack (chat vb.)
             NavigationStack(path: $path) {
                 OnboardingView(
-                    language: $language,
+                    language: languageBinding,
                     selectedSource: $selectedSource,
                     isAuthenticated: isAuthenticated,
                     onProfileTap: { openProfile() },
@@ -84,8 +95,10 @@ struct AppRootView: View {
                 .gesture(
                     DragGesture(minimumDistance: 50, coordinateSpace: .local)
                         .onEnded { value in
-                            // Sağdan sola kaydırınca profili kapat
-                            if value.translation.width < -50 {
+                            let shouldClose = language == .arabic
+                                ? value.translation.width > 50
+                                : value.translation.width < -50
+                            if shouldClose {
                                 closeProfile()
                             }
                         }
@@ -129,6 +142,7 @@ struct AppRootView: View {
             showLogin = true
         }
         .preferredColorScheme(themeManager.colorScheme)
+        .environment(\.layoutDirection, language.layoutDirection)
     }
 
     func handleAction(initialQuery: String? = nil) {
@@ -254,7 +268,7 @@ struct ChatView: View {
                                     showSpeakButton: msg.role == "assistant" && !msg.isStreaming && !msg.content.isEmpty,
                                     speakButtonLabel: language.localized("Sesli oku", "Read aloud"),
                                     stopButtonLabel: language.localized("Durdur", "Stop"),
-                                    onSpeakTap: msg.role == "assistant" ? { speechService.toggleSpeak(msg.content, language: language == .turkish ? "tr-TR" : "en-US") } : nil,
+                                    onSpeakTap: msg.role == "assistant" ? { speechService.toggleSpeak(msg.content, language: language.speechLanguage) } : nil,
                                     speechService: speechService
                                 )
                                 .id(msg.id)
@@ -373,7 +387,11 @@ struct ChatView: View {
                 onSelectSession: { onSelectSession($0); showSidebar = false },
                 onNewChat: { onNewChat(); showSidebar = false }
             )
-            .offset(x: showSidebar ? 0 : -(UIScreen.main.bounds.width * 0.8 + 20))
+            .offset(
+                x: showSidebar
+                    ? 0
+                    : (language == .arabic ? 1 : -1) * (UIScreen.main.bounds.width * 0.8 + 20)
+            )
             .animation(.easeInOut(duration: 0.2), value: showSidebar)
         }
         .onAppear {
@@ -828,6 +846,7 @@ private struct ChatSidebar: View {
             if cal.isDateInYesterday(d) { return language.localized("Dün", "Yesterday") }
             let df = DateFormatter()
             df.dateStyle = .short
+            df.locale = Locale(identifier: language.localeIdentifier)
             return df.string(from: d)
         }
         return s

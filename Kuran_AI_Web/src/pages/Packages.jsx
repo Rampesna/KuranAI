@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { API_BASE, APP_STORE_URL, TOKEN_KEY } from '../config/app'
+import { API_BASE, APP_STORE_URL, PLAY_STORE_URL, TOKEN_KEY } from '../config/app'
 import { useLanguage } from '../i18n/LanguageContext'
 import styles from './Packages.module.css'
 
@@ -17,7 +17,7 @@ function readAccessToken() {
 }
 
 export default function Packages() {
-  const { isTurkish, text } = useLanguage()
+  const { language, isTurkish, isArabic, text } = useLanguage()
   const [packages, setPackages] = useState(fallbackPackages)
   const [overview, setOverview] = useState(null)
 
@@ -41,27 +41,41 @@ export default function Packages() {
   }, [])
 
   const currentSlug = overview?.subscription?.package?.slug
-  const price = value => new Intl.NumberFormat(isTurkish ? 'tr-TR' : 'en-US', {
+  const price = value => new Intl.NumberFormat(language === 'tr' ? 'tr-TR' : language === 'ar' ? 'ar-SA' : 'en-US', {
     style: 'currency',
     currency: 'TRY',
     maximumFractionDigits: 2,
   }).format(value)
-  const limit = value => value == null || value >= 999999 ? text('Sınırsız', 'Unlimited') : value
+  const limit = value => value == null || value >= 999999
+    ? text('Sınırsız', 'Unlimited', 'غير محدود')
+    : value
+  const packageName = pkg => {
+    if (!isArabic) return isTurkish ? pkg.name : pkg.nameEn
+    return ({ bronze: 'برونزي', silver: 'فضي', gold: 'ذهبي', diamond: 'ماسي' })[pkg.slug] || pkg.nameEn
+  }
 
   return (
     <div className={styles.packagesPage}>
       <section className={styles.hero}>
-        <p className={styles.kicker}>{text('Kuran AI paketleri', 'Kuran AI plans')}</p>
-        <h1>{text('Webde kullanın, paketinizi iOS’tan seçin.', 'Use it on the web, choose your plan on iOS.')}</h1>
+        <p className={styles.kicker}>{text('Kuran AI paketleri', 'Kuran AI plans', 'باقات Kuran AI')}</p>
+        <h1>{text(
+          'Webde kullanın, paketinizi mobil uygulamadan seçin.',
+          'Use it on the web, choose your plan in the mobile app.',
+          'استخدمه على الويب واختر باقتك من تطبيق الهاتف.',
+        )}</h1>
         <p>{text(
-          'Sohbeti web tarayıcınızdan kullanmaya devam edebilirsiniz. Abonelik satın alma ve geri yükleme işlemleri güvenli biçimde Kuran AI iOS uygulaması ve Apple App Store üzerinden yapılır.',
-          'Keep using chat in your web browser. Subscription purchases and restores are handled securely through the Kuran AI iOS app and Apple App Store.',
+          'Sohbeti web tarayıcınızdan kullanmaya devam edebilirsiniz. Abonelik satın alma ve geri yükleme işlemleri iOS’ta App Store, Android’de Google Play üzerinden güvenle yapılır.',
+          'Keep using chat in your web browser. Purchases and restores are handled securely by the App Store on iOS and Google Play on Android.',
+          'يمكنك متابعة المحادثة عبر الويب. تتم عمليات الشراء والاستعادة بأمان عبر App Store على iOS وGoogle Play على Android.',
         )}</p>
         <div className={styles.heroActions}>
           <a href={APP_STORE_URL} className={styles.primaryButton} target="_blank" rel="noopener noreferrer">
-            <span aria-hidden="true"></span> {text('iOS uygulamasında aç', 'Open in the iOS app')}
+            {text('App Store’da aç', 'Open on the App Store', 'فتح في App Store')}
           </a>
-          <Link to="/app" className={styles.secondaryButton}>{text('Web sohbetine dön', 'Return to web chat')}</Link>
+          <a href={PLAY_STORE_URL} className={styles.primaryButton} target="_blank" rel="noopener noreferrer">
+            <span aria-hidden="true">▶</span> {text('Google Play’de aç', 'Open on Google Play', 'فتح في Google Play')}
+          </a>
+          <Link to="/app" className={styles.secondaryButton}>{text('Web sohbetine dön', 'Return to web chat', 'العودة إلى محادثة الويب')}</Link>
         </div>
       </section>
 
@@ -69,7 +83,7 @@ export default function Packages() {
         <section className={styles.usagePanel} aria-label={text('Mevcut kullanımınız', 'Your current usage')}>
           <div>
             <span>{text('Mevcut paket', 'Current plan')}</span>
-            <strong>{overview.subscription?.hasPackage ? (isTurkish ? overview.subscription.package?.name : overview.subscription.package?.nameEn) : text('Ücretsiz', 'Free')}</strong>
+            <strong>{overview.subscription?.hasPackage ? packageName(overview.subscription.package) : text('Ücretsiz', 'Free')}</strong>
           </div>
           <div>
             <span>{text('Bugünkü sorular', 'Questions today')}</span>
@@ -90,34 +104,52 @@ export default function Packages() {
               <div className={styles.planHeading}>
                 <div>
                   <span className={styles.planIndex}>{String(index + 1).padStart(2, '0')}</span>
-                  <h2>{isTurkish ? pkg.name : pkg.nameEn}</h2>
+                  <h2>{packageName(pkg)}</h2>
                 </div>
                 {isCurrent && <span className={styles.currentBadge}>{text('Mevcut', 'Current')}</span>}
               </div>
               <ul>
                 <li><strong>{limit(pkg.dailyQuestionLimit)}</strong> {text('günlük yapay zekâ sorusu', 'AI questions per day')}</li>
                 <li><strong>{limit(pkg.dailyTTSLimit)}</strong> {text('günlük sesli okuma', 'text-to-speech uses per day')}</li>
-                <li>{text('Web ve iOS’ta ortak hesap', 'One account across web and iOS')}</li>
+                <li>{text(
+                  'Web, iOS ve Android’de ortak hesap',
+                  'One account across web, iOS, and Android',
+                  'حساب واحد على الويب وiOS وAndroid',
+                )}</li>
               </ul>
               <div className={styles.prices}>
                 <p><span>{text('Aylık', 'Monthly')}</span><strong>{price(pkg.monthlyPriceTL)}</strong></p>
                 <p><span>{text('Yıllık', 'Yearly')}</span><strong>{price(pkg.yearlyPriceTL)}</strong></p>
               </div>
-              <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={styles.planButton}>
-                {isCurrent ? text('iOS’ta paketi yönet', 'Manage plan on iOS') : text('iOS’ta bu paketi seç', 'Choose this plan on iOS')}
-              </a>
+              <div className={styles.planActions}>
+                <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className={styles.planButton}>
+                  {isCurrent
+                    ? text('iOS’ta yönet', 'Manage on iOS', 'الإدارة على iOS')
+                    : text('iOS’ta seç', 'Choose on iOS', 'الاختيار على iOS')}
+                </a>
+                <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer" className={styles.planButton}>
+                  ▶ {isCurrent
+                    ? text('Android’de yönet', 'Manage on Android', 'الإدارة على Android')
+                    : text('Android’de seç', 'Choose on Android', 'الاختيار على Android')}
+                </a>
+              </div>
             </article>
           )
         })}
       </section>
 
       <section className={styles.purchaseNotice}>
-        <span aria-hidden="true"></span>
+        <span aria-hidden="true">◉</span>
         <div>
-          <h2>{text('Satın alma yalnızca iOS uygulamasında', 'Purchases are available only in the iOS app')}</h2>
+          <h2>{text(
+            'Satın alma mobil uygulamalarda',
+            'Purchases are available in the mobile apps',
+            'الشراء متاح في تطبيقات الهاتف',
+          )}</h2>
           <p>{text(
-            'Butonlar Kuran AI’nın App Store sayfasını açar. Uygulamayı yükledikten veya açtıktan sonra Paketler ekranından aboneliğinizi seçebilirsiniz. Aynı hesapla giriş yaptığınızda paketiniz web kullanımınıza da otomatik yansır.',
-            'The buttons open Kuran AI on the App Store. After installing or opening the app, choose your subscription from the Plans screen. Sign in with the same account and your plan automatically applies to web usage too.',
+            'App Store veya Google Play’den Kuran AI’yı açın, Paketler ekranından aboneliğinizi seçin. Aynı hesapla giriş yaptığınızda paketiniz web kullanımınıza da otomatik yansır.',
+            'Open Kuran AI from the App Store or Google Play and choose your subscription on the Plans screen. Sign in with the same account and your plan automatically applies to web usage too.',
+            'افتح Kuran AI من App Store أو Google Play واختر اشتراكك من شاشة الباقات. عند تسجيل الدخول بالحساب نفسه تُطبّق باقتك تلقائيًا على استخدام الويب.',
           )}</p>
         </div>
       </section>

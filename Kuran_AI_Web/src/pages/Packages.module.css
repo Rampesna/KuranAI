@@ -30,7 +30,8 @@
 .prices span, .prices strong { display: block; }
 .prices span { color: var(--text-muted); font-size: 10px; }
 .prices strong { margin-top: 2px; font-size: 14px; }
-.planButton { width: 100%; margin-top: 18px; border: 1px solid rgba(201,162,39,.38); color: var(--gold-light); background: rgba(201,162,39,.1); }
+.planActions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 18px; }
+.planButton { width: 100%; border: 1px solid rgba(201,162,39,.38); color: var(--gold-light); background: rgba(201,162,39,.1); }
 .planButton:hover { color: var(--bg-dark); background: var(--gold-primary); }
 .purchaseNotice { margin-top: 22px; padding: 25px 28px; display: flex; align-items: flex-start; gap: 18px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255,255,255,.025); text-align: left; }
 .purchaseNotice > span { width: 40px; height: 40px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: var(--gold-primary); color: var(--bg-dark); font-size: 20px; }
@@ -44,5 +45,31 @@
   .usagePanel div:last-child { border-bottom: 0; }
   .planGrid { grid-template-columns: 1fr; }
   .planCard { padding: 22px; }
+  .planActions { grid-template-columns: 1fr; }
   .purchaseNotice { padding: 20px; }
+}
+
+:global(html[dir='rtl']) .planCard,
+:global(html[dir='rtl']) .purchaseNotice {
+  text-align: right;
+}
+
+:global(html[dir='rtl']) .planCard li::before {
+  margin-right: 0;
+  margin-left: 9px;
+}
+
+:global(html[dir='rtl']) .usagePanel div {
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+
+:global(html[dir='rtl']) .usagePanel div:last-child {
+  border-left: 0;
+}
+
+@media (max-width: 720px) {
+  :global(html[dir='rtl']) .usagePanel div {
+    border-left: 0;
+  }
 }

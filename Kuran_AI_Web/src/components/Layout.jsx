@@ -45,6 +45,13 @@ export default function Layout() {
                 onClick={() => setLanguage('en')}
                 aria-pressed={language === 'en'}
               >EN</button>
+              <span>/</span>
+              <button
+                type="button"
+                className={language === 'ar' ? styles.languageActive : ''}
+                onClick={() => setLanguage('ar')}
+                aria-pressed={language === 'ar'}
+              >AR</button>
             </div>
           </div>
         </div>

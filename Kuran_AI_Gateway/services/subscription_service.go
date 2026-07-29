@@ -2,11 +2,15 @@ package services
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/rampesna/kuran-ai-gateway/database"
 	"github.com/rampesna/kuran-ai-gateway/models"
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -51,6 +55,7 @@ func (s *SubscriptionService) CreateSubscription(ctx context.Context, userID uin
 			"apple_product_id": appleProductID,
 			"package_id":       packageID,
 			"is_monthly":       isMonthly,
+			"provider":         "apple",
 		}
 		if expiresAtOverride != nil && expiresAtOverride.After(existing.ExpiresAt) {
 			updates["expires_at"] = *expiresAtOverride
@@ -84,11 +89,128 @@ func (s *SubscriptionService) CreateSubscription(ctx context.Context, userID uin
 		ExpiresAt:          expiresAt,
 		AppleTransactionID: appleTransactionID,
 		AppleProductID:     appleProductID,
+		Provider:           "apple",
 	}
 	if err := database.DB.WithContext(ctx).Create(&sub).Error; err != nil {
 		return nil, err
 	}
 	return &sub, nil
+}
+
+// CreateGoogleSubscription stores a Google-verified entitlement and binds a
+// purchase token to one Kuran AI account. Only a SHA-256 token digest is stored.
+func (s *SubscriptionService) CreateGoogleSubscription(
+	ctx context.Context,
+	userID uint,
+	packageID uint,
+	isMonthly bool,
+	info GooglePlayPurchaseInfo,
+) (*models.UserSubscription, error) {
+	if stringsTrimmed := fmt.Sprint(userID); info.ObfuscatedAccountID != "" && info.ObfuscatedAccountID != stringsTrimmed {
+		return nil, ErrGoogleAccountConflict
+	}
+	if info.PurchaseToken == "" || info.ProductID == "" || !info.ExpiresAt.After(time.Now().UTC()) {
+		return nil, ErrInvalidGooglePurchase
+	}
+
+	tokenDigest := sha256.Sum256([]byte(info.PurchaseToken))
+	tokenHash := hex.EncodeToString(tokenDigest[:])
+	rawDigest := sha256.Sum256(info.RawJSON)
+	rawHash := hex.EncodeToString(rawDigest[:])
+	now := time.Now().UTC()
+	var saved models.UserSubscription
+
+	err := database.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var purchase models.GooglePlayPurchase
+		findErr := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			Where("token_hash = ?", tokenHash).
+			First(&purchase).Error
+		switch {
+		case findErr == nil:
+			if purchase.UserID != userID {
+				return ErrGoogleAccountConflict
+			}
+			if err := tx.Model(&purchase).Updates(map[string]interface{}{
+				"package_name":          info.PackageName,
+				"product_id":            info.ProductID,
+				"order_id":              info.OrderID,
+				"obfuscated_account_id": info.ObfuscatedAccountID,
+				"environment":           info.Environment,
+				"purchased_at":          info.PurchasedAt,
+				"expires_at":            info.ExpiresAt,
+				"acknowledged":          info.Acknowledged,
+				"raw_sha256":            rawHash,
+			}).Error; err != nil {
+				return err
+			}
+		case errors.Is(findErr, gorm.ErrRecordNotFound):
+			purchase = models.GooglePlayPurchase{
+				TokenHash:           tokenHash,
+				UserID:              userID,
+				PackageName:         info.PackageName,
+				ProductID:           info.ProductID,
+				OrderID:             info.OrderID,
+				ObfuscatedAccountID: info.ObfuscatedAccountID,
+				Environment:         info.Environment,
+				PurchasedAt:         info.PurchasedAt,
+				ExpiresAt:           info.ExpiresAt,
+				Acknowledged:        info.Acknowledged,
+				RawSHA256:           rawHash,
+			}
+			if err := tx.Create(&purchase).Error; err != nil {
+				return err
+			}
+		default:
+			return findErr
+		}
+
+		var existing models.UserSubscription
+		findSubErr := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			Where("user_id = ? AND google_purchase_hash = ?", userID, tokenHash).
+			First(&existing).Error
+		if findSubErr == nil {
+			if err := tx.Model(&existing).Updates(map[string]interface{}{
+				"package_id":           packageID,
+				"is_monthly":           isMonthly,
+				"expires_at":           info.ExpiresAt,
+				"provider":             "google",
+				"google_product_id":    info.ProductID,
+				"google_purchase_hash": tokenHash,
+			}).Error; err != nil {
+				return err
+			}
+			saved = existing
+			saved.PackageID = packageID
+			saved.IsMonthly = isMonthly
+			saved.ExpiresAt = info.ExpiresAt
+			saved.Provider = "google"
+			saved.GoogleProductID = info.ProductID
+			saved.GooglePurchaseHash = tokenHash
+			return nil
+		}
+		if !errors.Is(findSubErr, gorm.ErrRecordNotFound) {
+			return findSubErr
+		}
+
+		saved = models.UserSubscription{
+			UserID:             userID,
+			PackageID:          packageID,
+			IsMonthly:          isMonthly,
+			StartedAt:          info.PurchasedAt,
+			ExpiresAt:          info.ExpiresAt,
+			Provider:           "google",
+			GooglePurchaseHash: tokenHash,
+			GoogleProductID:    info.ProductID,
+		}
+		if saved.StartedAt.IsZero() {
+			saved.StartedAt = now
+		}
+		return tx.Create(&saved).Error
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &saved, nil
 }
 
 // SeedPackages paketleri seed eder (yoksa oluşturur).

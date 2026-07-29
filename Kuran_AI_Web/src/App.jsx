@@ -8,11 +8,13 @@ import Contact from './pages/Contact'
 import Chat from './pages/Chat'
 import Packages from './pages/Packages'
 import AppleCallback from './pages/AppleCallback'
+import AndroidAppleSignIn from './pages/AndroidAppleSignIn'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/auth/apple/android" element={<AndroidAppleSignIn />} />
         <Route element={<Layout />}>
           <Route path="/" element={<Landing />} />
           <Route path="/app" element={<Chat />} />

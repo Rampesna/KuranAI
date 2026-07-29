@@ -35,3 +35,4 @@ func Connect(appConfig *config.Config) error {
 const KeyPrefixAccess = "jwt:access:"
 const KeyPrefixRefresh = "jwt:refresh:"
 const KeyPrefixPasskey = "passkey:ceremony:"
+const KeyPrefixMobileAuth = "mobile:auth:"

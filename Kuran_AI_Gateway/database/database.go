@@ -102,6 +102,7 @@ func runMigrations() error {
 		&models.ChatMessage{},
 		&models.SubscriptionPackage{},
 		&models.UserSubscription{},
+		&models.GooglePlayPurchase{},
 		&models.UsageLog{},
 		&models.DailyVerse{},
 		&models.DailyVerseTranslation{},

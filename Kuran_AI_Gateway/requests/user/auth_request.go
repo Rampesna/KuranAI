@@ -12,8 +12,8 @@ type RegisterRequest struct {
 
 // LoginRequest user auth login için request (email/username + password).
 type LoginRequest struct {
-	Credential string         `json:"credential" binding:"required"`
-	Password   string         `json:"password" binding:"required"`
+	Credential string `json:"credential" binding:"required"`
+	Password   string `json:"password" binding:"required"`
 	DeviceInfo *dto.DeviceInfo
 }
 
@@ -21,7 +21,7 @@ func (r *LoginRequest) SetDeviceInfo(d *dto.DeviceInfo) { r.DeviceInfo = d }
 
 // RefreshTokenRequest refresh token için request.
 type RefreshTokenRequest struct {
-	RefreshToken string         `json:"refreshToken" binding:"required"`
+	RefreshToken string `json:"refreshToken" binding:"required"`
 	DeviceInfo   *dto.DeviceInfo
 }
 
@@ -31,7 +31,7 @@ func (r *RefreshTokenRequest) GetDeviceInfo() *dto.DeviceInfo  { return r.Device
 
 // GoogleLoginRequest Google OAuth ile giriş.
 type GoogleLoginRequest struct {
-	IDToken   string         `json:"idToken" binding:"required"`
+	IDToken    string `json:"idToken" binding:"required"`
 	DeviceInfo *dto.DeviceInfo
 }
 
@@ -39,8 +39,24 @@ func (r *GoogleLoginRequest) SetDeviceInfo(d *dto.DeviceInfo) { r.DeviceInfo = d
 
 // AppleLoginRequest Apple Sign in ile giriş.
 type AppleLoginRequest struct {
-	IdentityToken string         `json:"identityToken" binding:"required"`
-	DeviceInfo   *dto.DeviceInfo
+	IdentityToken string `json:"identityToken" binding:"required"`
+	DeviceInfo    *dto.DeviceInfo
 }
 
 func (r *AppleLoginRequest) SetDeviceInfo(d *dto.DeviceInfo) { r.DeviceInfo = d }
+
+// AppleMobileStartRequest web tabanlı Apple girişini Android'e güvenli şekilde devreder.
+type AppleMobileStartRequest struct {
+	IdentityToken string `json:"identityToken" binding:"required"`
+	DeviceInfo    *dto.DeviceInfo
+}
+
+func (r *AppleMobileStartRequest) SetDeviceInfo(d *dto.DeviceInfo) { r.DeviceInfo = d }
+
+// MobileAuthExchangeRequest tek kullanımlık mobil giriş kodunu oturum anahtarlarına çevirir.
+type MobileAuthExchangeRequest struct {
+	Code       string `json:"code" binding:"required,min=32,max=128"`
+	DeviceInfo *dto.DeviceInfo
+}
+
+func (r *MobileAuthExchangeRequest) SetDeviceInfo(d *dto.DeviceInfo) { r.DeviceInfo = d }

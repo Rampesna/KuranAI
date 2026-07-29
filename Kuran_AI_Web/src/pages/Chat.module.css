@@ -127,3 +127,43 @@
   .composer { width: calc(100% - 24px); padding-bottom: 12px; }
   .limitBanner { align-items: flex-start; flex-direction: column; }
 }
+
+:global(html[dir='rtl']) .authIntro,
+:global(html[dir='rtl']) .authCard,
+:global(html[dir='rtl']) .sourceList button,
+:global(html[dir='rtl']) .passkeyBlock > button:first-child,
+:global(html[dir='rtl']) .accountBlock div,
+:global(html[dir='rtl']) .chatHeader > div,
+:global(html[dir='rtl']) .suggestions button,
+:global(html[dir='rtl']) .userMessage,
+:global(html[dir='rtl']) .assistantMessage,
+:global(html[dir='rtl']) .consentModal,
+:global(html[dir='rtl']) .limitBanner {
+  text-align: right;
+}
+
+:global(html[dir='rtl']) .sidebar {
+  border-right: 0;
+  border-left: 1px solid var(--border);
+}
+
+:global(html[dir='rtl']) .authIntro li::before {
+  margin-right: 0;
+  margin-left: 10px;
+}
+
+:global(html[dir='rtl']) .userMessage {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+:global(html[dir='rtl']) .assistantMessage {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+@media (max-width: 760px) {
+  :global(html[dir='rtl']) .sidebar {
+    border-left: 0;
+  }
+}

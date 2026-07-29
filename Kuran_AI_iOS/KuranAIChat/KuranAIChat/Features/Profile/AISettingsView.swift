@@ -27,7 +27,7 @@ struct AISettingsView: View {
 
                         Picker("", selection: $storedVoiceId) {
                             ForEach(TTSVoiceOption.all) { voice in
-                                Text(voice.displayName(isTurkish: language == .turkish)).tag(voice.id)
+                                Text(voice.displayName(for: language)).tag(voice.id)
                             }
                         }
                         .pickerStyle(.menu)

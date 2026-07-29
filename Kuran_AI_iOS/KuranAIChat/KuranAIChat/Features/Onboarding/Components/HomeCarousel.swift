@@ -81,10 +81,10 @@ private struct VerseOfDayCard: View {
             }
         }
         .onAppear {
-            vm.fetchIfNeeded(lang: language == .turkish ? "tr" : "en")
+            vm.fetchIfNeeded(lang: language.rawValue)
         }
         .onChange(of: language) { _, newLang in
-            vm.fetch(lang: newLang == .turkish ? "tr" : "en")
+            vm.fetch(lang: newLang.rawValue)
         }
     }
 }

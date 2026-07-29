@@ -134,10 +134,17 @@ spec:
           volumeMounts:
             - name: uploads
               mountPath: /app/uploads
+            - name: google-play-service-account
+              mountPath: /var/run/secrets/google-play
+              readOnly: true
       volumes:
         - name: uploads
           persistentVolumeClaim:
             claimName: gateway-uploads
+        - name: google-play-service-account
+          secret:
+            secretName: kuranai-google-play
+            optional: true
 ---
 apiVersion: v1
 kind: Service
@@ -210,4 +217,3 @@ spec:
       port: 80
       targetPort: http
       nodePort: 7007
-

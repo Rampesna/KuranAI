@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Kuran AI";
+"NSMicrophoneUsageDescription" = "Kuran AI sesli sorunuzu kaydeder ve yalnızca açık izninizden sonra yazıya dönüştürülmesi için OpenAI'a gönderir.";
+"NSLocationWhenInUseUsageDescription" = "Namaz vakitlerini göstermek için konumunuz kullanılır.";

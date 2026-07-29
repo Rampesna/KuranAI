@@ -185,7 +185,7 @@ export default function Chat() {
           size: 'large',
           shape: 'rectangular',
           text: 'continue_with',
-          locale: language === 'tr' ? 'tr' : 'en',
+          locale: language,
           width: Math.min(400, googleButtonRef.current.clientWidth || 320),
         })
       })
@@ -404,7 +404,7 @@ export default function Chat() {
           <span className={styles.miniMark}>ق</span>
           <p className={styles.kicker}>{text('Web sohbeti', 'Web chat')}</p>
           <h1>{text('Sorunuzla başlayın.', 'Begin with your question.')}</h1>
-          <p>{text('Kur’an meali, tefsir ve hadis kaynakları üzerine yapay zekâ destekli sohbet. iOS hesabınızla giriş yapabilir veya ücretsiz hesap oluşturabilirsiniz.', 'AI-assisted chat about Quran translations, Tafsir, and Hadith. Sign in with your iOS account or create a free account.')}</p>
+          <p>{text('Kur’an meali, tefsir ve hadis kaynakları üzerine yapay zekâ destekli sohbet. Kuran AI hesabınızla giriş yapabilir veya ücretsiz hesap oluşturabilirsiniz.', 'AI-assisted chat about Quran translations, Tafsir, and Hadith. Sign in with your Kuran AI account or create a free account.', 'محادثة مدعومة بالذكاء الاصطناعي حول معاني القرآن والتفسير والحديث. سجّل الدخول بحساب Kuran AI أو أنشئ حسابًا مجانيًا.')}</p>
           <ul>
             <li>{text('Ücretsiz günde 3 soru', '3 free questions per day')}</li>
             <li>{text('Sohbetler cihazlarınız arasında ortak', 'Chats shared across your devices')}</li>
@@ -416,7 +416,7 @@ export default function Chat() {
           <div className={styles.socialLoginGroup}>
             <div ref={googleButtonRef} className={styles.googleButton} aria-label={text('Google ile devam et', 'Continue with Google')} />
             <button type="button" className={styles.appleButton} onClick={handleAppleLogin} disabled={authLoading}>
-              <span aria-hidden="true"></span>{text('Apple ile Devam Et', 'Continue with Apple')}
+              {text('Apple ile Devam Et', 'Continue with Apple')}
             </button>
             {authMode === 'login' && (
               <button type="button" className={styles.passkeyButton} onClick={handlePasskeyLogin} disabled={authLoading}>
@@ -504,8 +504,8 @@ export default function Chat() {
           {chatError && <p className={styles.error}>{chatError}</p>}
           {limitInfo && (
             <div className={styles.limitBanner}>
-              <div><strong>{text('Günlük soru limitiniz doldu.', 'You have reached today’s question limit.')}</strong><p>{text('Sohbete devam etmek için paketinizi Kuran AI iOS uygulamasından seçebilirsiniz.', 'To continue chatting, choose a plan in the Kuran AI iOS app.')}</p></div>
-              <Link to="/packages">{text('iOS paketlerini aç', 'Open iOS plans')} →</Link>
+              <div><strong>{text('Günlük soru limitiniz doldu.', 'You have reached today’s question limit.')}</strong><p>{text('Sohbete devam etmek için paketinizi Kuran AI mobil uygulamasından seçebilirsiniz.', 'To continue chatting, choose a plan in the Kuran AI mobile app.', 'لمتابعة المحادثة اختر باقتك من تطبيق Kuran AI للهاتف.')}</p></div>
+              <Link to="/packages">{text('Mobil paketleri aç', 'Open mobile plans', 'فتح باقات الهاتف')} →</Link>
             </div>
           )}
           <div ref={messagesEndRef} />

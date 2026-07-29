@@ -463,7 +463,7 @@ private struct StackableSubscriptionCard: View {
 
     private var collapsedHeader: some View {
         HStack {
-            Text(language == .turkish ? package.name : package.nameEn)
+            Text(language.localized(package.name, package.nameEn))
                 .font(.system(size: 17, weight: .bold))
                 .foregroundColor(headerTextColor)
                 .lineLimit(1)

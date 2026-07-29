@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="500" viewBox="0 0 1024 500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07130f"/>
+      <stop offset="0.55" stop-color="#0b1d17"/>
+      <stop offset="1" stop-color="#172313"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="78%" cy="45%" r="54%">
+      <stop offset="0" stop-color="#d8ad27" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#d8ad27" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#000" flood-opacity="0.42"/>
+    </filter>
+    <clipPath id="iconClip">
+      <rect x="710" y="88" width="300" height="300" rx="66"/>
+    </clipPath>
+  </defs>
+  <rect width="1024" height="500" fill="url(#bg)"/>
+  <rect width="1024" height="500" fill="url(#glow)"/>
+  <path d="M0 425 C220 365 375 470 620 405 C790 360 892 375 1024 330 L1024 500 L0 500Z" fill="#d8ad27" opacity="0.08"/>
+  <g transform="translate(64 74)">
+    <text x="0" y="66" fill="#f3c52f" font-family="SF Pro Display, Helvetica, sans-serif" font-size="28" font-weight="700" letter-spacing="3">KURAN AI</text>
+    <text x="0" y="146" fill="#fff8e8" font-family="SF Pro Display, Helvetica, sans-serif" font-size="54" font-weight="750">Vahiy ile konuş.</text>
+    <text x="0" y="205" fill="#c8d0ca" font-family="SF Pro Text, Helvetica, sans-serif" font-size="24">Kur’an, tefsir ve hadis için</text>
+    <text x="0" y="240" fill="#c8d0ca" font-family="SF Pro Text, Helvetica, sans-serif" font-size="24">yapay zekâ destekli rehber.</text>
+    <g transform="translate(0 296)">
+      <rect width="250" height="48" rx="24" fill="#f3c52f"/>
+      <text x="125" y="32" fill="#07130f" text-anchor="middle" font-family="SF Pro Text, Helvetica, sans-serif" font-size="18" font-weight="700">Türkçe • English • العربية</text>
+    </g>
+  </g>
+  <rect x="694" y="72" width="332" height="332" rx="78" fill="#fff" opacity="0.06" filter="url(#shadow)"/>
+  <image x="710" y="88" width="300" height="300" preserveAspectRatio="xMidYMid slice"
+         clip-path="url(#iconClip)"
+         xlink:href="source/app-icon.png"/>
+  <circle cx="859" cy="238" r="178" fill="none" stroke="#f3c52f" stroke-width="2" opacity="0.28"/>
+</svg>

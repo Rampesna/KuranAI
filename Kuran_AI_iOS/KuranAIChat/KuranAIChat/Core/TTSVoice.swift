@@ -6,8 +6,8 @@ struct TTSVoiceOption: Identifiable, Hashable {
     let nameTr: String
     let nameEn: String
 
-    func displayName(isTurkish: Bool) -> String {
-        isTurkish ? nameTr : nameEn
+    func displayName(for language: Language) -> String {
+        language.localized(nameTr, nameEn)
     }
 
     /// Varsayılan: Ash

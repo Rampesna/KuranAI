@@ -164,6 +164,10 @@ func main() {
 	if err := subSvc.SeedPackages(context.Background()); err != nil {
 		log.Printf("warning: subscription seed: %v", err)
 	}
+	googlePlayVerifier, googlePlayErr := services.NewGooglePlayVerifier(appConfig.GooglePlay)
+	if googlePlayErr != nil {
+		log.Printf("warning: google play verifier unavailable: %v", googlePlayErr)
+	}
 
 	apiGroup := ginEngine.Group("/api")
 	prayerService := services.NewPrayerTimesService()
@@ -173,7 +177,15 @@ func main() {
 	routes.RegisterManagerRoutes(apiGroup, managerService, tokenService)
 	routes.RegisterPrayerRoutes(apiGroup, prayerService)
 	routes.RegisterChatRoutes(apiGroup, tokenService, appConfig.OpenAI.APIKey, usageSvc)
-	routes.RegisterSubscriptionRoutes(apiGroup, tokenService, subSvc, usageSvc, appConfig.AppleIAP.SharedSecret, appConfig.AppleIAP.BundleID)
+	routes.RegisterSubscriptionRoutes(
+		apiGroup,
+		tokenService,
+		subSvc,
+		usageSvc,
+		appConfig.AppleIAP.SharedSecret,
+		appConfig.AppleIAP.BundleID,
+		googlePlayVerifier,
+	)
 	routes.RegisterVerseRoutes(apiGroup, verseSvc, tokenService)
 
 	addr := ":" + appConfig.Server.Port

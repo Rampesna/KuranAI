@@ -114,7 +114,7 @@ export default function Contact() {
       )}
 
       <h2>{text('Diğer İletişim Yolları', 'Other Ways to Reach Us')}</h2>
-      <p>{text('Kuran AI App Store sayfası veya uygulama içi destek seçenekleri üzerinden de bize ulaşabilirsiniz.', 'You can also reach us through the App Store page of Kuran AI or via the in-app support options.')}</p>
+      <p>{text('Kuran AI App Store ve Google Play sayfaları veya uygulama içi destek seçenekleri üzerinden de bize ulaşabilirsiniz.', 'You can also reach us through the App Store and Google Play pages of Kuran AI or via the in-app support options.', 'يمكنك أيضًا التواصل معنا عبر صفحتي Kuran AI على App Store وGoogle Play أو خيارات الدعم داخل التطبيق.')}</p>
 
       <h2>{text('İlgili Sayfalar', 'Related Pages')}</h2>
       <p>

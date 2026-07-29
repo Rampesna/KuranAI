@@ -7,14 +7,15 @@ import (
 )
 
 type Config struct {
-	Server   ServerConfig
-	Database DatabaseConfig
-	Redis    RedisConfig
-	JWT      JWTConfig
-	OAuth    OAuthConfig
-	WebAuthn WebAuthnConfig
-	OpenAI   OpenAIConfig
-	AppleIAP AppleIAPConfig
+	Server     ServerConfig
+	Database   DatabaseConfig
+	Redis      RedisConfig
+	JWT        JWTConfig
+	OAuth      OAuthConfig
+	WebAuthn   WebAuthnConfig
+	OpenAI     OpenAIConfig
+	AppleIAP   AppleIAPConfig
+	GooglePlay GooglePlayConfig
 }
 
 type OpenAIConfig struct {
@@ -24,6 +25,12 @@ type OpenAIConfig struct {
 type AppleIAPConfig struct {
 	SharedSecret string // App Store Connect → App → App Information → App-Specific Shared Secret
 	BundleID     string
+}
+
+type GooglePlayConfig struct {
+	PackageName     string
+	CredentialsPath string
+	AllowTest       bool
 }
 
 type ServerConfig struct {
@@ -115,6 +122,11 @@ func Load() *Config {
 			SharedSecret: getEnv("APPLE_IAP_SHARED_SECRET", ""),
 			BundleID:     getEnv("APPLE_BUNDLE_ID", "talhacan.KuranAIChat"),
 		},
+		GooglePlay: GooglePlayConfig{
+			PackageName:     getEnv("GOOGLE_PLAY_PACKAGE_NAME", "com.talhacan.kuranai"),
+			CredentialsPath: getEnv("GOOGLE_PLAY_CREDENTIALS_PATH", ""),
+			AllowTest:       getEnvBool("GOOGLE_PLAY_ALLOW_TEST", false),
+		},
 	}
 }
 
@@ -129,6 +141,15 @@ func getEnvInt(key string, defaultVal int) int {
 	if envValue := os.Getenv(key); envValue != "" {
 		if parsedInt, parseErr := strconv.Atoi(envValue); parseErr == nil {
 			return parsedInt
+		}
+	}
+	return defaultVal
+}
+
+func getEnvBool(key string, defaultVal bool) bool {
+	if envValue := strings.TrimSpace(os.Getenv(key)); envValue != "" {
+		if parsedBool, parseErr := strconv.ParseBool(envValue); parseErr == nil {
+			return parsedBool
 		}
 	}
 	return defaultVal

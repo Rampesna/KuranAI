@@ -241,3 +241,10 @@
   .iosPurchaseNote { align-items: flex-start; flex-wrap: wrap; }
   .iosPurchaseNote p { min-width: calc(100% - 34px); }
 }
+
+:global(html[dir='rtl']) .webPanel,
+:global(html[dir='rtl']) .webPanel .sectionKicker,
+:global(html[dir='rtl']) .iosPurchaseNote,
+:global(html[dir='rtl']) .linkCard {
+  text-align: right;
+}

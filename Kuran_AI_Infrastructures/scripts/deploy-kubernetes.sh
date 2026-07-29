@@ -39,6 +39,17 @@ kubectl create secret generic kuranai-openai \
   --dry-run=client -o yaml | kubectl apply -f -
 unset OPENAI_API_KEY
 
+if [[ -n "${GOOGLE_PLAY_SERVICE_ACCOUNT_FILE:-}" ]]; then
+  if [[ ! -f "$GOOGLE_PLAY_SERVICE_ACCOUNT_FILE" ]]; then
+    echo "Google Play service-account file not found: $GOOGLE_PLAY_SERVICE_ACCOUNT_FILE" >&2
+    exit 1
+  fi
+  kubectl create secret generic kuranai-google-play \
+    --namespace "$NAMESPACE" \
+    --from-file "service-account.json=$GOOGLE_PLAY_SERVICE_ACCOUNT_FILE" \
+    --dry-run=client -o yaml | kubectl apply -f -
+fi
+
 docker build -t kuranai-gateway:latest "$PROJECT_ROOT/Kuran_AI_Gateway"
 docker build \
   --build-arg VITE_API_BASE=https://kuranai-api.talhacan.com \

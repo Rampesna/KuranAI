@@ -1,0 +1,3 @@
+"CFBundleDisplayName" = "Quran AI";
+"NSMicrophoneUsageDescription" = "Quran AI records your voice question and sends it to OpenAI for transcription only after your explicit consent.";
+"NSLocationWhenInUseUsageDescription" = "Your location is used to show local prayer times.";

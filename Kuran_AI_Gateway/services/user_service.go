@@ -3,17 +3,22 @@ package services
 import (
 	"context"
 	"crypto/rand"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/rampesna/kuran-ai-gateway/core"
 	"github.com/rampesna/kuran-ai-gateway/database"
+	"github.com/rampesna/kuran-ai-gateway/dto"
 	"github.com/rampesna/kuran-ai-gateway/models"
+	redisstore "github.com/rampesna/kuran-ai-gateway/redis"
 	userRequest "github.com/rampesna/kuran-ai-gateway/requests/user"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -212,6 +217,61 @@ func (s *UserService) LoginWithApple(ctx context.Context, req *userRequest.Apple
 		return core.NewServiceResponse(false, "Account is inactive", 403, nil)
 	}
 	return s.tokenService.IssueTokens(ctx, user.ID, models.TokenableTypeUser, req.DeviceInfo)
+}
+
+const mobileAuthExchangeTTL = 3 * time.Minute
+
+// StartAppleMobileAuth Apple kimliğini doğrular ve tokenlar yerine kısa ömürlü,
+// tek kullanımlık bir kod döndürür. Böylece JWT'ler custom URL şemasına yazılmaz.
+func (s *UserService) StartAppleMobileAuth(ctx context.Context, req *userRequest.AppleMobileStartRequest) *core.ServiceResponse {
+	loginResponse := s.LoginWithApple(ctx, &userRequest.AppleLoginRequest{
+		IdentityToken: req.IdentityToken,
+		DeviceInfo:    req.DeviceInfo,
+	})
+	if !loginResponse.IsSuccess {
+		return loginResponse
+	}
+	authResponse, ok := loginResponse.Data.(*dto.AuthResponse)
+	if !ok || authResponse == nil {
+		return core.NewServiceResponse(false, "Failed to prepare mobile sign in", 500, nil)
+	}
+	encoded, err := json.Marshal(authResponse)
+	if err != nil {
+		return core.NewServiceResponse(false, "Failed to prepare mobile sign in", 500, nil)
+	}
+	codeBytes := make([]byte, 32)
+	if _, err := rand.Read(codeBytes); err != nil {
+		return core.NewServiceResponse(false, "Failed to prepare mobile sign in", 500, nil)
+	}
+	code := base64.RawURLEncoding.EncodeToString(codeBytes)
+	if err := redisstore.Client.Set(
+		ctx,
+		redisstore.KeyPrefixMobileAuth+code,
+		encoded,
+		mobileAuthExchangeTTL,
+	).Err(); err != nil {
+		return core.NewServiceResponse(false, "Failed to prepare mobile sign in", 500, nil)
+	}
+	return core.NewServiceResponse(true, "Mobile sign in ready", 201, map[string]interface{}{
+		"code":      code,
+		"expiresIn": int(mobileAuthExchangeTTL.Seconds()),
+	})
+}
+
+// FinishMobileAuth kodu atomik olarak tüketir; aynı kod ikinci kez kullanılamaz.
+func (s *UserService) FinishMobileAuth(ctx context.Context, req *userRequest.MobileAuthExchangeRequest) *core.ServiceResponse {
+	encoded, err := redisstore.Client.GetDel(
+		ctx,
+		redisstore.KeyPrefixMobileAuth+strings.TrimSpace(req.Code),
+	).Bytes()
+	if err != nil {
+		return core.NewServiceResponse(false, "Mobile sign in code is invalid or expired", 401, nil)
+	}
+	var authResponse dto.AuthResponse
+	if err := json.Unmarshal(encoded, &authResponse); err != nil {
+		return core.NewServiceResponse(false, "Mobile sign in code is invalid", 401, nil)
+	}
+	return core.NewServiceResponse(true, "Login successful", 200, &authResponse)
 }
 
 // UpdateUsername kullanıcı adını günceller; başkası kullanıyorsa hata döner.

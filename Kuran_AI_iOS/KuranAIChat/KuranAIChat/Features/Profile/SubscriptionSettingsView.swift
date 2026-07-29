@@ -64,7 +64,7 @@ struct SubscriptionSettingsView: View {
 
                 if let sub = subscriptionInfo, sub.hasPackage, let pkg = sub.package {
                     HStack {
-                        Text(language == .turkish ? pkg.name : pkg.nameEn)
+                        Text(language.localized(pkg.name, pkg.nameEn))
                             .font(.system(size: 17, weight: .semibold))
                             .foregroundColor(Theme.textPrimary)
                         Spacer()
@@ -189,7 +189,7 @@ struct SubscriptionSettingsView: View {
         if let date = formatter.date(from: iso) ?? ISO8601DateFormatter().date(from: iso) {
             let out = DateFormatter()
             out.dateStyle = .medium
-            out.locale = Locale(identifier: language == .turkish ? "tr_TR" : "en_US")
+            out.locale = Locale(identifier: language.localeIdentifier)
             return out.string(from: date)
         }
         return iso
@@ -210,4 +210,3 @@ struct SubscriptionSettingsView: View {
         }
     }
 }
-

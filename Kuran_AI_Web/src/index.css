@@ -34,6 +34,17 @@ body {
   min-height: 100%;
 }
 
+html[dir='rtl'] body {
+  font-family: 'Inter', 'Noto Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html[dir='rtl'] input,
+html[dir='rtl'] textarea,
+html[dir='rtl'] select {
+  direction: rtl;
+  text-align: right;
+}
+
 #root {
   min-height: 100%;
 }

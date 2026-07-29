@@ -166,3 +166,10 @@
   .mainPage { padding: 32px 16px 60px; }
   .mainPackages { padding: 42px 16px 64px; }
 }
+
+:global(html[dir='rtl']) .logo,
+:global(html[dir='rtl']) .headerActions,
+:global(html[dir='rtl']) .nav,
+:global(html[dir='rtl']) .footerLinks {
+  direction: rtl;
+}
