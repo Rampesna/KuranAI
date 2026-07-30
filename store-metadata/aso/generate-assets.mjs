@@ -160,7 +160,8 @@ const locales = {
 };
 
 const specs = {
-  "app-store": { width: 1320, height: 2868 },
+  // App Store images are committed raw device captures. Never regenerate
+  // them as illustrated/mock UI assets.
   "google-play": { width: 1080, height: 1920 },
 };
 

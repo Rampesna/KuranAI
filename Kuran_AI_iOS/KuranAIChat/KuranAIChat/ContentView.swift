@@ -398,7 +398,7 @@ struct ChatView: View {
             .offset(
                 x: showSidebar
                     ? 0
-                    : (language == .arabic ? 1 : -1) * (UIScreen.main.bounds.width * 0.8 + 20)
+                    : -(UIScreen.main.bounds.width * 0.8 + 20)
             )
             .animation(.easeInOut(duration: 0.2), value: showSidebar)
         }
@@ -579,6 +579,10 @@ struct ChatView: View {
                 .compactMap { rawLine -> String? in
                     var line = rawLine.trimmingCharacters(in: .whitespaces)
                     while line.hasPrefix("#") {
+                        line.removeFirst()
+                        line = line.trimmingCharacters(in: .whitespaces)
+                    }
+                    while line.hasPrefix(">") {
                         line.removeFirst()
                         line = line.trimmingCharacters(in: .whitespaces)
                     }

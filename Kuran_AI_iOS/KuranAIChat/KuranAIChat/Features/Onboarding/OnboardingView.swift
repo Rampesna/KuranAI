@@ -9,7 +9,7 @@ struct OnboardingView: View {
     @State private var animateGlow = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
+        VStack(alignment: .leading, spacing: 18) {
             HStack {
                 Button {
                     onProfileTap()
@@ -25,9 +25,10 @@ struct OnboardingView: View {
             heroCard
             SourceSelector(language: language, selected: $selectedSource)
             HomeCarousel(language: language, onPrimaryAction: onPrimaryAction)
-            Spacer()
+            Spacer(minLength: 0)
         }
-        .padding(30)
+        .padding(.horizontal, 24)
+        .padding(.vertical, 20)
         .gesture(
             DragGesture(minimumDistance: 50, coordinateSpace: .local)
                 .onEnded { value in
@@ -55,9 +56,16 @@ struct OnboardingView: View {
             Text(language.localized("Vahy ile konuş.", "Speak with\nRevelation."))
                 .font(.system(size: 42, weight: .bold, design: .rounded))
                 .foregroundColor(Theme.textPrimary)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(2)
             Text(language.localized("Kur'an, tefsir ve hadis kaynaklarını tek asistanda birleştiren ses odaklı deneyim.", "Voice-first experience unifying Quran, tafsir & hadith data."))
                 .font(.system(size: 15))
                 .foregroundColor(Theme.textMuted)
+                .lineLimit(3)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
         }
     }
 
@@ -109,7 +117,7 @@ struct OnboardingView: View {
                 .padding(22)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 260)
+            .frame(height: 240)
         }
         .buttonStyle(.plain)
     }
