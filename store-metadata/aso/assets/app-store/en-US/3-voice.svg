@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="2868" viewBox="0 0 1320 2868">
+    <defs>
+    <linearGradient id="bg-app-store-en-US-2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06130f"/>
+      <stop offset="0.52" stop-color="#0d1813"/>
+      <stop offset="1" stop-color="#050907"/>
+    </linearGradient>
+    <radialGradient id="glow-app-store-en-US-2" cx="50%" cy="15%" r="70%">
+      <stop offset="0" stop-color="#c99a18" stop-opacity=".22"/>
+      <stop offset=".55" stop-color="#c99a18" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#c99a18" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mic-app-store-en-US-2" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffd94c"/>
+      <stop offset=".58" stop-color="#e7b71d"/>
+      <stop offset="1" stop-color="#9d7410"/>
+    </radialGradient>
+    <filter id="shadow-app-store-en-US-2" x="-25%" y="-20%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#000" flood-opacity=".58"/>
+    </filter>
+    <filter id="soft-app-store-en-US-2" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+    <rect width="1320" height="2868" fill="url(#bg-app-store-en-US-2)"/>
+    <rect width="1320" height="2868" fill="url(#glow-app-store-en-US-2)"/>
+    <circle cx="1148.4" cy="229.44" r="290.4" fill="#c69a1f" opacity=".05"/>
+    <text x="99" y="129.06" text-anchor="start" fill="#e7b72b" font-family="Arial, sans-serif" font-size="29.04" font-weight="800" letter-spacing="5.28">KURANAI</text>
+    <text x="99" y="243.78000000000003" text-anchor="start" fill="#fff8e8" fill-opacity="1" font-family="Arial, sans-serif" font-size="112.2" font-weight="800">
+<tspan x="99" dy="0">Speak.</tspan>
+<tspan x="99" dy="116.688">Recording stops itself.</tspan>
+</text>
+    <text x="99" y="506.32800000000003" text-anchor="start" fill="#aeb5af" fill-opacity="1" font-family="Arial, sans-serif" font-size="38.28" font-weight="400">
+<tspan x="99" dy="0">Ask naturally; silence detection ends the recording.</tspan>
+</text>
+    <g filter="url(#shadow-app-store-en-US-2)">
+    <rect x="124" y="766.36" width="1072" height="2281.7200000000003" rx="103.03999999999999" fill="#030504" stroke="#b98c18" stroke-opacity=".52" stroke-width="4"/>
+    <clipPath id="clip-app-store-en-US-2"><rect x="132" y="774.36" width="1056" height="2265.7200000000003" rx="95.03999999999999"/></clipPath>
+    <g clip-path="url(#clip-app-store-en-US-2)">
+      <rect x="132" y="774.36" width="1056" height="2265.7200000000003" fill="#090805"/>
+
+    <text x="660" y="1023.5892" text-anchor="middle" fill="#e7b72b" font-family="Arial, sans-serif" font-size="47.519999999999996" font-weight="800">KuranAI</text>
+    <text x="660" y="1182.1896000000002" text-anchor="middle" fill="#fff8e8" font-family="Arial, sans-serif" font-size="38.016" font-weight="700">Ask your question naturally</text>
+    <circle cx="660" cy="1725.9624000000001" r="232.32" fill="#d8a613" opacity=".09"/>
+    <circle cx="660" cy="1725.9624000000001" r="168.96" fill="#d8a613" opacity=".13"/>
+    <g transform="translate(660 1725.9624000000001)">
+    <circle r="128.4096" fill="#d7a515" opacity=".13" filter="url(#soft-app-store-en-US-2)"/>
+    <circle r="104.3328" fill="url(#mic-app-store-en-US-2)"/>
+    <rect x="-22.070400000000003" y="-48.153600000000004" width="44.140800000000006" height="68.2176" rx="22.070400000000003" fill="#07130f"/>
+    <path d="M -40.12800000000001 4.0128 Q 0 60.192 40.12800000000001 4.0128" fill="none" stroke="#07130f" stroke-width="11.035200000000001" stroke-linecap="round"/>
+    <path d="M 0 54.17280000000001 V 76.2432" stroke="#07130f" stroke-width="11.035200000000001" stroke-linecap="round"/>
+    <path d="M -30.096 76.2432 H 30.096" stroke="#07130f" stroke-width="11.035200000000001" stroke-linecap="round"/>
+  </g>
+    <rect x="300.96" y="2150.7849" width="14.784" height="56.64300000000001" rx="7.392" fill="#fff0a6" opacity="0.55"/><rect x="345.312" y="2142.8548800000003" width="14.784" height="72.50304000000001" rx="7.392" fill="#e7b72b" opacity="0.6000000000000001"/><rect x="389.664" y="2134.92486" width="14.784" height="88.36308000000001" rx="7.392" fill="#fff0a6" opacity="0.65"/><rect x="434.01599999999996" y="2126.9948400000003" width="14.784" height="104.22312000000001" rx="7.392" fill="#e7b72b" opacity="0.7000000000000001"/><rect x="478.368" y="2119.06482" width="14.784" height="120.08316000000002" rx="7.392" fill="#fff0a6" opacity="0.75"/><rect x="522.72" y="2111.1348000000003" width="14.784" height="135.94320000000002" rx="7.392" fill="#e7b72b" opacity="0.8"/><rect x="567.072" y="2103.20478" width="14.784" height="151.80324000000002" rx="7.392" fill="#fff0a6" opacity="0.8500000000000001"/><rect x="611.424" y="2095.2747600000002" width="14.784" height="167.66328000000004" rx="7.392" fill="#e7b72b" opacity="0.9000000000000001"/><rect x="655.7760000000001" y="2087.34474" width="14.784" height="183.52332" rx="7.392" fill="#fff0a6" opacity="0.9500000000000001"/><rect x="700.1279999999999" y="2095.2747600000002" width="14.784" height="167.66328000000004" rx="7.392" fill="#e7b72b" opacity="0.9000000000000001"/><rect x="744.48" y="2103.20478" width="14.784" height="151.80324000000002" rx="7.392" fill="#fff0a6" opacity="0.8500000000000001"/><rect x="788.832" y="2111.1348000000003" width="14.784" height="135.94320000000002" rx="7.392" fill="#e7b72b" opacity="0.8"/><rect x="833.184" y="2119.06482" width="14.784" height="120.08316000000002" rx="7.392" fill="#fff0a6" opacity="0.75"/><rect x="877.5360000000001" y="2126.9948400000003" width="14.784" height="104.22312000000001" rx="7.392" fill="#e7b72b" opacity="0.7000000000000001"/><rect x="921.8879999999999" y="2134.92486" width="14.784" height="88.36308000000001" rx="7.392" fill="#fff0a6" opacity="0.65"/><rect x="966.24" y="2142.8548800000003" width="14.784" height="72.50304000000001" rx="7.392" fill="#e7b72b" opacity="0.6000000000000001"/><rect x="1010.5920000000001" y="2150.7849" width="14.784" height="56.64300000000001" rx="7.392" fill="#fff0a6" opacity="0.55"/>
+    <text x="660" y="2383.0212" text-anchor="middle" fill="#fff8e8" font-family="Arial, sans-serif" font-size="45.407999999999994" font-weight="800">Listening…</text>
+    <rect x="258.72" y="2518.9644000000003" width="802.5600000000001" height="192.58620000000005" rx="96.29310000000002" fill="#171510" stroke="#4a3f24"/>
+    <circle cx="322.08" cy="2614.1246400000005" r="26.400000000000002" fill="#e7b72b"/>
+    <path d="M 309.408 2614.1246400000005 l 8.448 20.39148 l 19.008 -45.314400000000006" fill="none" stroke="#07130f" stroke-width="8.448" stroke-linecap="round"/>
+    <text x="660" y="2636.78184" text-anchor="middle" fill="#d9d8d1" font-family="Arial, sans-serif" font-size="28.512" font-weight="600">Stops automatically when you finish</text>
+
+    </g>
+  </g>
+  </svg>

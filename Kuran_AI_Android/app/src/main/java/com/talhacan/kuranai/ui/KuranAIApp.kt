@@ -133,6 +133,7 @@ import com.talhacan.kuranai.model.AppState
 import com.talhacan.kuranai.model.ChatMessage
 import com.talhacan.kuranai.model.SourceType
 import com.talhacan.kuranai.model.SubscriptionPackage
+import com.talhacan.kuranai.review.InAppReviewCoordinator
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Currency
@@ -145,6 +146,8 @@ fun KuranAIApp(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+    val reviewCoordinator = remember(activity) { InAppReviewCoordinator(activity) }
+    var wasSending by remember { mutableStateOf(false) }
     val locationPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) {
@@ -165,6 +168,19 @@ fun KuranAIApp(
             snackbar.showSnackbar(message)
             viewModel.clearStatus()
         }
+    }
+    LaunchedEffect(state.sending) {
+        if (
+            wasSending &&
+            !state.sending &&
+            state.error == null &&
+            state.messages.lastOrNull()?.let {
+                it.role == "assistant" && !it.streaming && it.content.isNotBlank()
+            } == true
+        ) {
+            reviewCoordinator.recordSuccessfulAnswer(activity)
+        }
+        wasSending = state.sending
     }
 
     CompositionLocalProvider(

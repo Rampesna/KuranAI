@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 import AuthenticationServices
 
 // MARK: - Root
@@ -212,6 +213,7 @@ private enum PendingAIConsentAction {
 }
 
 struct ChatView: View {
+    @Environment(\.requestReview) private var requestReview
     let language: Language
     @Binding var selectedSource: SourceFilter
     @Binding var isAuthenticated: Bool
@@ -779,6 +781,9 @@ struct ChatView: View {
                     messages = copy
                 }
                 await loadSessions()
+                if InAppReviewCoordinator.shared.recordSuccessfulAnswerAndShouldRequest() {
+                    requestReview()
+                }
             } catch let e as APIError {
                 if case .limitExceeded(let info) = e {
                     if messages.count >= 2 {

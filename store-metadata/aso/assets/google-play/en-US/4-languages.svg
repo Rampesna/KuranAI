@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <defs>
+    <linearGradient id="bg-google-play-en-US-3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06130f"/>
+      <stop offset="0.52" stop-color="#0d1813"/>
+      <stop offset="1" stop-color="#050907"/>
+    </linearGradient>
+    <radialGradient id="glow-google-play-en-US-3" cx="50%" cy="15%" r="70%">
+      <stop offset="0" stop-color="#c99a18" stop-opacity=".22"/>
+      <stop offset=".55" stop-color="#c99a18" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#c99a18" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mic-google-play-en-US-3" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffd94c"/>
+      <stop offset=".58" stop-color="#e7b71d"/>
+      <stop offset="1" stop-color="#9d7410"/>
+    </radialGradient>
+    <filter id="shadow-google-play-en-US-3" x="-25%" y="-20%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#000" flood-opacity=".58"/>
+    </filter>
+    <filter id="soft-google-play-en-US-3" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+    <rect width="1080" height="1920" fill="url(#bg-google-play-en-US-3)"/>
+    <rect width="1080" height="1920" fill="url(#glow-google-play-en-US-3)"/>
+    <circle cx="939.6" cy="153.6" r="237.6" fill="#c69a1f" opacity=".05"/>
+    <text x="81" y="86.39999999999999" text-anchor="start" fill="#e7b72b" font-family="Arial, sans-serif" font-size="23.759999999999998" font-weight="800" letter-spacing="4.32">KURANAI</text>
+    <text x="81" y="163.20000000000002" text-anchor="start" fill="#fff8e8" fill-opacity="1" font-family="Arial, sans-serif" font-size="84.24" font-weight="800">
+<tspan x="81" dy="0">Three languages,</tspan>
+<tspan x="81" dy="87.6096">one experience</tspan>
+</text>
+    <text x="81" y="360.3216" text-anchor="start" fill="#aeb5af" fill-opacity="1" font-family="Arial, sans-serif" font-size="31.32" font-weight="400">
+<tspan x="81" dy="0">Turkish, English and Arabic with complete RTL support.</tspan>
+</text>
+    <g filter="url(#shadow-google-play-en-US-3)">
+    <rect x="100" y="539.1999999999999" width="880" height="1513.6000000000001" rx="85.75999999999999" fill="#030504" stroke="#b98c18" stroke-opacity=".52" stroke-width="4"/>
+    <clipPath id="clip-google-play-en-US-3"><rect x="108" y="547.1999999999999" width="864" height="1497.6000000000001" rx="77.75999999999999"/></clipPath>
+    <g clip-path="url(#clip-google-play-en-US-3)">
+      <rect x="108" y="547.1999999999999" width="864" height="1497.6000000000001" fill="#090805"/>
+
+    <text x="540" y="696.9599999999999" text-anchor="middle" fill="#e7b72b" font-family="Arial, sans-serif" font-size="37.151999999999994" font-weight="800">KuranAI</text>
+    <text x="540" y="801.7919999999999" text-anchor="middle" fill="#fff8e8" font-family="Arial, sans-serif" font-size="31.104" font-weight="700">Switch languages at any time</text>
+    <g transform="translate(194.4 891.6479999999999)">
+      <rect width="691.2" height="209.66400000000004" rx="104.83200000000002" fill="#171510" stroke="#4a3f24"/>
+      <rect x="21.6" y="35.942400000000006" width="203.04" height="137.7792" rx="68.8896" fill="#e7b72b"/>
+      <text x="122.68799999999999" y="124.30080000000002" text-anchor="middle" fill="#07130f" font-family="Arial, sans-serif" font-size="23.328" font-weight="800">Türkçe</text>
+      <text x="345.6" y="124.30080000000002" text-anchor="middle" fill="#ece8dc" font-family="Arial, sans-serif" font-size="23.328" font-weight="700">English</text>
+      <text x="574.5600000000001" y="124.30080000000002" text-anchor="middle" fill="#ece8dc" font-family="Geeza Pro, Arial, sans-serif" font-size="25.919999999999998" font-weight="700">العربية</text>
+    </g>
+    <text x="168.48000000000002" y="1191.1680000000001" text-anchor="start" fill="#9ca29d" font-family="Arial, sans-serif" font-size="21.6" font-weight="700">Chat History</text>
+    <rect x="168.48000000000002" y="1251.0720000000001" width="743.04" height="142.27200000000002" rx="30.240000000000002" fill="#171510" stroke="#353126"/>
+        <circle cx="203.04000000000002" cy="1321.4592000000002" r="22.464" fill="#3a3216"/>
+        <text x="250.56000000000003" y="1333.44" text-anchor="start" fill="#ece8dc" font-family="Arial, sans-serif" font-size="21.6" font-weight="600">What does the Quran say about patience?</text><rect x="168.48000000000002" y="1445.76" width="743.04" height="142.27200000000002" rx="30.240000000000002" fill="#171510" stroke="#353126"/>
+        <circle cx="203.04000000000002" cy="1516.1471999999999" r="22.464" fill="#3a3216"/>
+        <text x="250.56000000000003" y="1528.128" text-anchor="start" fill="#ece8dc" font-family="Arial, sans-serif" font-size="21.6" font-weight="600">What is the message of Surah Ar-Rahman?</text><rect x="168.48000000000002" y="1640.4479999999999" width="743.04" height="142.27200000000002" rx="30.240000000000002" fill="#171510" stroke="#353126"/>
+        <circle cx="203.04000000000002" cy="1710.8352" r="22.464" fill="#3a3216"/>
+        <text x="250.56000000000003" y="1722.8159999999998" text-anchor="start" fill="#ece8dc" font-family="Arial, sans-serif" font-size="21.6" font-weight="600">How is prayer described while traveling?</text>
+
+    </g>
+  </g>
+  </svg>

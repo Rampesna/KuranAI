@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500" viewBox="0 0 1024 500">
+    <defs>
+    <linearGradient id="bg-feature-en-US" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06130f"/>
+      <stop offset="0.52" stop-color="#0d1813"/>
+      <stop offset="1" stop-color="#050907"/>
+    </linearGradient>
+    <radialGradient id="glow-feature-en-US" cx="50%" cy="15%" r="70%">
+      <stop offset="0" stop-color="#c99a18" stop-opacity=".22"/>
+      <stop offset=".55" stop-color="#c99a18" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#c99a18" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mic-feature-en-US" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffd94c"/>
+      <stop offset=".58" stop-color="#e7b71d"/>
+      <stop offset="1" stop-color="#9d7410"/>
+    </radialGradient>
+    <filter id="shadow-feature-en-US" x="-25%" y="-20%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#000" flood-opacity=".58"/>
+    </filter>
+    <filter id="soft-feature-en-US" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+    <rect width="1024" height="500" fill="url(#bg-feature-en-US)"/>
+    <rect width="1024" height="500" fill="url(#glow-feature-en-US)"/>
+    <circle cx="919" cy="250" r="150" fill="#d2a322" opacity=".07"/>
+    <rect x="827" y="158" width="184" height="184" rx="45" fill="#f2bd24"/>
+    <text x="919" y="284" text-anchor="middle" fill="#07130f" font-family="Geeza Pro, Arial, sans-serif" font-size="112" font-weight="700">ق</text>
+    <text x="69" y="78" text-anchor="start" fill="#e7b72b" font-family="Arial, sans-serif" font-size="27" font-weight="800" letter-spacing="4">KURANAI</text>
+    <text x="69" y="154" text-anchor="start" fill="#fff8e8" fill-opacity="1" font-family="Arial, sans-serif" font-size="50" font-weight="800">
+<tspan x="69" dy="0">Explore what the Quran says</tspan>
+<tspan x="69" dy="58">through verses and sources</tspan>
+</text>
+    <text x="69" y="302" text-anchor="start" fill="#b8c0ba" font-family="Arial, sans-serif" font-size="24">Translation, tafsir, hadith, voice questions and prayer times</text>
+    <rect x="69" y="354" width="324" height="60" rx="30" fill="#171d18" stroke="#655321"/>
+    <text x="231" y="393" text-anchor="middle" fill="#f2bd24" font-family="Arial, sans-serif" font-size="21" font-weight="700">Türkçe  •  English  •  العربية</text>
+  </svg>

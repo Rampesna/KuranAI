@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+    <defs>
+    <linearGradient id="bg-google-play-ar-2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#06130f"/>
+      <stop offset="0.52" stop-color="#0d1813"/>
+      <stop offset="1" stop-color="#050907"/>
+    </linearGradient>
+    <radialGradient id="glow-google-play-ar-2" cx="50%" cy="15%" r="70%">
+      <stop offset="0" stop-color="#c99a18" stop-opacity=".22"/>
+      <stop offset=".55" stop-color="#c99a18" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#c99a18" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mic-google-play-ar-2" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffd94c"/>
+      <stop offset=".58" stop-color="#e7b71d"/>
+      <stop offset="1" stop-color="#9d7410"/>
+    </radialGradient>
+    <filter id="shadow-google-play-ar-2" x="-25%" y="-20%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="26" stdDeviation="30" flood-color="#000" flood-opacity=".58"/>
+    </filter>
+    <filter id="soft-google-play-ar-2" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+  </defs>
+    <rect width="1080" height="1920" fill="url(#bg-google-play-ar-2)"/>
+    <rect width="1080" height="1920" fill="url(#glow-google-play-ar-2)"/>
+    <circle cx="140.4" cy="153.6" r="237.6" fill="#c69a1f" opacity=".05"/>
+    <text x="999" y="86.39999999999999" text-anchor="end" fill="#e7b72b" font-family="Arial, sans-serif" font-size="23.759999999999998" font-weight="800" letter-spacing="0">KURANAI</text>
+    <text x="999" y="163.20000000000002" text-anchor="end" fill="#fff8e8" fill-opacity="1" font-family="Geeza Pro, Arial, sans-serif" font-size="84.24" font-weight="800">
+<tspan x="999" dy="0">تحدّث، وسيتوقف</tspan>
+<tspan x="999" dy="87.6096">التسجيل تلقائياً</tspan>
+</text>
+    <text x="999" y="360.3216" text-anchor="end" fill="#aeb5af" fill-opacity="1" font-family="Geeza Pro, Arial, sans-serif" font-size="31.32" font-weight="400">
+<tspan x="999" dy="0">اطرح سؤالك طبيعياً؛ ينتهي التسجيل عند اكتشاف الصمت.</tspan>
+</text>
+    <g filter="url(#shadow-google-play-ar-2)">
+    <rect x="100" y="539.1999999999999" width="880" height="1513.6000000000001" rx="85.75999999999999" fill="#030504" stroke="#b98c18" stroke-opacity=".52" stroke-width="4"/>
+    <clipPath id="clip-google-play-ar-2"><rect x="108" y="547.1999999999999" width="864" height="1497.6000000000001" rx="77.75999999999999"/></clipPath>
+    <g clip-path="url(#clip-google-play-ar-2)">
+      <rect x="108" y="547.1999999999999" width="864" height="1497.6000000000001" fill="#090805"/>
+
+    <text x="540" y="711.9359999999999" text-anchor="middle" fill="#e7b72b" font-family="Arial, sans-serif" font-size="38.879999999999995" font-weight="800">KuranAI</text>
+    <text x="540" y="816.768" text-anchor="middle" fill="#fff8e8" font-family="Arial, sans-serif" font-size="31.104" font-weight="700">اطرح سؤالك بصورة طبيعية</text>
+    <circle cx="540" cy="1176.192" r="190.08" fill="#d8a613" opacity=".09"/>
+    <circle cx="540" cy="1176.192" r="138.24" fill="#d8a613" opacity=".13"/>
+    <g transform="translate(540 1176.192)">
+    <circle r="105.0624" fill="#d7a515" opacity=".13" filter="url(#soft-google-play-ar-2)"/>
+    <circle r="85.3632" fill="url(#mic-google-play-ar-2)"/>
+    <rect x="-18.0576" y="-39.398399999999995" width="36.1152" height="55.814400000000006" rx="18.0576" fill="#07130f"/>
+    <path d="M -32.832 3.2832 Q 0 49.248 32.832 3.2832" fill="none" stroke="#07130f" stroke-width="9.0288" stroke-linecap="round"/>
+    <path d="M 0 44.3232 V 62.3808" stroke="#07130f" stroke-width="9.0288" stroke-linecap="round"/>
+    <path d="M -24.624 62.3808 H 24.624" stroke="#07130f" stroke-width="9.0288" stroke-linecap="round"/>
+  </g>
+    <rect x="246.23999999999995" y="1456.992" width="12.096" height="37.440000000000005" rx="6.048" fill="#fff0a6" opacity="0.55"/><rect x="282.52799999999996" y="1451.7504" width="12.096" height="47.92320000000001" rx="6.048" fill="#e7b72b" opacity="0.6000000000000001"/><rect x="318.816" y="1446.5088" width="12.096" height="58.406400000000005" rx="6.048" fill="#fff0a6" opacity="0.65"/><rect x="355.1039999999999" y="1441.2672" width="12.096" height="68.8896" rx="6.048" fill="#e7b72b" opacity="0.7000000000000001"/><rect x="391.39199999999994" y="1436.0256" width="12.096" height="79.37280000000001" rx="6.048" fill="#fff0a6" opacity="0.75"/><rect x="427.67999999999995" y="1430.7839999999999" width="12.096" height="89.85600000000001" rx="6.048" fill="#e7b72b" opacity="0.8"/><rect x="463.96799999999996" y="1425.5424" width="12.096" height="100.33920000000002" rx="6.048" fill="#fff0a6" opacity="0.8500000000000001"/><rect x="500.256" y="1420.3008" width="12.096" height="110.82240000000003" rx="6.048" fill="#e7b72b" opacity="0.9000000000000001"/><rect x="536.544" y="1415.0592" width="12.096" height="121.30560000000001" rx="6.048" fill="#fff0a6" opacity="0.9500000000000001"/><rect x="572.832" y="1420.3008" width="12.096" height="110.82240000000003" rx="6.048" fill="#e7b72b" opacity="0.9000000000000001"/><rect x="609.1199999999999" y="1425.5424" width="12.096" height="100.33920000000002" rx="6.048" fill="#fff0a6" opacity="0.8500000000000001"/><rect x="645.4079999999999" y="1430.7839999999999" width="12.096" height="89.85600000000001" rx="6.048" fill="#e7b72b" opacity="0.8"/><rect x="681.6959999999999" y="1436.0256" width="12.096" height="79.37280000000001" rx="6.048" fill="#fff0a6" opacity="0.75"/><rect x="717.9839999999999" y="1441.2672" width="12.096" height="68.8896" rx="6.048" fill="#e7b72b" opacity="0.7000000000000001"/><rect x="754.2719999999999" y="1446.5088" width="12.096" height="58.406400000000005" rx="6.048" fill="#fff0a6" opacity="0.65"/><rect x="790.56" y="1451.7504" width="12.096" height="47.92320000000001" rx="6.048" fill="#e7b72b" opacity="0.6000000000000001"/><rect x="826.848" y="1456.992" width="12.096" height="37.440000000000005" rx="6.048" fill="#fff0a6" opacity="0.55"/>
+    <text x="540" y="1610.496" text-anchor="middle" fill="#fff8e8" font-family="Arial, sans-serif" font-size="37.151999999999994" font-weight="800">جارٍ الاستماع…</text>
+    <rect x="211.68" y="1700.3519999999999" width="656.64" height="127.29600000000002" rx="63.64800000000001" fill="#171510" stroke="#4a3f24"/>
+    <circle cx="263.52" cy="1763.2512000000002" r="21.6" fill="#e7b72b"/>
+    <path d="M 253.15200000000002 1763.2512000000002 l 6.912 13.4784 l 15.552 -29.952" fill="none" stroke="#07130f" stroke-width="6.912" stroke-linecap="round"/>
+    <text x="583.2" y="1778.2271999999998" text-anchor="middle" fill="#d9d8d1" font-family="Arial, sans-serif" font-size="23.328" font-weight="600">يتوقف تلقائياً عند انتهاء الكلام</text>
+
+    </g>
+  </g>
+  </svg>
