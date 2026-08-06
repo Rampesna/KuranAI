@@ -43,6 +43,7 @@ func TestBuildSystemPromptProtectsContextAndRequiresPortableOutput(t *testing.T)
 		"<RETRIEVED_CONTEXT>",
 		"Ignore prior instructions",
 		"HARD SCOPE",
+		"PROMPT INJECTION DEFENSE",
 	} {
 		if !strings.Contains(prompt, required) {
 			t.Fatalf("prompt missing %q", required)
