@@ -79,6 +79,68 @@ type ChatStreamChunk struct {
 	Choices []ChatStreamChoice `json:"choices,omitempty"`
 }
 
+// chatCompletionResponse non-stream chat yanıtı.
+type chatCompletionResponse struct {
+	Choices []struct {
+		Message ChatMessage `json:"message"`
+	} `json:"choices"`
+}
+
+// CompleteChat tek seferlik (non-stream) chat completion döner.
+// reasoningEffort boşsa servis varsayılanı kullanılır.
+func (s *ChatService) CompleteChat(ctx context.Context, messages []ChatMessage, reasoningEffort string) (string, error) {
+	if s.apiKey == "" {
+		return "", fmt.Errorf("OpenAI API key not configured")
+	}
+
+	effort := strings.TrimSpace(reasoningEffort)
+	if effort == "" {
+		effort = s.reasoningEffort
+	}
+
+	reqBody := ChatRequest{
+		Model:           s.model,
+		Messages:        messages,
+		Stream:          false,
+		ReasoningEffort: effort,
+	}
+	bodyBytes, err := json.Marshal(reqBody)
+	if err != nil {
+		return "", fmt.Errorf("marshal request: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, s.baseURL+"/chat/completions", bytes.NewReader(bodyBytes))
+	if err != nil {
+		return "", fmt.Errorf("new request: %w", err)
+	}
+	req.Header.Set("Authorization", "Bearer "+s.apiKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := s.client.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("openai request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	buf, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("read response: %w", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("[Chat] OpenAI API error: %s %s", resp.Status, string(buf))
+		return "", fmt.Errorf("openai api %s: %s", resp.Status, string(buf))
+	}
+
+	var parsed chatCompletionResponse
+	if err := json.Unmarshal(buf, &parsed); err != nil {
+		return "", fmt.Errorf("unmarshal response: %w", err)
+	}
+	if len(parsed.Choices) == 0 {
+		return "", fmt.Errorf("openai returned no choices")
+	}
+	return strings.TrimSpace(parsed.Choices[0].Message.Content), nil
+}
+
 // StreamChat chat completions stream eder; her chunk için callback çağrılır.
 func (s *ChatService) StreamChat(ctx context.Context, messages []ChatMessage, onChunk func(string) error) error {
 	if s.apiKey == "" {

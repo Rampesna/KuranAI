@@ -74,8 +74,6 @@ func (s *ChatOrchestrationService) ProcessMessage(ctx context.Context, authType 
 		return 0, 0, fmt.Errorf("list messages: %w", err)
 	}
 
-	chatMessages := buildChatMessages(content, messages, similarDocs, sourceType)
-
 	userMsg, err := s.messageSvc.Create(ctx, session.ID, "user", content, sourceType, embedding)
 	if err != nil {
 		return 0, 0, fmt.Errorf("create user message: %w", err)
@@ -86,19 +84,29 @@ func (s *ChatOrchestrationService) ProcessMessage(ctx context.Context, authType 
 		}
 	}
 
-	var fullResponse strings.Builder
-	err = s.chat.StreamChat(ctx, chatMessages, func(chunk string) error {
-		fullResponse.WriteString(chunk)
+	var respText string
+	if !s.classifyTopicScope(ctx, content, messages) {
+		respText = outOfScopeReply(content)
 		if onChunk != nil {
-			return onChunk(chunk)
+			if err := onChunk(respText); err != nil {
+				return 0, 0, fmt.Errorf("onChunk: %w", err)
+			}
 		}
-		return nil
-	})
-	if err != nil {
-		return 0, 0, fmt.Errorf("chat stream: %w", err)
+	} else {
+		chatMessages := buildChatMessages(content, messages, similarDocs, sourceType)
+		var fullResponse strings.Builder
+		err = s.chat.StreamChat(ctx, chatMessages, func(chunk string) error {
+			fullResponse.WriteString(chunk)
+			if onChunk != nil {
+				return onChunk(chunk)
+			}
+			return nil
+		})
+		if err != nil {
+			return 0, 0, fmt.Errorf("chat stream: %w", err)
+		}
+		respText = normalizeAssistantAnswer(fullResponse.String())
 	}
-
-	respText := normalizeAssistantAnswer(fullResponse.String())
 	if respText == "" {
 		return 0, 0, fmt.Errorf("chat returned an empty response")
 	}
@@ -194,11 +202,18 @@ func extractTextFromData(m map[string]interface{}) string {
 }
 
 func buildSystemPrompt(sourceType, ragContext string) string {
-	base := `You are Kuran AI, a careful educational assistant for the Quran, tafsir and hadith.
+	base := `You are Kuran AI, a careful educational assistant ONLY for the Quran, tafsir and hadith.
+
+HARD SCOPE:
+You may answer only about Quran text/translation (meal), tafsir, hadith, and closely related Islamic educational topics.
+If the user asks about programming, SQL, Power BI, Qlik, software, IT, secular homework, sports, politics, finance, medicine as clinical advice, or any other off-topic subject: refuse briefly and invite a religious question.
+Do not partially answer off-topic requests. Do not give comparisons, tips or general knowledge outside scope.
+Refuse in the user's language. Turkish example: "Bu soru Kuran AI'nin kapsamı dışında. Ben yalnızca Kur'an meali, tefsir ve hadis konularında yardımcı olabilirim. Lütfen dini bir soru sorun."
 
 Answer in the language of the user's latest message (Turkish, English or Arabic). Use Turkish only when the language is unclear.
-Answer the question directly and keep the response concise unless the user asks for detail.
+For in-scope questions, answer directly and keep the response concise unless the user asks for detail.
 Base factual claims on the supplied sources. Never invent a verse, surah, hadith, narrator or citation. If an exact reference is uncertain, say so clearly.
+If retrieved sources are irrelevant to an in-scope question, say what you can and cannot confirm from them.
 Distinguish Quran text, interpretation and hadith. Mention meaningful scholarly differences without presenting one interpretation as universally binding.
 The answer is educational and must not claim to be a fatwa or replace a qualified scholar.
 
